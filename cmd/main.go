@@ -54,6 +54,7 @@ func initContainer() *container {
 	cont.services.monitor = monitor.NewMonitor(docker, weburl2.NewCompositeFiller([]monitor.Filler{
 		&weburl2.NginxProxyUrlFiller{},
 		&weburl2.VCSFiller{},
+		&weburl2.DCNameFiller{},
 	}))
 
 	cont.dockerClient = docker
