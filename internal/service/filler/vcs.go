@@ -17,5 +17,23 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 
 			return
 		}
+
+		if key == "service_navigator.github_repository" {
+			service.VCS = &entity.VCS{
+				Type: "github",
+				URL:  val,
+			}
+
+			return
+		}
+
+		if key == "service_navigator.bitbucket_repository" {
+			service.VCS = &entity.VCS{
+				Type: "bitbucket",
+				URL:  val,
+			}
+
+			return
+		}
 	}
 }

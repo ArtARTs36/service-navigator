@@ -46,6 +46,10 @@
         .link-gitlab {
             color: #e24329;
         }
+
+        .link-gitlab:hover {
+            color: #fc6d26;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -119,7 +123,7 @@
                         {% endif %}
 
                         {% if service.VCS.URL %}
-                            <a href="{{ service.VCS.URL}}" class="link-gitlab"><i class="fa-brands fa-{{ service.VCS.Type }}"></i></a>
+                            <a href="{{ service.VCS.URL}}" class="link-{{ service.VCS.Type }}"><i class="fa-brands fa-{{ service.VCS.Type }}"></i></a>
                         {% endif %}
                     </td>
                 </tr>
