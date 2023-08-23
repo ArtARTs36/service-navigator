@@ -2,8 +2,7 @@ package filler
 
 import (
 	"fmt"
-	"github.com/artarts36/service-navigator/internal/services/monitor"
-	"github.com/docker/docker/api/types"
+	"github.com/artarts36/service-navigator/internal/service/entity"
 	"strings"
 )
 
@@ -12,8 +11,8 @@ const nginxProxyVirtualHostEnv = "VIRTUAL_HOST"
 type NginxProxyUrlFiller struct {
 }
 
-func (r *NginxProxyUrlFiller) Fill(service *monitor.Service, container *types.ContainerJSON) {
-	for _, envVar := range container.Config.Env {
+func (r *NginxProxyUrlFiller) Fill(service *entity.Service, container *entity.Container) {
+	for _, envVar := range container.Full.Config.Env {
 		varBag := strings.Split(envVar, "=")
 
 		varName := varBag[0]

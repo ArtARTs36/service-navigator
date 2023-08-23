@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/artarts36/service-navigator/internal/http/handlers"
-	weburl2 "github.com/artarts36/service-navigator/internal/services/filler"
-	"github.com/artarts36/service-navigator/internal/services/monitor"
+	weburl2 "github.com/artarts36/service-navigator/internal/service/filler"
+	"github.com/artarts36/service-navigator/internal/service/monitor"
 	"github.com/docker/docker/client"
 	"log"
 	"net/http"
@@ -53,6 +53,7 @@ func initContainer() *container {
 
 	cont.services.monitor = monitor.NewMonitor(docker, weburl2.NewCompositeFiller([]monitor.Filler{
 		&weburl2.NginxProxyUrlFiller{},
+		&weburl2.VCSFiller{},
 	}))
 
 	cont.dockerClient = docker

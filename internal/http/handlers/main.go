@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/artarts36/service-navigator/internal/services/monitor"
+	"github.com/artarts36/service-navigator/internal/service/monitor"
 	"github.com/tyler-sommer/stick"
 	"github.com/tyler-sommer/stick/twig"
 	"net/http"

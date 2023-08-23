@@ -113,6 +113,10 @@
                         {% if service.WebUrl %}
                             <a href="{{ service.WebUrl }}"><i class="bi bi-globe"></i></a>
                         {% endif %}
+
+                        {% if service.VCS.URL %}
+                            {{ service.VCS.URL }}
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
