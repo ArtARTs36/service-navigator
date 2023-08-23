@@ -49,7 +49,7 @@ func (m *Monitor) Show(ctx context.Context) ([]*entity.Service, error) {
 		}
 
 		service := &entity.Service{
-			Name:   srv.Names[0],
+			Name:   cont.Name,
 			Status: cont.State.Status,
 		}
 
