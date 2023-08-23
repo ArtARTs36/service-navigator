@@ -1,4 +1,4 @@
-package services
+package monitor
 
 type Service struct {
 	Name   string

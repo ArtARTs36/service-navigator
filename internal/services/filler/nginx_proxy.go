@@ -1,17 +1,18 @@
-package weburl
+package filler
 
 import (
 	"fmt"
+	"github.com/artarts36/service-navigator/internal/services/monitor"
 	"github.com/docker/docker/api/types"
 	"strings"
 )
 
 const nginxProxyVirtualHostEnv = "VIRTUAL_HOST"
 
-type NginxProxyUrlResolver struct {
+type NginxProxyUrlFiller struct {
 }
 
-func (r *NginxProxyUrlResolver) Resolve(container *types.ContainerJSON) string {
+func (r *NginxProxyUrlFiller) Fill(service *monitor.Service, container *types.ContainerJSON) {
 	for _, envVar := range container.Config.Env {
 		varBag := strings.Split(envVar, "=")
 
@@ -19,9 +20,9 @@ func (r *NginxProxyUrlResolver) Resolve(container *types.ContainerJSON) string {
 		varValue := varBag[1]
 
 		if varName == nginxProxyVirtualHostEnv {
-			return fmt.Sprintf("http://%s", varValue)
+			service.WebUrl = fmt.Sprintf("http://%s", varValue)
+
+			return
 		}
 	}
-
-	return ""
 }

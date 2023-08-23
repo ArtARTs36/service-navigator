@@ -1,9 +1,8 @@
-package services
+package monitor
 
 import (
 	"context"
 	"fmt"
-	"github.com/artarts36/service-navigator/internal/services/weburl"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
@@ -11,12 +10,12 @@ import (
 )
 
 type Monitor struct {
-	docker      *client.Client
-	urlResolver weburl.UrlResolver
+	docker *client.Client
+	filler Filler
 }
 
-func NewMonitor(docker *client.Client, urlResolver weburl.UrlResolver) *Monitor {
-	return &Monitor{docker: docker, urlResolver: urlResolver}
+func NewMonitor(docker *client.Client, urlResolver Filler) *Monitor {
+	return &Monitor{docker: docker, filler: urlResolver}
 }
 
 func (m *Monitor) Show(ctx context.Context) ([]*Service, error) {
@@ -48,11 +47,14 @@ func (m *Monitor) Show(ctx context.Context) ([]*Service, error) {
 			continue
 		}
 
-		statuses = append(statuses, &Service{
+		service := &Service{
 			Name:   srv.Names[0],
-			WebUrl: m.urlResolver.Resolve(&cont),
 			Status: cont.State.Status,
-		})
+		}
+
+		m.filler.Fill(service, &cont)
+
+		statuses = append(statuses, service)
 	}
 
 	return statuses, nil

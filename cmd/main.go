@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/artarts36/service-navigator/internal/http/handlers"
-	"github.com/artarts36/service-navigator/internal/services"
-	weburl2 "github.com/artarts36/service-navigator/internal/services/weburl"
+	weburl2 "github.com/artarts36/service-navigator/internal/services/filler"
+	"github.com/artarts36/service-navigator/internal/services/monitor"
 	"github.com/docker/docker/client"
 	"log"
 	"net/http"
@@ -14,7 +14,7 @@ import (
 type container struct {
 	dockerClient *client.Client
 	services     struct {
-		monitor *services.Monitor
+		monitor *monitor.Monitor
 	}
 	http struct {
 		handlers struct {
@@ -51,8 +51,8 @@ func initContainer() *container {
 		panic(fmt.Sprintf("Failed to create docker client: %s", err))
 	}
 
-	cont.services.monitor = services.NewMonitor(docker, weburl2.NewCompositeResolver([]weburl2.UrlResolver{
-		&weburl2.NginxProxyUrlResolver{},
+	cont.services.monitor = monitor.NewMonitor(docker, weburl2.NewCompositeFiller([]monitor.Filler{
+		&weburl2.NginxProxyUrlFiller{},
 	}))
 
 	cont.dockerClient = docker

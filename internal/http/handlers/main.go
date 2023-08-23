@@ -1,17 +1,17 @@
 package handlers
 
 import (
-	"github.com/artarts36/service-navigator/internal/services"
+	"github.com/artarts36/service-navigator/internal/services/monitor"
 	"github.com/tyler-sommer/stick"
 	"github.com/tyler-sommer/stick/twig"
 	"net/http"
 )
 
 type MainPageHandler struct {
-	monitor *services.Monitor
+	monitor *monitor.Monitor
 }
 
-func NewMainPageHandler(monitor *services.Monitor) *MainPageHandler {
+func NewMainPageHandler(monitor *monitor.Monitor) *MainPageHandler {
 	return &MainPageHandler{monitor: monitor}
 }
 
