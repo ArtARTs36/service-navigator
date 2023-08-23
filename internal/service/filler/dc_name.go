@@ -1,8 +1,10 @@
 package filler
 
-import "github.com/artarts36/service-navigator/internal/service/entity"
+import (
+	"github.com/artarts36/service-navigator/internal/service/entity"
+)
 
-const labelName = "com.docker.compose.project"
+const labelName = "com.docker.compose.service"
 
 type DCNameFiller struct {
 }
