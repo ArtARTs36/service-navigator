@@ -40,14 +40,18 @@ func (m *Monitor) Show(ctx context.Context) ([]*Service, error) {
 	statuses := make([]*Service, 0, len(network))
 
 	for _, srv := range network {
-		n, err := m.docker.ContainerInspect(ctx, srv.ID)
+		cont, err := m.docker.ContainerInspect(ctx, srv.ID)
 
-		fmt.Println(err)
-		fmt.Println(n.Config.Env)
+		if err != nil {
+			fmt.Println(err)
+
+			continue
+		}
 
 		statuses = append(statuses, &Service{
 			Name:   srv.Names[0],
-			WebUrl: m.urlResolver.Resolve(&n),
+			WebUrl: m.urlResolver.Resolve(&cont),
+			Status: cont.State.Status,
 		})
 	}
 

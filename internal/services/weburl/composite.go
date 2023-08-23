@@ -12,14 +12,14 @@ func NewCompositeResolver(resolvers []UrlResolver) UrlResolver {
 	}
 }
 
-func (r *CompositeResolver) Resolve(container *types.ContainerJSON) *string {
+func (r *CompositeResolver) Resolve(container *types.ContainerJSON) string {
 	for _, resolver := range r.resolvers {
 		val := resolver.Resolve(container)
 
-		if val != nil {
+		if val != "" {
 			return val
 		}
 	}
 
-	return nil
+	return ""
 }

@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/artarts36/service-navigator/internal/services"
+	"github.com/tyler-sommer/stick"
+	"github.com/tyler-sommer/stick/twig"
 	"net/http"
 )
 
@@ -18,19 +19,19 @@ func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	statuses, err := h.monitor.Show(req.Context())
 
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		w.WriteHeader(500)
+
+		return
 	}
 
-	for _, st := range statuses {
-		var line string
+	loader := stick.NewFilesystemLoader("/app/templates")
+	renderer := twig.New(loader)
 
-		if st.WebUrl == nil {
-			line = fmt.Sprintf("%s:non", st.Name)
-		} else {
-			line = fmt.Sprintf("%s:%s", st.Name, *st.WebUrl)
-		}
+	err = renderer.Execute("main.twig.html", w, map[string]stick.Value{
+		"services": statuses,
+	})
 
-		w.Write([]byte(line))
-		w.Write([]byte("\n"))
+	if err != nil {
+		w.WriteHeader(500)
 	}
 }

@@ -1,6 +1,7 @@
 package weburl
 
 import (
+	"fmt"
 	"github.com/docker/docker/api/types"
 	"strings"
 )
@@ -10,7 +11,7 @@ const nginxProxyVirtualHostEnv = "VIRTUAL_HOST"
 type NginxProxyUrlResolver struct {
 }
 
-func (r *NginxProxyUrlResolver) Resolve(container *types.ContainerJSON) *string {
+func (r *NginxProxyUrlResolver) Resolve(container *types.ContainerJSON) string {
 	for _, envVar := range container.Config.Env {
 		varBag := strings.Split(envVar, "=")
 
@@ -18,9 +19,9 @@ func (r *NginxProxyUrlResolver) Resolve(container *types.ContainerJSON) *string 
 		varValue := varBag[1]
 
 		if varName == nginxProxyVirtualHostEnv {
-			return &varValue
+			return fmt.Sprintf("http://%s", varValue)
 		}
 	}
 
-	return nil
+	return ""
 }

@@ -2,5 +2,6 @@ package services
 
 type Service struct {
 	Name   string
-	WebUrl *string
+	WebUrl string
+	Status string
 }
