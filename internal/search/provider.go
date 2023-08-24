@@ -30,11 +30,10 @@ func resolveProviderURL(provider Provider) string {
 	var url string
 
 	if provider.URL == "" {
-		switch strings.ToLower(provider.Name) {
-		case "google":
-			url = "https://www.google.com/search"
-		case "stackoverflow":
-			url = "https://stackoverflow.com/search"
+		prName := strings.ToLower(provider.Name)
+
+		if defaultURL, exists := getDefaultProviderNameURLMap()[prName]; exists {
+			url = defaultURL
 		}
 	} else {
 		url = provider.URL
