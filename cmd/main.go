@@ -83,6 +83,8 @@ func main() {
 
 	err := hServer.ListenAndServe()
 	if err != nil {
+		log.Printf("Failed listeing: %s", err)
+
 		return
 	}
 }

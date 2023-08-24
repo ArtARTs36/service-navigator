@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/artarts36/service-navigator/internal/presentation"
@@ -21,6 +22,8 @@ func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	statuses, err := h.monitor.Show(req.Context())
 
 	if err != nil {
+		log.Printf("Failed to fetch services: %s", err)
+
 		w.WriteHeader(serverError)
 
 		return
@@ -31,6 +34,8 @@ func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	})
 
 	if err != nil {
+		log.Printf("Failed to render: %s", err)
+
 		w.WriteHeader(serverError)
 	}
 }

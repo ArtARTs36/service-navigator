@@ -12,6 +12,9 @@ RUN go mod download
 
 COPY . .
 
+COPY ./service_navigator.yaml /app/
+COPY ./templates/ /app/templates/
+
 RUN GOOS=linux go build -ldflags="-s -w" -o /go/bin/service-navigator /go/src/github.com/artarts36/service-navigator/cmd/main.go
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
