@@ -16,8 +16,6 @@ services:
     working_dir: /app/
     command: "go run ./cmd/main.go"
     environment:
-      SERVICE_NAVIGATOR_APP_NAME: Infra
-      SERVICE_NAVIGATOR_NETWORK_NAME: infra
       USER: "${USER}"
     networks:
       - infra

@@ -4,9 +4,9 @@ import (
 	"github.com/artarts36/service-navigator/internal/service/entity"
 )
 
-const labelGitlabRepository = "service_navigator.gitlab_repository"
-const labelGithubRepository = "service_navigator.github_repository"
-const labelBitbucketRepository = "service_navigator.bitbucket_repository"
+const labelGitlabRepository = "org.service_navigator.gitlab_repository"
+const labelGithubRepository = "org.service_navigator.github_repository"
+const labelBitbucketRepository = "org.service_navigator.bitbucket_repository"
 
 type VCSFiller struct {
 }
