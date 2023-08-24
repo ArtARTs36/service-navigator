@@ -1,20 +1,19 @@
 package handlers
 
 import (
+	"github.com/artarts36/service-navigator/internal/presentation"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
 	"github.com/tyler-sommer/stick"
-	"github.com/tyler-sommer/stick/twig"
 	"net/http"
 )
 
 type MainPageHandler struct {
-	monitor     *monitor.Monitor
-	appName     string
-	networkName string
+	monitor  *monitor.Monitor
+	renderer *presentation.Renderer
 }
 
-func NewMainPageHandler(monitor *monitor.Monitor, appName string, networkName string) *MainPageHandler {
-	return &MainPageHandler{monitor: monitor, appName: appName, networkName: networkName}
+func NewMainPageHandler(monitor *monitor.Monitor, renderer *presentation.Renderer) *MainPageHandler {
+	return &MainPageHandler{monitor: monitor, renderer: renderer}
 }
 
 func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -26,12 +25,8 @@ func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	loader := stick.NewFilesystemLoader("/app/templates")
-	renderer := twig.New(loader)
-
-	err = renderer.Execute("main.twig.html", w, map[string]stick.Value{
+	err = h.renderer.Render("main.twig.html", w, map[string]stick.Value{
 		"services": statuses,
-		"_appName": h.appName,
 	})
 
 	if err != nil {

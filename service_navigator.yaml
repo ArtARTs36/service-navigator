@@ -1,0 +1,7 @@
+frontend:
+  app_name: ServiceNavigator
+  navbar:
+    links: []
+
+backend:
+  network_name: infra
