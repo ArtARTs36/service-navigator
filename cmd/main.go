@@ -2,6 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/artarts36/service-navigator/internal/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation"
 	"github.com/artarts36/service-navigator/internal/search"
@@ -11,11 +16,9 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/tyler-sommer/stick"
 	"gopkg.in/yaml.v3"
-	"log"
-	"net/http"
-	"os"
-	"time"
 )
+
+const httpReadTimeout = 3 * time.Second
 
 type Config struct {
 	Frontend struct {
@@ -24,24 +27,23 @@ type Config struct {
 			Links []struct {
 				Title string `yaml:"title"`
 				Icon  string `yaml:"icon"`
-				Url   string `yaml:"url"`
+				URL   string `yaml:"url"`
 			} `yaml:"links"`
 			Profile struct {
 				Links []struct {
 					Title string `yaml:"title"`
 					Icon  string `yaml:"icon"`
-					Url   string `yaml:"url"`
+					URL   string `yaml:"url"`
 				} `yaml:"links"`
 			} `yaml:"profile"`
 			Search struct {
-				Providers     []search.Provider `yaml:"providers"`
-				FirstProvider search.Provider
+				Providers []search.Provider `yaml:"providers"`
 			} `yaml:"search"`
 		} `yaml:"navbar"`
-	}
+	} `yaml:"frontend"`
 	Backend struct {
 		NetworkName string `yaml:"network_name"`
-	}
+	} `yaml:"backend"`
 }
 
 type Environment struct {
@@ -74,7 +76,7 @@ func main() {
 	hServer := &http.Server{
 		Addr:        ":8080",
 		Handler:     mux,
-		ReadTimeout: 3 * time.Second,
+		ReadTimeout: httpReadTimeout,
 	}
 
 	log.Print("Listening...")
@@ -95,7 +97,7 @@ func initContainer(env *Environment, conf *Config) *container {
 	}
 
 	cont.services.monitor = monitor.NewMonitor(docker, weburl2.NewCompositeFiller([]monitor.Filler{
-		&weburl2.NginxProxyUrlFiller{},
+		&weburl2.NginxProxyURLFiller{},
 		&weburl2.VCSFiller{},
 		&weburl2.DCNameFiller{},
 	}), conf.Backend.NetworkName)

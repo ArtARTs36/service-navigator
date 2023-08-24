@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "9101:9100"
+      - "9101:8080"
     volumes:
       - type: bind
         source: "/var/run/docker.sock"

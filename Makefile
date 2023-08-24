@@ -9,3 +9,11 @@ push-pub:
 
 run-f:
 	docker-compose up
+
+lint:
+	docker run \
+        --rm -t \
+        -v "${PWD}/:/app" \
+        --workdir /app \
+        golangci/golangci-lint \
+        golangci-lint run

@@ -77,14 +77,14 @@
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 navbar-link">
                 {% for link in _navBar.Links %}
-                    <li><a href="{{ link.Url }}" class="nav-link px-2 link-dark">{{ link.Title }}</a></li>
+                    <li><a href="{{ link.URL }}" class="nav-link px-2 link-dark">{{ link.Title }}</a></li>
                 {% endfor %}
             </ul>
 
             {{ _navBar }}
 
             {% if _navBar.Search.Providers | length > 0 %}
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{{ _navBar.Search.Providers[0].Url }}" id="search-form">
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{{ _navBar.Search.Providers[0].URL }}" id="search-form">
                     <input
                             type="search"
                             class="form-control"
@@ -106,7 +106,7 @@
                         </a>
                         <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
                             {% for provider in _navBar.Search.Providers %}
-                                <li><a class="dropdown-item search-dropdown-item" onclick="setSearchProvider('{{ provider.Url }}', '{{ provider.QueryParamName }}'); runSearch()">{{ provider.Name }}</a></li>
+                                <li><a class="dropdown-item search-dropdown-item" onclick="setSearchProvider('{{ provider.URL }}', '{{ provider.QueryParamName }}'); runSearch()">{{ provider.Name }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -122,7 +122,7 @@
                 </a>
                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                     {% for link in _navBar.Profile.Links %}
-                        <li><a class="dropdown-item" href="{{ link.Url }}">{{ link.Title }}</a></li>
+                        <li><a class="dropdown-item" href="{{ link.URL }}">{{ link.Title }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -148,8 +148,8 @@
             </thead>
             <tbody>
             {% for service in services %}
-                {% if service.WebUrl %}
-                <tr onclick="window.open('{{ service.WebUrl }}')" class="clickable-table-row">
+                {% if service.WebURL %}
+                <tr onclick="window.open('{{ service.WebURL }}')" class="clickable-table-row">
                 {% else %}
                 <tr>
                 {% endif %}
@@ -160,8 +160,8 @@
                         {{ service.Status }}
                     </td>
                     <td>
-                        {% if service.WebUrl %}
-                            <a href="{{ service.WebUrl }}"><i class="fa-solid fa-globe"></i></a>
+                        {% if service.WebURL %}
+                            <a href="{{ service.WebURL }}"><i class="fa-solid fa-globe"></i></a>
                         {% endif %}
 
                         {% if service.VCS.URL %}

@@ -2,7 +2,8 @@ package monitor
 
 import (
 	"context"
-	"fmt"
+	"log"
+
 	"github.com/artarts36/service-navigator/internal/service/entity"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
@@ -27,7 +28,7 @@ func (m *Monitor) Show(ctx context.Context) ([]*entity.Service, error) {
 		return []*entity.Service{}, errors.Errorf("Failed to create docker client: %s", err)
 	}
 
-	network, err := m.docker.ContainerList(ctx, types.ContainerListOptions{
+	containers, err := m.docker.ContainerList(ctx, types.ContainerListOptions{
 		Filters: filters.NewArgs(filters.KeyValuePair{
 			Key:   "network",
 			Value: "infra",
@@ -38,13 +39,13 @@ func (m *Monitor) Show(ctx context.Context) ([]*entity.Service, error) {
 		return []*entity.Service{}, err
 	}
 
-	statuses := make([]*entity.Service, 0, len(network))
+	services := make([]*entity.Service, 0, len(containers))
 
-	for _, srv := range network {
-		cont, err := m.docker.ContainerInspect(ctx, srv.ID)
+	for _, container := range containers {
+		cont, inspectErr := m.docker.ContainerInspect(ctx, container.ID)
 
-		if err != nil {
-			fmt.Println(err)
+		if inspectErr != nil {
+			log.Println(inspectErr)
 
 			continue
 		}
@@ -55,12 +56,12 @@ func (m *Monitor) Show(ctx context.Context) ([]*entity.Service, error) {
 		}
 
 		m.filler.Fill(service, &entity.Container{
-			Short: &srv,
-			Full:  &cont,
+			Short: container,
+			Full:  cont,
 		})
 
-		statuses = append(statuses, service)
+		services = append(services, service)
 	}
 
-	return statuses, nil
+	return services, nil
 }

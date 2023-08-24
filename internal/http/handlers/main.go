@@ -1,10 +1,11 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/artarts36/service-navigator/internal/presentation"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
 	"github.com/tyler-sommer/stick"
-	"net/http"
 )
 
 type MainPageHandler struct {
@@ -20,7 +21,7 @@ func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	statuses, err := h.monitor.Show(req.Context())
 
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(serverError)
 
 		return
 	}
@@ -30,6 +31,6 @@ func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	})
 
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(serverError)
 	}
 }

@@ -2,7 +2,7 @@ package entity
 
 type Service struct {
 	Name   string
-	WebUrl string
+	WebURL string
 	Status string
 	VCS    *VCS
 }

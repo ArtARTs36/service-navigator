@@ -4,7 +4,7 @@ import "strings"
 
 type Provider struct {
 	Name           string `yaml:"name"`
-	Url            string `yaml:"url"`
+	URL            string `yaml:"url"`
 	QueryParamName string `yaml:"queryParamName"`
 }
 
@@ -13,12 +13,12 @@ func ResolveProviders(providers []Provider) []Provider {
 
 	for _, provider := range providers {
 
-		url := resolveProviderUrl(provider)
+		url := resolveProviderURL(provider)
 		queryParamName := resolveProviderQueryParamName(provider)
 
 		newProviders = append(newProviders, Provider{
 			Name:           provider.Name,
-			Url:            url,
+			URL:            url,
 			QueryParamName: queryParamName,
 		})
 	}
@@ -26,20 +26,18 @@ func ResolveProviders(providers []Provider) []Provider {
 	return newProviders
 }
 
-func resolveProviderUrl(provider Provider) string {
+func resolveProviderURL(provider Provider) string {
 	var url string
 
-	if provider.Url == "" {
+	if provider.URL == "" {
 		switch strings.ToLower(provider.Name) {
 		case "google":
 			url = "https://www.google.com/search"
-			break
 		case "stackoverflow":
 			url = "https://stackoverflow.com/search"
-			break
 		}
 	} else {
-		url = provider.Url
+		url = provider.URL
 	}
 
 	return url
