@@ -4,12 +4,16 @@ import (
 	"github.com/artarts36/service-navigator/internal/service/entity"
 )
 
+const labelGitlabRepository = "service_navigator.gitlab_repository"
+const labelGithubRepository = "service_navigator.github_repository"
+const labelBitbucketRepository = "service_navigator.bitbucket_repository"
+
 type VCSFiller struct {
 }
 
 func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 	for key, val := range container.Short.Labels {
-		if key == "service_navigator.gitlab_repository" {
+		if key == labelGitlabRepository {
 			service.VCS = &entity.VCS{
 				Type: "gitlab",
 				URL:  val,
@@ -18,7 +22,7 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 			return
 		}
 
-		if key == "service_navigator.github_repository" {
+		if key == labelGithubRepository {
 			service.VCS = &entity.VCS{
 				Type: "github",
 				URL:  val,
@@ -27,7 +31,7 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 			return
 		}
 
-		if key == "service_navigator.bitbucket_repository" {
+		if key == labelBitbucketRepository {
 			service.VCS = &entity.VCS{
 				Type: "bitbucket",
 				URL:  val,

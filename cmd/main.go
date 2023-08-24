@@ -72,7 +72,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", cont.http.handlers.mainPageHandler)
 	hServer := &http.Server{
-		Addr:        ":9100",
+		Addr:        ":8080",
 		Handler:     mux,
 		ReadTimeout: 3 * time.Second,
 	}
