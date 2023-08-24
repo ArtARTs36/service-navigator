@@ -46,6 +46,14 @@
             color: #fc6d26;
         }
 
+        .link-github {
+            color: #444;
+        }
+
+        .link-github:hover {
+            color: #000;
+        }
+
         .navbar-link {
             color: #666;
         }
@@ -174,7 +182,7 @@
                         {% endif %}
 
                         {% if service.VCS.URL %}
-                            <a href="{{ service.VCS.URL}}" class="link-{{ service.VCS.Type }}"><i class="fa-brands fa-{{ service.VCS.Type }}"></i></a>
+                            <a href="{{ service.VCS.URL }}" class="link-{{ service.VCS.Type }}"><i class="fa-brands fa-{{ service.VCS.Type }}"></i></a>
                         {% endif %}
                     </td>
                 </tr>
