@@ -46,12 +46,21 @@
             color: #fc6d26;
         }
 
-        .navbar-link li:hover {
+        .navbar-link {
+            color: #666;
+        }
+
+        .navbar-link:hover {
             color: #000;
         }
 
         .search-dropdown-item {
             cursor: pointer;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            margin-right: 15px;
         }
     </style>
 
@@ -71,13 +80,13 @@
 <header class="p-3 mb-3 border-bottom" style="background: #fff">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none logo">
                 {{ _appName }}
             </a>
 
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 navbar-link">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 {% for link in _navBar.Links %}
-                    <li><a href="{{ link.URL }}" class="nav-link px-2 link-dark">{{ link.Title }}</a></li>
+                    <li><a href="{{ link.URL }}" class="nav-link px-2 navbar-link">{{ link.Title }}</a></li>
                 {% endfor %}
             </ul>
 
