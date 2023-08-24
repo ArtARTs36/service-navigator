@@ -11,12 +11,13 @@ import (
 )
 
 type Monitor struct {
-	docker *client.Client
-	filler Filler
+	docker      *client.Client
+	filler      Filler
+	networkName string
 }
 
-func NewMonitor(docker *client.Client, urlResolver Filler) *Monitor {
-	return &Monitor{docker: docker, filler: urlResolver}
+func NewMonitor(docker *client.Client, urlResolver Filler, networkName string) *Monitor {
+	return &Monitor{docker: docker, filler: urlResolver, networkName: networkName}
 }
 
 func (m *Monitor) Show(ctx context.Context) ([]*entity.Service, error) {

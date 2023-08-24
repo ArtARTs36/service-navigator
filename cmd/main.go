@@ -98,7 +98,7 @@ func initContainer(env *Environment, conf *Config) *container {
 		&weburl2.NginxProxyUrlFiller{},
 		&weburl2.VCSFiller{},
 		&weburl2.DCNameFiller{},
-	}))
+	}), conf.Backend.NetworkName)
 
 	cont.dockerClient = docker
 	cont.presentation.renderer = initRenderer(env, conf)
