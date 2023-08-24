@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/docker/docker v24.0.5+incompatible
+	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/tyler-sommer/stick v1.0.6
 )

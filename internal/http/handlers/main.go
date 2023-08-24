@@ -8,11 +8,13 @@ import (
 )
 
 type MainPageHandler struct {
-	monitor *monitor.Monitor
+	monitor     *monitor.Monitor
+	appName     string
+	networkName string
 }
 
-func NewMainPageHandler(monitor *monitor.Monitor) *MainPageHandler {
-	return &MainPageHandler{monitor: monitor}
+func NewMainPageHandler(monitor *monitor.Monitor, appName string, networkName string) *MainPageHandler {
+	return &MainPageHandler{monitor: monitor, appName: appName, networkName: networkName}
 }
 
 func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -29,6 +31,7 @@ func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	err = renderer.Execute("main.twig.html", w, map[string]stick.Value{
 		"services": statuses,
+		"_appName": h.appName,
 	})
 
 	if err != nil {

@@ -6,10 +6,16 @@ import (
 	weburl2 "github.com/artarts36/service-navigator/internal/service/filler"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
 	"github.com/docker/docker/client"
+	"github.com/kelseyhightower/envconfig"
 	"log"
 	"net/http"
 	"time"
 )
+
+type environment struct {
+	AppName     string `envconfig:"APP_NAME" default:"ServiceNavigator"`
+	NetworkName string `envconfig:"NETWORK_NAME" required:"true"`
+}
 
 type container struct {
 	dockerClient *client.Client
@@ -24,7 +30,15 @@ type container struct {
 }
 
 func main() {
-	cont := initContainer()
+	var env environment
+
+	err := envconfig.Process("SERVICE_NAVIGATOR", &env)
+
+	if err != nil {
+		panic(fmt.Sprintf("failed to load environment: %s", err))
+	}
+
+	cont := initContainer(&env)
 
 	mux := http.NewServeMux()
 	mux.Handle("/", cont.http.handlers.mainPageHandler)
@@ -36,13 +50,13 @@ func main() {
 
 	log.Print("Listening...")
 
-	err := hServer.ListenAndServe()
+	err = hServer.ListenAndServe()
 	if err != nil {
 		return
 	}
 }
 
-func initContainer() *container {
+func initContainer(env *environment) *container {
 	cont := &container{}
 
 	docker, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
@@ -58,7 +72,7 @@ func initContainer() *container {
 	}))
 
 	cont.dockerClient = docker
-	cont.http.handlers.mainPageHandler = handlers.NewMainPageHandler(cont.services.monitor)
+	cont.http.handlers.mainPageHandler = handlers.NewMainPageHandler(cont.services.monitor, env.AppName, env.NetworkName)
 
 	return cont
 }
