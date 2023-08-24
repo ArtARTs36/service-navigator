@@ -1,7 +1,17 @@
 frontend:
   app_name: ServiceNavigator
   navbar:
-    links: []
+    links:
+      - url: http://github.com/artarts36/service-navigator
+        title: Github
+    profile:
+      links:
+        - url: http://github.com/artarts36/service-navigator
+          title: Github
+    search:
+      providers:
+        - name: google
+        - name: stackoverflow
 
 backend:
   network_name: infra

@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   infra:
-    image: golang
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "9101:9100"
     volumes:
@@ -16,6 +18,7 @@ services:
     environment:
       SERVICE_NAVIGATOR_APP_NAME: Infra
       SERVICE_NAVIGATOR_NETWORK_NAME: infra
+      USER: "${USER}"
     networks:
       - infra
 

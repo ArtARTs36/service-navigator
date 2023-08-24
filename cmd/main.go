@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/artarts36/service-navigator/internal/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation"
+	"github.com/artarts36/service-navigator/internal/search"
 	weburl2 "github.com/artarts36/service-navigator/internal/service/filler"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
 	"github.com/docker/docker/client"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/tyler-sommer/stick"
 	"gopkg.in/yaml.v3"
 	"log"
@@ -15,7 +17,7 @@ import (
 	"time"
 )
 
-type Environment struct {
+type Config struct {
 	Frontend struct {
 		AppName string `yaml:"app_name"`
 		Navbar  struct {
@@ -24,11 +26,26 @@ type Environment struct {
 				Icon  string `yaml:"icon"`
 				Url   string `yaml:"url"`
 			} `yaml:"links"`
+			Profile struct {
+				Links []struct {
+					Title string `yaml:"title"`
+					Icon  string `yaml:"icon"`
+					Url   string `yaml:"url"`
+				} `yaml:"links"`
+			} `yaml:"profile"`
+			Search struct {
+				Providers     []search.Provider `yaml:"providers"`
+				FirstProvider search.Provider
+			} `yaml:"search"`
 		} `yaml:"navbar"`
 	}
 	Backend struct {
 		NetworkName string `yaml:"network_name"`
 	}
+}
+
+type Environment struct {
+	User string `default:"developer"`
 }
 
 type container struct {
@@ -48,8 +65,9 @@ type container struct {
 
 func main() {
 	env := initEnvironment()
+	conf := initConfig()
 
-	cont := initContainer(env)
+	cont := initContainer(env, conf)
 
 	mux := http.NewServeMux()
 	mux.Handle("/", cont.http.handlers.mainPageHandler)
@@ -67,7 +85,7 @@ func main() {
 	}
 }
 
-func initContainer(env *Environment) *container {
+func initContainer(env *Environment, conf *Config) *container {
 	cont := &container{}
 
 	docker, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
@@ -83,16 +101,16 @@ func initContainer(env *Environment) *container {
 	}))
 
 	cont.dockerClient = docker
-	cont.presentation.renderer = initRenderer(env)
+	cont.presentation.renderer = initRenderer(env, conf)
 	cont.http.handlers.mainPageHandler = handlers.NewMainPageHandler(cont.services.monitor, cont.presentation.renderer)
 
 	return cont
 }
 
-func initEnvironment() *Environment {
-	env := Environment{}
+func initConfig() *Config {
+	conf := Config{}
 
-	log.Printf("Loading Environment from /app/service_navigator.yaml")
+	log.Printf("Loading Config from /app/service_navigator.yaml")
 
 	yamlContent, err := os.ReadFile("/app/service_navigator.yaml")
 
@@ -100,21 +118,40 @@ func initEnvironment() *Environment {
 		panic(fmt.Sprintf("Failed to read \"/app/service_navigator.yaml\": %s", err))
 	}
 
-	err = yaml.Unmarshal(yamlContent, &env)
+	err = yaml.Unmarshal(yamlContent, &conf)
 
 	if err != nil {
-		panic(fmt.Sprintf("failed to load Environment: %s", err))
+		panic(fmt.Sprintf("failed to load Config: %s", err))
+	}
+
+	conf.Frontend.Navbar.Search.Providers = search.ResolveProviders(conf.Frontend.Navbar.Search.Providers)
+
+	log.Printf("Config loaded: %v", conf)
+
+	return &conf
+}
+
+func initRenderer(env *Environment, conf *Config) *presentation.Renderer {
+	vars := map[string]stick.Value{}
+	vars["_navBar"] = conf.Frontend.Navbar
+	vars["_appName"] = conf.Frontend.AppName
+	vars["_username"] = env.User
+
+	return presentation.NewRenderer("/app/templates", vars)
+}
+
+func initEnvironment() *Environment {
+	var env Environment
+
+	log.Print("Loading environment")
+
+	err := envconfig.Process("", &env)
+
+	if err != nil {
+		panic(fmt.Sprintf("Failed to load environment: %s", err))
 	}
 
 	log.Printf("Environment loaded: %v", env)
 
 	return &env
-}
-
-func initRenderer(env *Environment) *presentation.Renderer {
-	vars := map[string]stick.Value{}
-	vars["_navBar"] = env.Frontend.Navbar
-	vars["_appName"] = env.Frontend.AppName
-
-	return presentation.NewRenderer("/app/templates", vars)
 }
