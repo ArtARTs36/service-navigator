@@ -47,7 +47,13 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 		}
 
 		if key == labelOpenContainerImageSource {
-			vcsType, err := r.resolveTypeByRawURL(val)
+			vcsType, vcsHost, err := r.resolveTypeByRawURL(val)
+
+			if err != nil {
+				log.Printf("unable to parse url \"%s\": %w", val, err)
+
+				continue
+			}
 
 			if err != nil {
 				log.Print(err)
@@ -57,6 +63,7 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 
 			service.VCS = &entity.VCS{
 				Type: vcsType,
+				Host: vcsHost,
 				URL:  val,
 			}
 
@@ -65,21 +72,21 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 	}
 }
 
-func (r *VCSFiller) resolveTypeByRawURL(rawURL string) (string, error) {
+func (r *VCSFiller) resolveTypeByRawURL(rawURL string) (string, string, error) {
 	vcsURL, err := url.Parse(rawURL)
 
 	if err != nil {
-		return "", fmt.Errorf("unable to parse url \"%s\": %w", rawURL, err)
+		return "", "", fmt.Errorf("unable to parse url \"%s\": %w", rawURL, err)
 	}
 
 	switch vcsURL.Host {
 	case "github.com":
-		return "github", nil
+		return "github", vcsURL.Host, nil
 	case "gitlab.com":
-		return "gitlab", nil
+		return "gitlab", vcsURL.Host, nil
 	case "bitbucket.com":
-		return "bitbucket", nil
+		return "bitbucket", vcsURL.Host, nil
 	}
 
-	return "", nil
+	return "", vcsURL.Host, nil
 }
