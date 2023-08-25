@@ -6,36 +6,28 @@ import (
 	"sort"
 
 	"github.com/artarts36/service-navigator/internal/presentation"
-	"github.com/artarts36/service-navigator/internal/service/monitor"
+	"github.com/artarts36/service-navigator/internal/service/repository"
 	"github.com/tyler-sommer/stick"
 )
 
 type HomePageHandler struct {
-	monitor  *monitor.Monitor
+	services *repository.ServiceRepository
 	renderer *presentation.Renderer
 }
 
-func NewHomePageHandler(monitor *monitor.Monitor, renderer *presentation.Renderer) *HomePageHandler {
-	return &HomePageHandler{monitor: monitor, renderer: renderer}
+func NewHomePageHandler(services *repository.ServiceRepository, renderer *presentation.Renderer) *HomePageHandler {
+	return &HomePageHandler{services: services, renderer: renderer}
 }
 
-func (h *HomePageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	statuses, err := h.monitor.Show(req.Context())
-
-	if err != nil {
-		log.Printf("Failed to fetch services: %s", err)
-
-		w.WriteHeader(serverError)
-
-		return
-	}
+func (h *HomePageHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
+	statuses := h.services.All()
 
 	sort.SliceStable(statuses, func(i, j int) bool {
 		return statuses[i].Name < statuses[j].Name ||
 			(statuses[i].Name == statuses[j].Name && statuses[i].ContainerID < statuses[j].ContainerID)
 	})
 
-	err = h.renderer.Render("pages/home.twig.html", w, map[string]stick.Value{
+	err := h.renderer.Render("pages/home.twig.html", w, map[string]stick.Value{
 		"services": statuses,
 	})
 

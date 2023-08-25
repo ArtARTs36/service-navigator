@@ -11,17 +11,26 @@ import (
 	"github.com/artarts36/service-navigator/internal/presentation"
 	weburl2 "github.com/artarts36/service-navigator/internal/service/filler"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
+	poller2 "github.com/artarts36/service-navigator/internal/service/poller"
+	"github.com/artarts36/service-navigator/internal/service/repository"
 	"github.com/docker/docker/client"
 	"github.com/tyler-sommer/stick"
 )
 
 const httpReadTimeout = 3 * time.Second
+const servicePollInterval = 1 * time.Second
 
 func main() {
 	env := container.InitEnvironment()
 	conf := container.InitConfig()
 
 	cont := initContainer(env, conf)
+
+	poller := poller2.NewPoller(cont.Services.Monitor, cont.Services.Repository, servicePollInterval)
+
+	go func() {
+		poller.Poll()
+	}()
 
 	mux := http.NewServeMux()
 	mux.Handle("/", cont.HTTP.Handlers.HomePageHandler)
@@ -61,9 +70,11 @@ func initContainer(env *container.Environment, conf *container.Config) *containe
 		&weburl2.DCNameFiller{},
 	}), conf.Backend.NetworkName, env.CurrentContainerID)
 
+	cont.Services.Repository = &repository.ServiceRepository{}
+
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, conf)
-	cont.HTTP.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Monitor, cont.Presentation.Renderer)
+	cont.HTTP.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
 	cont.HTTP.Handlers.ContainerKIllHandler = handlers.NewContainerKillHandler(
 		cont.Services.Monitor,
 		cont.Presentation.Renderer,
