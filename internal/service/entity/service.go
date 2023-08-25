@@ -6,4 +6,5 @@ type Service struct {
 	Status      string
 	VCS         *VCS
 	ContainerID string
+	Self        bool
 }

@@ -3,6 +3,7 @@ package monitor
 import (
 	"context"
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/artarts36/service-navigator/internal/service/entity"
@@ -13,13 +14,14 @@ import (
 )
 
 type Monitor struct {
-	docker      *client.Client
-	filler      Filler
-	networkName string
+	docker             *client.Client
+	filler             Filler
+	networkName        string
+	currentContainerID string
 }
 
-func NewMonitor(docker *client.Client, urlResolver Filler, networkName string) *Monitor {
-	return &Monitor{docker: docker, filler: urlResolver, networkName: networkName}
+func NewMonitor(docker *client.Client, urlResolver Filler, networkName string, currentContainerID string) *Monitor {
+	return &Monitor{docker: docker, filler: urlResolver, networkName: networkName, currentContainerID: currentContainerID}
 }
 
 func (m *Monitor) Show(ctx context.Context) ([]*entity.Service, error) {
@@ -85,6 +87,7 @@ func (m *Monitor) collectService(ctx context.Context, container types.Container)
 		Name:        cont.Name,
 		Status:      cont.State.Status,
 		ContainerID: cont.ID,
+		Self:        strings.HasPrefix(cont.ID, m.currentContainerID),
 	}
 
 	m.filler.Fill(service, &entity.Container{
