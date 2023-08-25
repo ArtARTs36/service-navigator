@@ -31,7 +31,8 @@ func (h *HomePageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	sort.SliceStable(statuses, func(i, j int) bool {
-		return statuses[i].Name < statuses[j].Name
+		return statuses[i].Name < statuses[j].Name ||
+			(statuses[i].Name == statuses[j].Name && statuses[i].ContainerID < statuses[j].ContainerID)
 	})
 
 	err = h.renderer.Render("pages/home.twig.html", w, map[string]stick.Value{
