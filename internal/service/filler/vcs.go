@@ -50,13 +50,7 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 			vcsType, vcsHost, err := r.resolveTypeByRawURL(val)
 
 			if err != nil {
-				log.Printf("unable to parse url \"%s\": %w", val, err)
-
-				continue
-			}
-
-			if err != nil {
-				log.Print(err)
+				log.Printf("unable to parse url \"%s\": %v", val, err)
 
 				continue
 			}

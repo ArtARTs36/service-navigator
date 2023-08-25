@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/artarts36/service-navigator/internal/presentation"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
-	"net/http"
 )
 
 type ContainerKillHandler struct {
@@ -25,9 +26,9 @@ func (h *ContainerKillHandler) ServeHTTP(w http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	contId := req.Form.Get("containerId")
+	contID := req.Form.Get("containerId")
 
-	err = h.monitor.KillContainer(req.Context(), contId)
+	err = h.monitor.KillContainer(req.Context(), contID)
 
 	if err != nil {
 		writeErrorMessage(h.renderer, w, err.Error())
@@ -35,5 +36,5 @@ func (h *ContainerKillHandler) ServeHTTP(w http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	writeSuccessMessage(h.renderer, w, fmt.Sprintf("Container \"%s\" was killed", contId))
+	writeSuccessMessage(h.renderer, w, fmt.Sprintf("Container \"%s\" was killed", contID))
 }

@@ -43,8 +43,8 @@ func (m *Monitor) Show(ctx context.Context) ([]*entity.Service, error) {
 	return m.collectServices(ctx, containers)
 }
 
-func (m *Monitor) KillContainer(ctx context.Context, containerId string) error {
-	return m.docker.ContainerKill(ctx, containerId, "")
+func (m *Monitor) KillContainer(ctx context.Context, containerID string) error {
+	return m.docker.ContainerKill(ctx, containerID, "")
 }
 
 func (m *Monitor) collectServices(ctx context.Context, containers []types.Container) ([]*entity.Service, error) {

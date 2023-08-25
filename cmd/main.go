@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/artarts36/service-navigator/internal/container"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/artarts36/service-navigator/internal/container"
 	"github.com/artarts36/service-navigator/internal/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation"
 	weburl2 "github.com/artarts36/service-navigator/internal/service/filler"
@@ -24,8 +24,8 @@ func main() {
 	cont := initContainer(env, conf)
 
 	mux := http.NewServeMux()
-	mux.Handle("/", cont.Http.Handlers.HomePageHandler)
-	mux.Handle("/containers/kill", cont.Http.Handlers.ContainerKIllHandler)
+	mux.Handle("/", cont.HTTP.Handlers.HomePageHandler)
+	mux.Handle("/containers/kill", cont.HTTP.Handlers.ContainerKIllHandler)
 
 	fs := http.FileServer(http.Dir("/app/public"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -63,8 +63,11 @@ func initContainer(env *container.Environment, conf *container.Config) *containe
 
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, conf)
-	cont.Http.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Monitor, cont.Presentation.Renderer)
-	cont.Http.Handlers.ContainerKIllHandler = handlers.NewContainerKillHandler(cont.Services.Monitor, cont.Presentation.Renderer)
+	cont.HTTP.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Monitor, cont.Presentation.Renderer)
+	cont.HTTP.Handlers.ContainerKIllHandler = handlers.NewContainerKillHandler(
+		cont.Services.Monitor,
+		cont.Presentation.Renderer,
+	)
 
 	return cont
 }

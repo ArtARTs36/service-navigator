@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"github.com/artarts36/service-navigator/internal/presentation"
-	"github.com/tyler-sommer/stick"
 	"log"
 	"net/http"
+
+	"github.com/artarts36/service-navigator/internal/presentation"
+	"github.com/tyler-sommer/stick"
 )
 
 func writeSuccessMessage(renderer *presentation.Renderer, w http.ResponseWriter, message string) {
@@ -16,7 +17,7 @@ func writeSuccessMessage(renderer *presentation.Renderer, w http.ResponseWriter,
 		log.Printf("Failed to write success response: %s", err)
 	}
 
-	w.WriteHeader(200)
+	w.WriteHeader(ok)
 }
 
 func writeWarningMessage(renderer *presentation.Renderer, w http.ResponseWriter, message string) {
@@ -28,7 +29,7 @@ func writeWarningMessage(renderer *presentation.Renderer, w http.ResponseWriter,
 		log.Printf("Failed to write warning response: %s", err)
 	}
 
-	w.WriteHeader(422)
+	w.WriteHeader(userError)
 }
 
 func writeErrorMessage(renderer *presentation.Renderer, w http.ResponseWriter, message string) {
@@ -40,5 +41,5 @@ func writeErrorMessage(renderer *presentation.Renderer, w http.ResponseWriter, m
 		log.Printf("Failed to write error response: %s", err)
 	}
 
-	w.WriteHeader(500)
+	w.WriteHeader(serverError)
 }

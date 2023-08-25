@@ -12,7 +12,7 @@ type Container struct {
 	Services     struct {
 		Monitor *monitor.Monitor
 	}
-	Http struct {
+	HTTP struct {
 		Handlers struct {
 			HomePageHandler      *handlers.HomePageHandler
 			ContainerKIllHandler *handlers.ContainerKillHandler
