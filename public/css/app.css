@@ -1,0 +1,49 @@
+.table-row {
+    cursor: pointer;
+}
+
+.table-row:hover {
+    background: #eee;
+}
+
+.link-gitlab {
+    color: #e24329;
+}
+
+.link-gitlab:hover {
+    color: #fc6d26;
+}
+
+.link-github {
+    color: #444;
+}
+
+.link-github:hover {
+    color: #000;
+}
+
+.navbar-link {
+    color: #666;
+}
+
+.navbar-link:hover {
+    color: #000;
+}
+
+.search-dropdown-item {
+    cursor: pointer;
+}
+
+.logo {
+    font-size: 1.25rem;
+    margin-right: 15px;
+}
+
+
+.link-action-stop {
+    color: #e74c3c;
+}
+
+.link-action-stop:hover {
+    color: #c0392b;
+}

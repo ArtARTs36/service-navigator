@@ -3,6 +3,7 @@ package monitor
 import (
 	"context"
 	"log"
+	"sync"
 
 	"github.com/artarts36/service-navigator/internal/service/entity"
 	"github.com/docker/docker/api/types"
@@ -39,29 +40,57 @@ func (m *Monitor) Show(ctx context.Context) ([]*entity.Service, error) {
 		return []*entity.Service{}, err
 	}
 
+	return m.collectServices(ctx, containers)
+}
+
+func (m *Monitor) KillContainer(ctx context.Context, containerId string) error {
+	return m.docker.ContainerKill(ctx, containerId, "")
+}
+
+func (m *Monitor) collectServices(ctx context.Context, containers []types.Container) ([]*entity.Service, error) {
 	services := make([]*entity.Service, 0, len(containers))
 
+	wg := sync.WaitGroup{}
+
 	for _, container := range containers {
-		cont, inspectErr := m.docker.ContainerInspect(ctx, container.ID)
+		wg.Add(1)
 
-		if inspectErr != nil {
-			log.Println(inspectErr)
+		container := container
+		go func() {
+			service, err := m.collectService(ctx, container)
 
-			continue
-		}
+			if err == nil {
+				services = append(services, service)
+			} else {
+				log.Printf("Failed to collect service: %s", err)
+			}
 
-		service := &entity.Service{
-			Name:   cont.Name,
-			Status: cont.State.Status,
-		}
-
-		m.filler.Fill(service, &entity.Container{
-			Short: container,
-			Full:  cont,
-		})
-
-		services = append(services, service)
+			wg.Done()
+		}()
 	}
 
+	wg.Wait()
+
 	return services, nil
+}
+
+func (m *Monitor) collectService(ctx context.Context, container types.Container) (*entity.Service, error) {
+	cont, inspectErr := m.docker.ContainerInspect(ctx, container.ID)
+
+	if inspectErr != nil {
+		return nil, inspectErr
+	}
+
+	service := &entity.Service{
+		Name:        cont.Name,
+		Status:      cont.State.Status,
+		ContainerID: cont.ID,
+	}
+
+	m.filler.Fill(service, &entity.Container{
+		Short: container,
+		Full:  cont,
+	})
+
+	return service, nil
 }

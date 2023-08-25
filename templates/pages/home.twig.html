@@ -1,0 +1,60 @@
+{% extends "layout/base.twig.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="bg-light p-5 rounded">
+        <table class="table bordered">
+            <thead>
+            <tr>
+                <td scope="col">
+                    <strong>Service</strong>
+                </td>
+                <td scope="col">
+                    <strong>Status</strong>
+                </td>
+                <td scope="col">
+                    <strong>Actions</strong>
+                </td>
+                <td scope="col">
+                    <strong>Links</strong>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for service in services %}
+                <tr class="table-row">
+                    <td>
+                        {{ service.Name }}
+                    </td>
+                    <td>
+                        {{ service.Status }}
+                    </td>
+                    <td>
+                        <a href="/containers/kill?containerId={{ service.ContainerID }}">
+                            <i class="fa-solid fa-stop link-action-stop"></i>
+                        </a>
+                    </td>
+                    <td>
+                        {% if service.WebURL %}
+                            <a href="{{ service.WebURL }}"><i class="fa-solid fa-globe"></i></a>
+                        {% endif %}
+
+                        {% if service.VCS.URL %}
+                            <a href="{{ service.VCS.URL }}" class="link-{{ service.VCS.Type }}">
+                                {% if service.VCS.Type %}
+                                    <i class="fa-brands fa-{{ service.VCS.Type }}"></i>
+                                {% else %}
+                                    {{ service.VCS.Host }}
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

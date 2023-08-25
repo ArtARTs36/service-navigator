@@ -9,16 +9,16 @@ import (
 	"github.com/tyler-sommer/stick"
 )
 
-type MainPageHandler struct {
+type HomePageHandler struct {
 	monitor  *monitor.Monitor
 	renderer *presentation.Renderer
 }
 
-func NewMainPageHandler(monitor *monitor.Monitor, renderer *presentation.Renderer) *MainPageHandler {
-	return &MainPageHandler{monitor: monitor, renderer: renderer}
+func NewHomePageHandler(monitor *monitor.Monitor, renderer *presentation.Renderer) *HomePageHandler {
+	return &HomePageHandler{monitor: monitor, renderer: renderer}
 }
 
-func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (h *HomePageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	statuses, err := h.monitor.Show(req.Context())
 
 	if err != nil {
@@ -29,7 +29,7 @@ func (h *MainPageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = h.renderer.Render("main.twig.html", w, map[string]stick.Value{
+	err = h.renderer.Render("pages/home.twig.html", w, map[string]stick.Value{
 		"services": statuses,
 	})
 
