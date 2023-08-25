@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"sort"
 
 	"github.com/artarts36/service-navigator/internal/presentation"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
@@ -28,6 +29,10 @@ func (h *HomePageHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 		return
 	}
+
+	sort.SliceStable(statuses, func(i, j int) bool {
+		return statuses[i].Name < statuses[j].Name
+	})
 
 	err = h.renderer.Render("pages/home.twig.html", w, map[string]stick.Value{
 		"services": statuses,
