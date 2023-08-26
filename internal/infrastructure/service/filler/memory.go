@@ -14,7 +14,7 @@ type MemoryFiller struct {
 func (r *MemoryFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
 	usedMemory := container.Stats.GetUsedMemory()
 
-	service.Memory = &shared.Metric{
+	service.Memory = &shared.MeasurementMetric{
 		Used:      usedMemory,
 		UsedText:  shared.BytesToReadableText(usedMemory),
 		Total:     container.Stats.Memory.Limit,

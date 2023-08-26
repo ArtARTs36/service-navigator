@@ -9,7 +9,7 @@ type Service struct {
 	VCS           *VCS
 	ContainerID   string
 	Self          bool
-	MemoryHistory *shared.MetricBuffer
+	MemoryHistory *shared.MeasurementMetricBuffer
 }
 
 type ServiceStatus struct {
@@ -19,7 +19,7 @@ type ServiceStatus struct {
 	VCS         *VCS
 	ContainerID string
 	Self        bool
-	Memory      *shared.Metric
+	Memory      *shared.MeasurementMetric
 }
 
 func NewService(metricDepth int, metricUnique bool) *Service {

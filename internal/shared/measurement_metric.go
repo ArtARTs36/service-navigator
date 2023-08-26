@@ -2,7 +2,7 @@ package shared
 
 import "time"
 
-type Metric struct {
+type MeasurementMetric struct {
 	Used      int64
 	UsedText  string
 	Total     int64
@@ -10,28 +10,28 @@ type Metric struct {
 	CreatedAt time.Time
 }
 
-type MetricBuffer struct {
-	items     []*Metric
+type MeasurementMetricBuffer struct {
+	items     []*MeasurementMetric
 	maxLength int
 	unique    bool
 }
 
-func NewMetricBuffer(maxLength int, unique bool) *MetricBuffer {
-	return &MetricBuffer{
-		items:     make([]*Metric, 0, maxLength),
+func NewMetricBuffer(maxLength int, unique bool) *MeasurementMetricBuffer {
+	return &MeasurementMetricBuffer{
+		items:     make([]*MeasurementMetric, 0, maxLength),
 		maxLength: maxLength,
 		unique:    unique,
 	}
 }
 
-func (b *MetricBuffer) Push(item *Metric) {
+func (b *MeasurementMetricBuffer) Push(item *MeasurementMetric) {
 	length := len(b.items)
 
 	if b.unique && length > 0 && b.items[0].Used == item.Used {
 		return
 	}
 
-	newItems := make([]*Metric, 0, b.maxLength)
+	newItems := make([]*MeasurementMetric, 0, b.maxLength)
 	newItems = append(newItems, item)
 
 	if length == b.maxLength {
@@ -43,6 +43,6 @@ func (b *MetricBuffer) Push(item *Metric) {
 	b.items = newItems
 }
 
-func (b *MetricBuffer) All() []*Metric {
+func (b *MeasurementMetricBuffer) All() []*MeasurementMetric {
 	return b.items
 }
