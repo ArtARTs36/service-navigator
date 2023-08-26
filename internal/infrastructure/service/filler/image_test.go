@@ -1,10 +1,11 @@
-package filler
+package filler_test
 
 import (
 	"testing"
 
 	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 	"github.com/docker/docker/api/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -56,7 +57,7 @@ func TestImageFiller_Fill(t *testing.T) {
 		},
 	}
 
-	filler := ImageFiller{}
+	imgFiller := filler.ImageFiller{}
 
 	for _, tCase := range cases {
 		service := &domain.ServiceStatus{}
@@ -67,7 +68,7 @@ func TestImageFiller_Fill(t *testing.T) {
 			},
 		}
 
-		filler.Fill(service, cont)
+		imgFiller.Fill(service, cont)
 
 		assert.Equal(t, tCase.expectedImage, service.Image)
 	}
