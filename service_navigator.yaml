@@ -20,7 +20,7 @@ frontend:
         - name: stackoverflow
         - name: Jira
           url: https://jira.host.name/secure/QuickSearch.jspa
-          queryParamName: searchString
+          queryParamName: searchString # search <form> input name
 
 # This section contains settings for backend
 backend:

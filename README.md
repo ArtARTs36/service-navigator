@@ -31,7 +31,7 @@ frontend:
         - name: stackoverflow
         - name: Jira
           url: https://jira.host.name/secure/QuickSearch.jspa
-          queryParamName: searchString
+          queryParamName: searchString # search <form> input name
 
 # This section contains settings for backend
 backend:
@@ -57,20 +57,6 @@ backend:
       #
       # Optional, default: false
       only_unique: true
-```
-
-## Add Jira Search Provider
-
-You can add search for Jira.
-
-```yaml
-frontend:
-  navbar:
-    search:
-      providers:
-        - name: Jira
-          url: https://jira.host.name/secure/QuickSearch.jspa
-          queryParamName: searchString
 ```
 
 # How Service Navigator finding information about service
