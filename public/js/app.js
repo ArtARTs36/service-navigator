@@ -22,3 +22,30 @@ document.addEventListener("DOMContentLoaded", function(event) {
         })
     });
 });
+
+function showTurnOffContainerModal(containerId, containerName)
+{
+    let elem = document.getElementById('turnOffContainerModalContainer');
+
+    elem.outerHTML = '<div class="modal fade" id="turnOffContainerModal" tabindex="-1" aria-labelledby="turnOffContainerModalLabel" aria-hidden="true">\n' +
+        '    <div class="modal-dialog">\n' +
+        '        <div class="modal-content">\n' +
+        '            <div class="modal-header">\n' +
+        '                <h5 class="modal-title" id="turnOffContainerModalLabel">Turn off ' + containerName + '?</h5>\n' +
+        '                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\n' +
+        '            </div>\n' +
+        '            <div class="modal-body" style="overflow: scroll;word-break: break-all;">\n' +
+        '                You are about turn off container <strong>' + containerId + '</strong>?\n' +
+        '            </div>\n' +
+        '            <div class="modal-footer">\n' +
+        '                <button type="button" class="btn btn-danger" onclick="window.location.href=\'/containers/kill?containerId=' + containerId + '\'">Turn off</button>\n' +
+        '                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>\n' +
+        '            </div>\n' +
+        '        </div>\n' +
+        '    </div>\n' +
+        '</div>'
+
+    const modal = new bootstrap.Modal(document.getElementById('turnOffContainerModal'))
+
+    modal.toggle()
+}
