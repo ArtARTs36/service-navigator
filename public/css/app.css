@@ -47,3 +47,11 @@
 .link-action-stop:hover {
     color: #c0392b;
 }
+
+.link-docker {
+    color: #0db7ed;
+}
+
+.link-docker:hover {
+    color: #384d54;
+}

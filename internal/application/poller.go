@@ -69,6 +69,7 @@ func (p *Poller) Poll() {
 			service.MemoryHistory.Push(status.Memory)
 			service.CPUHistory.Push(status.CPU)
 			service.Self = status.Self
+			service.Image = status.Image
 
 			newServicesList = append(newServicesList, service)
 		}
