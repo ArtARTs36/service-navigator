@@ -23,11 +23,17 @@ func NewMetricBuffer(maxLength int) *MetricBuffer {
 }
 
 func (b *MetricBuffer) Push(item *Metric) {
+	length := len(b.items)
+
+	if length > 0 && b.items[0].Used == item.Used {
+		return
+	}
+
 	newItems := make([]*Metric, 0, b.maxLength)
 	newItems = append(newItems, item)
 
-	if len(b.items) == b.maxLength {
-		newItems = append(newItems, b.items[:len(b.items)-1]...)
+	if length == b.maxLength {
+		newItems = append(newItems, b.items[:length-1]...)
 	} else {
 		newItems = append(newItems, b.items...)
 	}

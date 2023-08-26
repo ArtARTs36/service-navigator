@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         new bootstrap.Popover(popoverTriggerEl, {
             container: 'body',
+            trigger: "focus",
             title: popoverTriggerEl.getAttribute("title"),
             html: true,
             content: content,
