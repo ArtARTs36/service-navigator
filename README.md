@@ -2,6 +2,8 @@
 
 Service Navigator - navigator for your local docker projects in single network
 
+![](./docs/preview.png)
+
 # Config
 
 ## Add Jira Search Provider
