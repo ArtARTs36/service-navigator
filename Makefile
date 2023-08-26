@@ -17,3 +17,6 @@ lint:
         --workdir /app \
         golangci/golangci-lint \
         golangci-lint run
+
+test:
+	go test ./...

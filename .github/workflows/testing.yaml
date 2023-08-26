@@ -25,3 +25,28 @@ jobs:
           version: v1.54 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
           args: -v --build-tags=race --timeout=10m
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: stable
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Init Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: Run Unit tests
+        run: go test ./...
