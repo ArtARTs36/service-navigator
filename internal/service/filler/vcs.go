@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/url"
 
+	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/service/entity"
 )
 
@@ -17,10 +18,10 @@ const labelOpenContainerImageSource = "org.opencontainers.image.source"
 type VCSFiller struct {
 }
 
-func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
+func (r *VCSFiller) Fill(service *domain.ServiceStatus, container *entity.Container) {
 	for key, val := range container.Short.Labels {
 		if key == labelGitlabRepository {
-			service.VCS = &entity.VCS{
+			service.VCS = &domain.VCS{
 				Type: "gitlab",
 				URL:  val,
 			}
@@ -29,7 +30,7 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 		}
 
 		if key == labelGithubRepository {
-			service.VCS = &entity.VCS{
+			service.VCS = &domain.VCS{
 				Type: "github",
 				URL:  val,
 			}
@@ -38,7 +39,7 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 		}
 
 		if key == labelBitbucketRepository {
-			service.VCS = &entity.VCS{
+			service.VCS = &domain.VCS{
 				Type: "bitbucket",
 				URL:  val,
 			}
@@ -55,7 +56,7 @@ func (r *VCSFiller) Fill(service *entity.Service, container *entity.Container) {
 				continue
 			}
 
-			service.VCS = &entity.VCS{
+			service.VCS = &domain.VCS{
 				Type: vcsType,
 				Host: vcsHost,
 				URL:  val,

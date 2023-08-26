@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/artarts36/service-navigator/internal/presentation"
+	"github.com/artarts36/service-navigator/internal/presentation/view"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
 )
 
 type ContainerKillHandler struct {
 	monitor  *monitor.Monitor
-	renderer *presentation.Renderer
+	renderer *view.Renderer
 }
 
-func NewContainerKillHandler(monitor *monitor.Monitor, renderer *presentation.Renderer) *ContainerKillHandler {
+func NewContainerKillHandler(monitor *monitor.Monitor, renderer *view.Renderer) *ContainerKillHandler {
 	return &ContainerKillHandler{monitor: monitor, renderer: renderer}
 }
 

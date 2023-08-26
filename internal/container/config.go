@@ -5,8 +5,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/artarts36/service-navigator/internal/search"
 	"gopkg.in/yaml.v3"
+
+	"github.com/artarts36/service-navigator/internal/infrastructure/search"
 )
 
 type Config struct {

@@ -1,4 +1,4 @@
-package presentation
+package view
 
 import (
 	"io"

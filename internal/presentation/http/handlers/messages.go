@@ -4,11 +4,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/artarts36/service-navigator/internal/presentation"
 	"github.com/tyler-sommer/stick"
+
+	"github.com/artarts36/service-navigator/internal/presentation/view"
 )
 
-func writeSuccessMessage(renderer *presentation.Renderer, w http.ResponseWriter, message string) {
+func writeSuccessMessage(renderer *view.Renderer, w http.ResponseWriter, message string) {
 	err := renderer.Render("messages/success.twig.html", w, map[string]stick.Value{
 		"message": message,
 	})
@@ -20,7 +21,7 @@ func writeSuccessMessage(renderer *presentation.Renderer, w http.ResponseWriter,
 	w.WriteHeader(ok)
 }
 
-func writeWarningMessage(renderer *presentation.Renderer, w http.ResponseWriter, message string) {
+func writeWarningMessage(renderer *view.Renderer, w http.ResponseWriter, message string) {
 	err := renderer.Render("messages/warning.twig.html", w, map[string]stick.Value{
 		"message": message,
 	})
@@ -32,7 +33,7 @@ func writeWarningMessage(renderer *presentation.Renderer, w http.ResponseWriter,
 	w.WriteHeader(userError)
 }
 
-func writeErrorMessage(renderer *presentation.Renderer, w http.ResponseWriter, message string) {
+func writeErrorMessage(renderer *view.Renderer, w http.ResponseWriter, message string) {
 	err := renderer.Render("messages/error.twig.html", w, map[string]stick.Value{
 		"message": message,
 	})

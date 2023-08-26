@@ -1,6 +1,7 @@
 package filler
 
 import (
+	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/service/entity"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
 )
@@ -15,7 +16,7 @@ func NewCompositeFiller(fillers []monitor.Filler) monitor.Filler {
 	}
 }
 
-func (r *CompositeFiller) Fill(service *entity.Service, container *entity.Container) {
+func (r *CompositeFiller) Fill(service *domain.ServiceStatus, container *entity.Container) {
 	for _, resolver := range r.fillers {
 		resolver.Fill(service, container)
 	}

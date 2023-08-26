@@ -14,6 +14,9 @@
                     <strong>Status</strong>
                 </td>
                 <td scope="col">
+                    <strong>Memory</strong>
+                </td>
+                <td scope="col">
                     <strong>Actions</strong>
                 </td>
                 <td scope="col">
@@ -29,6 +32,11 @@
                     </td>
                     <td>
                         {{ service.Status }}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
+                            {{ service.MemoryHistory.All[0].UsedText }} / {{ service.MemoryHistory.All[0].TotalText }}
+                        </button>
                     </td>
                     <td>
                         <a href="/containers/kill?containerId={{ service.ContainerID }}">

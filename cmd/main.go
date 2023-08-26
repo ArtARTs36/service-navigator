@@ -6,19 +6,20 @@ import (
 	"net/http"
 	"time"
 
+	poller2 "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/container"
-	"github.com/artarts36/service-navigator/internal/http/handlers"
-	"github.com/artarts36/service-navigator/internal/presentation"
+	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
+	handlers2 "github.com/artarts36/service-navigator/internal/presentation/http/handlers"
+	"github.com/artarts36/service-navigator/internal/presentation/view"
 	weburl2 "github.com/artarts36/service-navigator/internal/service/filler"
 	"github.com/artarts36/service-navigator/internal/service/monitor"
-	poller2 "github.com/artarts36/service-navigator/internal/service/poller"
-	"github.com/artarts36/service-navigator/internal/service/repository"
 	"github.com/docker/docker/client"
 	"github.com/tyler-sommer/stick"
 )
 
 const httpReadTimeout = 3 * time.Second
 const servicePollInterval = 1 * time.Second
+const serviceMetricDepth = 500
 
 func main() {
 	env := container.InitEnvironment()
@@ -26,7 +27,7 @@ func main() {
 
 	cont := initContainer(env, conf)
 
-	poller := poller2.NewPoller(cont.Services.Monitor, cont.Services.Repository, servicePollInterval)
+	poller := poller2.NewPoller(cont.Services.Monitor, cont.Services.Repository, servicePollInterval, serviceMetricDepth)
 
 	go func() {
 		poller.Poll()
@@ -68,14 +69,15 @@ func initContainer(env *container.Environment, conf *container.Config) *containe
 		&weburl2.NginxProxyURLFiller{},
 		&weburl2.VCSFiller{},
 		&weburl2.DCNameFiller{},
+		&weburl2.MemoryFiller{},
 	}), conf.Backend.NetworkName, env.CurrentContainerID)
 
 	cont.Services.Repository = &repository.ServiceRepository{}
 
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, conf)
-	cont.HTTP.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
-	cont.HTTP.Handlers.ContainerKIllHandler = handlers.NewContainerKillHandler(
+	cont.HTTP.Handlers.HomePageHandler = handlers2.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
+	cont.HTTP.Handlers.ContainerKIllHandler = handlers2.NewContainerKillHandler(
 		cont.Services.Monitor,
 		cont.Presentation.Renderer,
 	)
@@ -83,11 +85,11 @@ func initContainer(env *container.Environment, conf *container.Config) *containe
 	return cont
 }
 
-func initRenderer(env *container.Environment, conf *container.Config) *presentation.Renderer {
+func initRenderer(env *container.Environment, conf *container.Config) *view.Renderer {
 	vars := map[string]stick.Value{}
 	vars["_navBar"] = conf.Frontend.Navbar
 	vars["_appName"] = conf.Frontend.AppName
 	vars["_username"] = env.User
 
-	return presentation.NewRenderer("/app/templates", vars)
+	return view.NewRenderer("/app/templates", vars)
 }

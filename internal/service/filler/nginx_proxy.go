@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/service/entity"
 )
 
@@ -12,7 +13,7 @@ const nginxProxyVirtualHostEnv = "VIRTUAL_HOST"
 type NginxProxyURLFiller struct {
 }
 
-func (r *NginxProxyURLFiller) Fill(service *entity.Service, container *entity.Container) {
+func (r *NginxProxyURLFiller) Fill(service *domain.ServiceStatus, container *entity.Container) {
 	for _, envVar := range container.Full.Config.Env {
 		varBag := strings.Split(envVar, "=")
 

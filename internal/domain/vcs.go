@@ -1,4 +1,4 @@
-package entity
+package domain
 
 type VCS struct {
 	Type string
