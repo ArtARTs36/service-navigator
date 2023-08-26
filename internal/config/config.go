@@ -47,6 +47,10 @@ func InitConfig() *Config {
 		conf.Backend.Poll.Interval = servicePollInterval
 	}
 
+	if conf.Frontend.AppName == "" {
+		conf.Frontend.AppName = "ServiceNavigator"
+	}
+
 	log.Printf("Config loaded: %v", conf)
 
 	return &conf

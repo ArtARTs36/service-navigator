@@ -1,5 +1,11 @@
+# This section contains settings for frontend
 frontend:
+  # Application Name
+  #
+  # Optional, default: "ServiceNavigator"
   app_name: ServiceNavigator
+
+  # Navbar in header
   navbar:
     links:
       - url: http://github.com/artarts36/service-navigator
@@ -12,13 +18,18 @@ frontend:
       providers:
         - name: google
         - name: stackoverflow
+        - name: Jira
+          url: https://jira.host.name/secure/QuickSearch.jspa
+          queryParamName: searchString
 
+# This section contains settings for backend
 backend:
   # Docker network name
   #
   # Required
   network_name: infra
 
+  # Poll for finding information about services
   poll:
     # Interval for services polling
     #
