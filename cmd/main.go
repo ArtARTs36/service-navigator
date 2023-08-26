@@ -1,50 +1,26 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/docker/docker/client"
-	"github.com/tyler-sommer/stick"
-
-	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
-	monitor2 "github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
-
-	poller2 "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/config"
-	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
-	handlers2 "github.com/artarts36/service-navigator/internal/presentation/http/handlers"
-	"github.com/artarts36/service-navigator/internal/presentation/view"
 )
 
 const httpReadTimeout = 3 * time.Second
-const servicePollInterval = 1 * time.Second
 
 func main() {
-	env := config.InitEnvironment()
-	conf := config.InitConfig()
-
-	cont := initContainer(env, conf)
-
-	poller := poller2.NewPoller(
-		cont.Services.Monitor,
-		cont.Services.Repository,
-		servicePollInterval,
-		&conf.Backend.Metrics,
-	)
+	cont := config.InitContainer()
 
 	go func() {
-		poller.Poll()
+		cont.Services.Poller.Poll()
 	}()
 
 	mux := http.NewServeMux()
-	mux.Handle("/", cont.HTTP.Handlers.HomePageHandler)
-	mux.Handle("/containers/kill", cont.HTTP.Handlers.ContainerKIllHandler)
 
-	fs := http.FileServer(http.Dir("/app/public"))
-	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+	bindRoutes(mux, cont)
+	bindFileServer(mux)
 
 	hServer := &http.Server{
 		Addr:        ":8080",
@@ -62,40 +38,12 @@ func main() {
 	}
 }
 
-func initContainer(env *config.Environment, conf *config.Config) *config.Container {
-	cont := &config.Container{}
-
-	docker, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-
-	if err != nil {
-		panic(fmt.Sprintf("Failed to create docker client: %s", err))
-	}
-
-	cont.Services.Monitor = monitor2.NewMonitor(docker, filler.NewCompositeFiller([]monitor2.Filler{
-		&filler.NginxProxyURLFiller{},
-		&filler.VCSFiller{},
-		&filler.DCNameFiller{},
-		&filler.MemoryFiller{},
-	}), conf.Backend.NetworkName, env.CurrentContainerID)
-
-	cont.Services.Repository = &repository.ServiceRepository{}
-
-	cont.DockerClient = docker
-	cont.Presentation.Renderer = initRenderer(env, conf)
-	cont.HTTP.Handlers.HomePageHandler = handlers2.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
-	cont.HTTP.Handlers.ContainerKIllHandler = handlers2.NewContainerKillHandler(
-		cont.Services.Monitor,
-		cont.Presentation.Renderer,
-	)
-
-	return cont
+func bindRoutes(mux *http.ServeMux, cont *config.Container) {
+	mux.Handle("/", cont.HTTP.Handlers.HomePageHandler)
+	mux.Handle("/containers/kill", cont.HTTP.Handlers.ContainerKIllHandler)
 }
 
-func initRenderer(env *config.Environment, conf *config.Config) *view.Renderer {
-	vars := map[string]stick.Value{}
-	vars["_navBar"] = conf.Frontend.Navbar
-	vars["_appName"] = conf.Frontend.AppName
-	vars["_username"] = env.User
-
-	return view.NewRenderer("/app/templates", vars)
+func bindFileServer(mux *http.ServeMux) {
+	fs := http.FileServer(http.Dir("/app/public"))
+	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 }

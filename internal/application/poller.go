@@ -5,24 +5,28 @@ import (
 	"log"
 	"time"
 
-	"github.com/artarts36/service-navigator/internal/config"
 	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 )
 
+type Metrics struct {
+	Depth      int  `yaml:"depth"`
+	OnlyUnique bool `yaml:"only_unique"`
+}
+
 type Poller struct {
 	monitor  *monitor.Monitor
 	services *repository.ServiceRepository
 	interval time.Duration
-	metrics  *config.Metrics
+	metrics  *Metrics
 }
 
 func NewPoller(
 	monitor *monitor.Monitor,
 	serviceRepo *repository.ServiceRepository,
 	interval time.Duration,
-	metrics *config.Metrics,
+	metrics *Metrics,
 ) *Poller {
 	return &Poller{
 		monitor:  monitor,

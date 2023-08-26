@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	poller "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/presentation/config"
 	"gopkg.in/yaml.v3"
 )
@@ -14,8 +15,8 @@ const serviceMetricDepth = 100
 type Config struct {
 	Frontend config.Frontend `yaml:"frontend"`
 	Backend  struct {
-		NetworkName string  `yaml:"network_name"`
-		Metrics     Metrics `yaml:"metrics"`
+		NetworkName string         `yaml:"network_name"`
+		Metrics     poller.Metrics `yaml:"metrics"`
 	} `yaml:"backend"`
 }
 
