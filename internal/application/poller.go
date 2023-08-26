@@ -7,7 +7,7 @@ import (
 
 	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
-	"github.com/artarts36/service-navigator/internal/service/monitor"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 )
 
 type Poller struct {

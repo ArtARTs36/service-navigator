@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/artarts36/service-navigator/internal/domain"
-	"github.com/artarts36/service-navigator/internal/service/entity"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
 )
 
 const labelGitlabRepository = "org.service_navigator.gitlab_repository"
@@ -18,7 +18,7 @@ const labelOpenContainerImageSource = "org.opencontainers.image.source"
 type VCSFiller struct {
 }
 
-func (r *VCSFiller) Fill(service *domain.ServiceStatus, container *entity.Container) {
+func (r *VCSFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
 	for key, val := range container.Short.Labels {
 		if key == labelGitlabRepository {
 			service.VCS = &domain.VCS{

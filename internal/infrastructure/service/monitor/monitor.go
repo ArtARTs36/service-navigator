@@ -10,7 +10,7 @@ import (
 	"sync"
 
 	"github.com/artarts36/service-navigator/internal/domain"
-	"github.com/artarts36/service-navigator/internal/service/entity"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
@@ -99,7 +99,7 @@ func (m *Monitor) collectServiceStatus(ctx context.Context, container types.Cont
 		Self:        strings.HasPrefix(cont.ID, m.currentContainerID),
 	}
 
-	m.filler.Fill(status, &entity.Container{
+	m.filler.Fill(status, &datastruct.Container{
 		Short: container,
 		Full:  cont,
 		Stats: &stat,
@@ -108,23 +108,23 @@ func (m *Monitor) collectServiceStatus(ctx context.Context, container types.Cont
 	return status, nil
 }
 
-func (m *Monitor) collectStats(ctx context.Context, containerID string) (entity.Stats, error) {
+func (m *Monitor) collectStats(ctx context.Context, containerID string) (datastruct.Stats, error) {
 	response, err := m.docker.ContainerStatsOneShot(ctx, containerID)
 	if err != nil {
-		return entity.Stats{}, fmt.Errorf("failed to get response: %v", err)
+		return datastruct.Stats{}, fmt.Errorf("failed to get response: %v", err)
 	}
 
 	responseContent, err := io.ReadAll(response.Body)
 	if err != nil {
-		return entity.Stats{}, fmt.Errorf("failed to read response: %v", err)
+		return datastruct.Stats{}, fmt.Errorf("failed to read response: %v", err)
 	}
 
-	var stat entity.Stats
+	var stat datastruct.Stats
 
 	err = json.Unmarshal(responseContent, &stat)
 
 	if err != nil {
-		return entity.Stats{}, fmt.Errorf("failed to parse response: %v", err)
+		return datastruct.Stats{}, fmt.Errorf("failed to parse response: %v", err)
 	}
 
 	return stat, nil

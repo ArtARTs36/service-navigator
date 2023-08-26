@@ -1,4 +1,4 @@
-package entity
+package datastruct
 
 type Stats struct {
 	Memory struct {

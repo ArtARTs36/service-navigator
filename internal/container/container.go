@@ -2,9 +2,9 @@ package container
 
 import (
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 	handlers2 "github.com/artarts36/service-navigator/internal/presentation/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
-	"github.com/artarts36/service-navigator/internal/service/monitor"
 	"github.com/docker/docker/client"
 )
 

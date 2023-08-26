@@ -1,4 +1,4 @@
-package entity
+package datastruct
 
 import "github.com/docker/docker/api/types"
 

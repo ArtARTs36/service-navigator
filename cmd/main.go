@@ -6,15 +6,17 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/docker/docker/client"
+	"github.com/tyler-sommer/stick"
+
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
+	monitor2 "github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
+
 	poller2 "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/container"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	handlers2 "github.com/artarts36/service-navigator/internal/presentation/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
-	weburl2 "github.com/artarts36/service-navigator/internal/service/filler"
-	"github.com/artarts36/service-navigator/internal/service/monitor"
-	"github.com/docker/docker/client"
-	"github.com/tyler-sommer/stick"
 )
 
 const httpReadTimeout = 3 * time.Second
@@ -65,11 +67,11 @@ func initContainer(env *container.Environment, conf *container.Config) *containe
 		panic(fmt.Sprintf("Failed to create docker client: %s", err))
 	}
 
-	cont.Services.Monitor = monitor.NewMonitor(docker, weburl2.NewCompositeFiller([]monitor.Filler{
-		&weburl2.NginxProxyURLFiller{},
-		&weburl2.VCSFiller{},
-		&weburl2.DCNameFiller{},
-		&weburl2.MemoryFiller{},
+	cont.Services.Monitor = monitor2.NewMonitor(docker, filler.NewCompositeFiller([]monitor2.Filler{
+		&filler.NginxProxyURLFiller{},
+		&filler.VCSFiller{},
+		&filler.DCNameFiller{},
+		&filler.MemoryFiller{},
 	}), conf.Backend.NetworkName, env.CurrentContainerID)
 
 	cont.Services.Repository = &repository.ServiceRepository{}

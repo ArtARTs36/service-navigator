@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
-	"github.com/artarts36/service-navigator/internal/service/monitor"
 )
 
 type ContainerKillHandler struct {
