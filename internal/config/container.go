@@ -3,11 +3,11 @@ package config
 import (
 	"fmt"
 
-	poller "github.com/artarts36/service-navigator/internal/application"
+	"github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
-	handlers2 "github.com/artarts36/service-navigator/internal/presentation/http/handlers"
+	"github.com/artarts36/service-navigator/internal/presentation/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
 	"github.com/docker/docker/client"
 )
@@ -17,12 +17,12 @@ type Container struct {
 	Services     struct {
 		Monitor    *monitor.Monitor
 		Repository *repository.ServiceRepository
-		Poller     *poller.Poller
+		Poller     *application.Poller
 	}
 	HTTP struct {
 		Handlers struct {
-			HomePageHandler      *handlers2.HomePageHandler
-			ContainerKIllHandler *handlers2.ContainerKillHandler
+			HomePageHandler      *handlers.HomePageHandler
+			ContainerKIllHandler *handlers.ContainerKillHandler
 		}
 	}
 	Presentation struct {
@@ -52,7 +52,7 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 	}), conf.Backend.NetworkName, env.CurrentContainerID)
 
 	cont.Services.Repository = &repository.ServiceRepository{}
-	cont.Services.Poller = poller.NewPoller(
+	cont.Services.Poller = application.NewPoller(
 		cont.Services.Monitor,
 		cont.Services.Repository,
 		&conf.Backend.Poll,
@@ -60,8 +60,8 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, conf)
-	cont.HTTP.Handlers.HomePageHandler = handlers2.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
-	cont.HTTP.Handlers.ContainerKIllHandler = handlers2.NewContainerKillHandler(
+	cont.HTTP.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
+	cont.HTTP.Handlers.ContainerKIllHandler = handlers.NewContainerKillHandler(
 		cont.Services.Monitor,
 		cont.Presentation.Renderer,
 	)
