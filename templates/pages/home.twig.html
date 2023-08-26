@@ -80,7 +80,7 @@
         </tr>
         {% for memory in service.MemoryHistory.All %}
         <tr>
-            <td>{{ memory.UsedText }}</td>
+            <td><span title="{{ memory.Used }} bytes">{{ memory.UsedText }}</span></td>
             <td>{{ memory.CreatedAt | date("Y-m-d H:i:s")}}</td>
         </tr>
         {% endfor %}
