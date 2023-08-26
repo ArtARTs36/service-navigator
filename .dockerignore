@@ -1,0 +1,8 @@
+.dockerignore
+.git
+.gitignore
+.github
+docs
+Makefile
+.golangci.yml
+.idea
