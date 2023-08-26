@@ -1,22 +1,29 @@
-package search
+package config
 
 import "strings"
 
-type Provider struct {
+type SearchProvider struct {
 	Name           string `yaml:"name"`
 	URL            string `yaml:"url"`
 	QueryParamName string `yaml:"queryParamName"`
 }
 
-func ResolveProviders(providers []Provider) []Provider {
-	newProviders := make([]Provider, 0, len(providers))
+func getDefaultProviderNameURLMap() map[string]string {
+	return map[string]string{
+		"google":        "https://www.google.com/search",
+		"stackoverflow": "https://stackoverflow.com/search",
+	}
+}
+
+func ResolveProviders(providers []SearchProvider) []SearchProvider {
+	newProviders := make([]SearchProvider, 0, len(providers))
 
 	for _, provider := range providers {
 
 		url := resolveProviderURL(provider)
 		queryParamName := resolveProviderQueryParamName(provider)
 
-		newProviders = append(newProviders, Provider{
+		newProviders = append(newProviders, SearchProvider{
 			Name:           provider.Name,
 			URL:            url,
 			QueryParamName: queryParamName,
@@ -26,7 +33,7 @@ func ResolveProviders(providers []Provider) []Provider {
 	return newProviders
 }
 
-func resolveProviderURL(provider Provider) string {
+func resolveProviderURL(provider SearchProvider) string {
 	var url string
 
 	if provider.URL == "" {
@@ -42,7 +49,7 @@ func resolveProviderURL(provider Provider) string {
 	return url
 }
 
-func resolveProviderQueryParamName(provider Provider) string {
+func resolveProviderQueryParamName(provider SearchProvider) string {
 	if provider.QueryParamName == "" {
 		return "q"
 	}

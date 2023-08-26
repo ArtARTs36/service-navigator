@@ -30,8 +30,6 @@
                 {% endfor %}
             </ul>
 
-            {{ _navBar }}
-
             {% if _navBar.Search.Providers | length > 0 %}
                 <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{{ _navBar.Search.Providers[0].URL }}" id="search-form">
                     <input
