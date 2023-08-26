@@ -14,7 +14,6 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
-	"github.com/pkg/errors"
 )
 
 type Monitor struct {
@@ -28,12 +27,8 @@ func NewMonitor(docker *client.Client, urlResolver Filler, networkName string, c
 	return &Monitor{docker: docker, filler: urlResolver, networkName: networkName, currentContainerID: currentContainerID}
 }
 
-func (m *Monitor) Show(ctx context.Context) (map[string]*domain.ServiceStatus, error) {
-	_, err := client.NewClientWithOpts()
-
-	if err != nil {
-		return map[string]*domain.ServiceStatus{}, errors.Errorf("Failed to create docker client: %s", err)
-	}
+func (m *Monitor) Show(ctx context.Context) ([]*domain.ServiceStatus, error) {
+	log.Printf("[Monitor] Fetching containers")
 
 	containers, err := m.docker.ContainerList(ctx, types.ContainerListOptions{
 		Filters: filters.NewArgs(filters.KeyValuePair{
@@ -42,8 +37,10 @@ func (m *Monitor) Show(ctx context.Context) (map[string]*domain.ServiceStatus, e
 		}),
 	})
 
+	log.Printf("[Monitor] Fetched %d containers", len(containers))
+
 	if err != nil {
-		return map[string]*domain.ServiceStatus{}, err
+		return []*domain.ServiceStatus{}, err
 	}
 
 	return m.collectServices(ctx, containers)
@@ -56,8 +53,8 @@ func (m *Monitor) KillContainer(ctx context.Context, containerID string) error {
 func (m *Monitor) collectServices(
 	ctx context.Context,
 	containers []types.Container,
-) (map[string]*domain.ServiceStatus, error) {
-	services := make(map[string]*domain.ServiceStatus, 0)
+) ([]*domain.ServiceStatus, error) {
+	services := make([]*domain.ServiceStatus, 0, len(containers))
 
 	wg := sync.WaitGroup{}
 
@@ -69,7 +66,7 @@ func (m *Monitor) collectServices(
 			service, err := m.collectServiceStatus(ctx, container)
 
 			if err == nil {
-				services[service.ContainerID] = service
+				services = append(services, service)
 			} else {
 				log.Printf("Failed to collect service: %s", err)
 			}
