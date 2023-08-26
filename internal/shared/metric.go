@@ -13,19 +13,21 @@ type Metric struct {
 type MetricBuffer struct {
 	items     []*Metric
 	maxLength int
+	unique    bool
 }
 
-func NewMetricBuffer(maxLength int) *MetricBuffer {
+func NewMetricBuffer(maxLength int, unique bool) *MetricBuffer {
 	return &MetricBuffer{
 		items:     make([]*Metric, 0, maxLength),
 		maxLength: maxLength,
+		unique:    unique,
 	}
 }
 
 func (b *MetricBuffer) Push(item *Metric) {
 	length := len(b.items)
 
-	if length > 0 && b.items[0].Used == item.Used {
+	if b.unique && length > 0 && b.items[0].Used == item.Used {
 		return
 	}
 

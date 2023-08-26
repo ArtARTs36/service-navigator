@@ -1,4 +1,4 @@
-package container
+package config
 
 import (
 	"fmt"
@@ -28,7 +28,7 @@ func InitEnvironment() *Environment {
 	selfContID := getSelfContainerID()
 
 	if selfContID != "" {
-		log.Printf("Self container id: %s", selfContID)
+		log.Printf("Self config id: %s", selfContID)
 
 		env.CurrentContainerID = selfContID
 	}

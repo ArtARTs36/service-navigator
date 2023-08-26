@@ -13,7 +13,7 @@ import (
 	monitor2 "github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 
 	poller2 "github.com/artarts36/service-navigator/internal/application"
-	"github.com/artarts36/service-navigator/internal/container"
+	"github.com/artarts36/service-navigator/internal/config"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	handlers2 "github.com/artarts36/service-navigator/internal/presentation/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
@@ -21,15 +21,19 @@ import (
 
 const httpReadTimeout = 3 * time.Second
 const servicePollInterval = 1 * time.Second
-const serviceMetricDepth = 100
 
 func main() {
-	env := container.InitEnvironment()
-	conf := container.InitConfig()
+	env := config.InitEnvironment()
+	conf := config.InitConfig()
 
 	cont := initContainer(env, conf)
 
-	poller := poller2.NewPoller(cont.Services.Monitor, cont.Services.Repository, servicePollInterval, serviceMetricDepth)
+	poller := poller2.NewPoller(
+		cont.Services.Monitor,
+		cont.Services.Repository,
+		servicePollInterval,
+		&conf.Backend.Metrics,
+	)
 
 	go func() {
 		poller.Poll()
@@ -58,8 +62,8 @@ func main() {
 	}
 }
 
-func initContainer(env *container.Environment, conf *container.Config) *container.Container {
-	cont := &container.Container{}
+func initContainer(env *config.Environment, conf *config.Config) *config.Container {
+	cont := &config.Container{}
 
 	docker, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 
@@ -87,7 +91,7 @@ func initContainer(env *container.Environment, conf *container.Config) *containe
 	return cont
 }
 
-func initRenderer(env *container.Environment, conf *container.Config) *view.Renderer {
+func initRenderer(env *config.Environment, conf *config.Config) *view.Renderer {
 	vars := map[string]stick.Value{}
 	vars["_navBar"] = conf.Frontend.Navbar
 	vars["_appName"] = conf.Frontend.AppName

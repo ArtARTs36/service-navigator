@@ -5,29 +5,30 @@ import (
 	"log"
 	"time"
 
+	"github.com/artarts36/service-navigator/internal/config"
 	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 )
 
 type Poller struct {
-	monitor     *monitor.Monitor
-	services    *repository.ServiceRepository
-	interval    time.Duration
-	metricDepth int
+	monitor  *monitor.Monitor
+	services *repository.ServiceRepository
+	interval time.Duration
+	metrics  *config.Metrics
 }
 
 func NewPoller(
 	monitor *monitor.Monitor,
 	serviceRepo *repository.ServiceRepository,
 	interval time.Duration,
-	metricDepth int,
+	metrics *config.Metrics,
 ) *Poller {
 	return &Poller{
-		monitor:     monitor,
-		services:    serviceRepo,
-		interval:    interval,
-		metricDepth: metricDepth,
+		monitor:  monitor,
+		services: serviceRepo,
+		interval: interval,
+		metrics:  metrics,
 	}
 }
 
@@ -53,7 +54,7 @@ func (p *Poller) Poll() {
 			service, serviceExists := existsServicesMap[status.ContainerID]
 
 			if !serviceExists {
-				service = domain.NewService(p.metricDepth)
+				service = domain.NewService(p.metrics.Depth, p.metrics.OnlyUnique)
 			}
 
 			service.Name = status.Name

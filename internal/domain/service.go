@@ -22,8 +22,8 @@ type ServiceStatus struct {
 	Memory      *shared.Metric
 }
 
-func NewService(metricDepth int) *Service {
+func NewService(metricDepth int, metricUnique bool) *Service {
 	return &Service{
-		MemoryHistory: shared.NewMetricBuffer(metricDepth),
+		MemoryHistory: shared.NewMetricBuffer(metricDepth, metricUnique),
 	}
 }

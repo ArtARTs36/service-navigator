@@ -1,4 +1,4 @@
-package container
+package config
 
 import (
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"

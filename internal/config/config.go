@@ -1,4 +1,4 @@
-package container
+package config
 
 import (
 	"fmt"
@@ -9,10 +9,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const serviceMetricDepth = 100
+
 type Config struct {
 	Frontend config.Frontend `yaml:"frontend"`
 	Backend  struct {
-		NetworkName string `yaml:"network_name"`
+		NetworkName string  `yaml:"network_name"`
+		Metrics     Metrics `yaml:"metrics"`
 	} `yaml:"backend"`
 }
 
@@ -36,6 +39,13 @@ func InitConfig() *Config {
 	conf.Frontend.Navbar.Search.Providers = config.ResolveProviders(conf.Frontend.Navbar.Search.Providers)
 
 	log.Printf("Config loaded: %v", conf)
+
+	switch conf.Backend.Metrics.Depth {
+	case 0:
+		conf.Backend.Metrics.Depth = serviceMetricDepth
+	case -1:
+		conf.Backend.Metrics.Depth = 0
+	}
 
 	return &conf
 }

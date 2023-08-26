@@ -15,3 +15,6 @@ frontend:
 
 backend:
   network_name: infra
+  metrics:
+    depth: 10
+    only_unique: true
