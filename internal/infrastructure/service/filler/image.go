@@ -9,6 +9,7 @@ import (
 )
 
 const vendorImagePartsCount = 2
+const imageVersionPartsCount = 2
 
 type ImageFiller struct {
 }
@@ -34,25 +35,20 @@ func (f *ImageFiller) Fill(service *domain.ServiceStatus, container *datastruct.
 		// [image, version] or [image]
 		partsByVersion := strings.Split(imageNameParts[1], ":")
 
-		if len(partsByVersion) == 1 {
-			service.Image = domain.Image{
-				Name: strings.Join([]string{
-					imageNameParts[0],
-					partsByVersion[0],
-				}, "/"),
-				Version:     "latest",
-				RegistryURL: fmt.Sprintf("https://hub.docker.com/r/%s/%s", imageNameParts[0], partsByVersion[0]),
-			}
+		imageName := strings.Join([]string{
+			imageNameParts[0],
+			partsByVersion[0],
+		}, "/")
 
-			return
+		version := "latest"
+
+		if len(partsByVersion) == imageVersionPartsCount {
+			version = partsByVersion[1]
 		}
 
 		service.Image = domain.Image{
-			Name: strings.Join([]string{
-				imageNameParts[0],
-				partsByVersion[0],
-			}, "/"),
-			Version:     partsByVersion[1],
+			Name:        imageName,
+			Version:     version,
 			RegistryURL: fmt.Sprintf("https://hub.docker.com/r/%s/%s", imageNameParts[0], partsByVersion[0]),
 		}
 
