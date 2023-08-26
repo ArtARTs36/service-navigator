@@ -57,9 +57,7 @@
                         {% endif %}
 
                         {% if service.VCS.URL %}
-                            <a href="{{ service.VCS.URL }}" class="link-{{ service.VCS.Type }}">
-                                {% if service.VCS.Type %}<i class="fa-brands fa-{{ service.VCS.Type }}"></i>{% else %}{{ service.VCS.Host }}{% endif %}
-                            </a>
+                            <a href="{{ service.VCS.URL }}" class="link-{{ service.VCS.Type }}">{% if service.VCS.Type %}<i class="fa-brands fa-{{ service.VCS.Type }}"></i>{% else %}{{ service.VCS.Host }}{% endif %}</a>
                         {% endif %}
 
                         {% if service.Image.RegistryURL %}
