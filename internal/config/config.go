@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const serviceMetricDepth = 100
+const serviceMetricDepth = 50
 
 type Config struct {
 	Frontend config.Frontend `yaml:"frontend"`
@@ -41,12 +41,19 @@ func InitConfig() *Config {
 
 	log.Printf("Config loaded: %v", conf)
 
-	switch conf.Backend.Metrics.Depth {
-	case 0:
-		conf.Backend.Metrics.Depth = serviceMetricDepth
-	case -1:
-		conf.Backend.Metrics.Depth = 0
-	}
+	conf.Backend.Metrics.Depth = resolveConfigMetricDepth(conf.Backend.Metrics)
 
 	return &conf
+}
+
+func resolveConfigMetricDepth(metrics poller.Metrics) int {
+	if metrics.Depth > 0 {
+		return metrics.Depth
+	}
+
+	if metrics.Depth == 0 {
+		return serviceMetricDepth
+	}
+
+	return 1
 }
