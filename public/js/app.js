@@ -9,7 +9,15 @@ function runSearch() {
 
 document.addEventListener("DOMContentLoaded", function(event) {
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-    popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl)
+    popoverTriggerList.forEach(function (popoverTriggerEl) {
+        const cid = popoverTriggerEl.getAttribute("popover-content-id")
+        const content = document.querySelector('#' + cid)
+
+        new bootstrap.Popover(popoverTriggerEl, {
+            container: 'body',
+            title: popoverTriggerEl.getAttribute("title"),
+            html: true,
+            content: content,
+        })
     });
 });

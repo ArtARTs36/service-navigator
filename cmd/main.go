@@ -19,7 +19,7 @@ import (
 
 const httpReadTimeout = 3 * time.Second
 const servicePollInterval = 1 * time.Second
-const serviceMetricDepth = 500
+const serviceMetricDepth = 100
 
 func main() {
 	env := container.InitEnvironment()

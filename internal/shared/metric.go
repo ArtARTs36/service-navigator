@@ -1,10 +1,13 @@
 package shared
 
+import "time"
+
 type Metric struct {
 	Used      int64
 	UsedText  string
 	Total     int64
 	TotalText string
+	CreatedAt time.Time
 }
 
 type MetricBuffer struct {
