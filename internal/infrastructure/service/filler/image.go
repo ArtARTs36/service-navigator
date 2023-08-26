@@ -2,6 +2,7 @@ package filler
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/artarts36/service-navigator/internal/domain"
@@ -53,6 +54,26 @@ func (f *ImageFiller) Fill(service *domain.ServiceStatus, container *datastruct.
 		}
 
 		return
+	}
+
+	rURL, err := url.Parse(container.Short.Image)
+
+	if err != nil {
+		return
+	}
+
+	partsByVersion := strings.Split(rURL.Path, ":")
+	version := "latest"
+	imageName := partsByVersion[0]
+
+	if len(partsByVersion) == imageVersionPartsCount {
+		version = partsByVersion[1]
+	}
+
+	service.Image = domain.Image{
+		Name:        imageName,
+		Version:     version,
+		RegistryURL: "http://" + imageName,
 	}
 }
 

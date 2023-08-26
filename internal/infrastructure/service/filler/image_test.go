@@ -38,6 +38,22 @@ func TestImageFiller_Fill(t *testing.T) {
 				RegistryURL: "https://hub.docker.com/_/image",
 			},
 		},
+		{
+			containerShortImage: "registry.io/vendor/image",
+			expectedImage: domain.Image{
+				Name:        "registry.io/vendor/image",
+				Version:     "latest",
+				RegistryURL: "http://registry.io/vendor/image",
+			},
+		},
+		{
+			containerShortImage: "registry.io/vendor/image:v1",
+			expectedImage: domain.Image{
+				Name:        "registry.io/vendor/image",
+				Version:     "v1",
+				RegistryURL: "http://registry.io/vendor/image",
+			},
+		},
 	}
 
 	filler := ImageFiller{}
