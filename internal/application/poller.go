@@ -67,6 +67,7 @@ func (p *Poller) Poll() {
 			service.VCS = status.VCS
 			service.ContainerID = status.ContainerID
 			service.MemoryHistory.Push(status.Memory)
+			service.CPUHistory.Push(status.CPU)
 			service.Self = status.Self
 
 			newServicesList = append(newServicesList, service)

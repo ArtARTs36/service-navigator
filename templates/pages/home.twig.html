@@ -17,6 +17,9 @@
                     <strong>Memory</strong>
                 </td>
                 <td scope="col">
+                    <strong>CPU</strong>
+                </td>
+                <td scope="col">
                     <strong>Actions</strong>
                 </td>
                 <td scope="col">
@@ -36,6 +39,11 @@
                     <td>
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" title="Memory measurements" popover-content-id="service-{{ service.ContainerID }}-memory-metrics">
                             {{ service.MemoryHistory.All[0].UsedText }} / {{ service.MemoryHistory.All[0].TotalText }}
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" title="CPU measurements" popover-content-id="service-{{ service.ContainerID }}-cpu-metrics">
+                            {{ service.CPUHistory.All[0].UsedText }}
                         </button>
                     </td>
                     <td>
@@ -82,6 +90,42 @@
         <tr>
             <td><span title="{{ memory.Used }} bytes">{{ memory.UsedText }}</span></td>
             <td>{{ memory.CreatedAt | date("Y-m-d H:i:s")}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    <div id="service-{{ service.ContainerID }}-memory-metrics" style="overflow-y: auto; max-height: 200px">
+        <table class="table">
+        <tr>
+            <td>
+                Memory
+            </td>
+            <td>
+                Date
+            </td>
+        </tr>
+        {% for memory in service.MemoryHistory.All %}
+        <tr>
+            <td><span title="{{ memory.Used }} bytes">{{ memory.UsedText }}</span></td>
+            <td>{{ memory.CreatedAt | date("Y-m-d H:i:s")}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    <div id="service-{{ service.ContainerID }}-cpu-metrics" style="overflow-y: auto; max-height: 200px">
+        <table class="table">
+        <tr>
+            <td>
+                CPU
+            </td>
+            <td>
+                Date
+            </td>
+        </tr>
+        {% for cpu in service.CPUHistory.All %}
+        <tr>
+            <td><span title="{{ cpu.Used }}%">{{ cpu.UsedText }}</span></td>
+            <td>{{ cpu.CreatedAt | date("Y-m-d H:i:s")}}</td>
         </tr>
         {% endfor %}
     </table>

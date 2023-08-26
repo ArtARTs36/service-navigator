@@ -48,6 +48,7 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 		&filler.VCSFiller{},
 		&filler.DCNameFiller{},
 		&filler.MemoryFiller{},
+		&filler.CPUFiller{},
 	}), conf.Backend.NetworkName, env.CurrentContainerID)
 
 	cont.Services.Repository = &repository.ServiceRepository{}

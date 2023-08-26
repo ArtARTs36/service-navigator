@@ -10,6 +10,7 @@ type Service struct {
 	ContainerID   string
 	Self          bool
 	MemoryHistory *shared.MeasurementMetricBuffer
+	CPUHistory    *shared.MeasurementMetricBuffer
 }
 
 type ServiceStatus struct {
@@ -20,10 +21,12 @@ type ServiceStatus struct {
 	ContainerID string
 	Self        bool
 	Memory      *shared.MeasurementMetric
+	CPU         *shared.MeasurementMetric
 }
 
 func NewService(metricDepth int, metricUnique bool) *Service {
 	return &Service{
 		MemoryHistory: shared.NewMetricBuffer(metricDepth, metricUnique),
+		CPUHistory:    shared.NewMetricBuffer(metricDepth, metricUnique),
 	}
 }
