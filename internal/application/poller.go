@@ -75,7 +75,7 @@ func (p *Poller) Poll() {
 		p.services.Set(newServicesList)
 
 		log.Printf("[Poll] loaded %d statuses", len(statuses))
-		log.Printf("[Poll] sleep %f seconds", p.config.Interval.Seconds())
+		log.Printf("[Poll] sleep %.2f seconds", p.config.Interval.Seconds())
 
 		time.Sleep(p.config.Interval)
 	}

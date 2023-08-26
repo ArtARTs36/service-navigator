@@ -41,13 +41,13 @@ func InitConfig() *Config {
 
 	conf.Frontend.Navbar.Search.Providers = config.ResolveProviders(conf.Frontend.Navbar.Search.Providers)
 
-	log.Printf("Config loaded: %v", conf)
-
 	conf.Backend.Poll.Metrics.Depth = resolveConfigMetricDepth(conf.Backend.Poll)
 
 	if conf.Backend.Poll.Interval == 0 || conf.Backend.Poll.Interval < 0 {
 		conf.Backend.Poll.Interval = servicePollInterval
 	}
+
+	log.Printf("Config loaded: %v", conf)
 
 	return &conf
 }
