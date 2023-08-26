@@ -14,6 +14,7 @@ COPY . .
 
 COPY ./service_navigator.yaml /app/
 COPY ./templates/ /app/templates/
+COPY ./public/ /app/public/
 
 RUN GOOS=linux go build -ldflags="-s -w" -o /go/bin/service-navigator /go/src/github.com/artarts36/service-navigator/cmd/main.go
 
