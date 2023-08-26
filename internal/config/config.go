@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	poller "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/presentation/config"
@@ -11,12 +12,13 @@ import (
 )
 
 const serviceMetricDepth = 50
+const servicePollInterval = 1 * time.Second
 
 type Config struct {
 	Frontend config.Frontend `yaml:"frontend"`
 	Backend  struct {
-		NetworkName string         `yaml:"network_name"`
-		Metrics     poller.Metrics `yaml:"metrics"`
+		NetworkName string              `yaml:"network_name"`
+		Poll        poller.PollerConfig `yaml:"poll"`
 	} `yaml:"backend"`
 }
 
@@ -41,17 +43,21 @@ func InitConfig() *Config {
 
 	log.Printf("Config loaded: %v", conf)
 
-	conf.Backend.Metrics.Depth = resolveConfigMetricDepth(conf.Backend.Metrics)
+	conf.Backend.Poll.Metrics.Depth = resolveConfigMetricDepth(conf.Backend.Poll)
+
+	if conf.Backend.Poll.Interval == 0 || conf.Backend.Poll.Interval < 0 {
+		conf.Backend.Poll.Interval = servicePollInterval
+	}
 
 	return &conf
 }
 
-func resolveConfigMetricDepth(metrics poller.Metrics) int {
-	if metrics.Depth > 0 {
-		return metrics.Depth
+func resolveConfigMetricDepth(conf poller.PollerConfig) int {
+	if conf.Metrics.Depth > 0 {
+		return conf.Metrics.Depth
 	}
 
-	if metrics.Depth == 0 {
+	if conf.Metrics.Depth == 0 {
 		return serviceMetricDepth
 	}
 

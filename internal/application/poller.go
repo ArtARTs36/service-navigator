@@ -10,29 +10,29 @@ import (
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 )
 
-type Metrics struct {
-	Depth      int  `yaml:"depth"`
-	OnlyUnique bool `yaml:"only_unique"`
+type PollerConfig struct {
+	Interval time.Duration `yaml:"interval"`
+	Metrics  struct {
+		Depth      int  `yaml:"depth"`
+		OnlyUnique bool `yaml:"only_unique"`
+	} `yaml:"metrics"`
 }
 
 type Poller struct {
 	monitor  *monitor.Monitor
 	services *repository.ServiceRepository
-	interval time.Duration
-	metrics  *Metrics
+	config   *PollerConfig
 }
 
 func NewPoller(
 	monitor *monitor.Monitor,
 	serviceRepo *repository.ServiceRepository,
-	interval time.Duration,
-	metrics *Metrics,
+	config *PollerConfig,
 ) *Poller {
 	return &Poller{
 		monitor:  monitor,
 		services: serviceRepo,
-		interval: interval,
-		metrics:  metrics,
+		config:   config,
 	}
 }
 
@@ -41,7 +41,7 @@ func (p *Poller) Poll() {
 		statuses, err := p.monitor.Show(context.Background())
 
 		if err != nil {
-			log.Printf("[Poller] Failed to load statuses: %s", err)
+			log.Printf("[Poll] Failed to load statuses: %s", err)
 
 			continue
 		}
@@ -58,7 +58,7 @@ func (p *Poller) Poll() {
 			service, serviceExists := existsServicesMap[status.ContainerID]
 
 			if !serviceExists {
-				service = domain.NewService(p.metrics.Depth, p.metrics.OnlyUnique)
+				service = domain.NewService(p.config.Metrics.Depth, p.config.Metrics.OnlyUnique)
 			}
 
 			service.Name = status.Name
@@ -74,8 +74,9 @@ func (p *Poller) Poll() {
 
 		p.services.Set(newServicesList)
 
-		log.Printf("[Poller] loaded %d statuses", len(statuses))
+		log.Printf("[Poll] loaded %d statuses", len(statuses))
+		log.Printf("[Poll] sleep %f seconds", p.config.Interval.Seconds())
 
-		time.Sleep(p.interval)
+		time.Sleep(p.config.Interval)
 	}
 }

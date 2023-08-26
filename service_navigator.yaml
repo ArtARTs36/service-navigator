@@ -14,7 +14,24 @@ frontend:
         - name: stackoverflow
 
 backend:
+  # Docker network name
+  #
+  # Required
   network_name: infra
+
   metrics:
+    # Count of stored records per service
+    #
+    # Optional, default: 50
     depth: 10
+
+    # A flag that determines whether to store only unique metrics per service
+    #
+    # Optional, default: false
     only_unique: true
+
+  poll:
+    # Interval for services polling
+    #
+    # Default: "2s"
+    interval: "2s"

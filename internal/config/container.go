@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"time"
 
 	poller "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
@@ -12,8 +11,6 @@ import (
 	"github.com/artarts36/service-navigator/internal/presentation/view"
 	"github.com/docker/docker/client"
 )
-
-const servicePollInterval = 1 * time.Second
 
 type Container struct {
 	DockerClient *client.Client
@@ -57,8 +54,7 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 	cont.Services.Poller = poller.NewPoller(
 		cont.Services.Monitor,
 		cont.Services.Repository,
-		servicePollInterval,
-		&conf.Backend.Metrics,
+		&conf.Backend.Poll,
 	)
 
 	cont.DockerClient = docker
