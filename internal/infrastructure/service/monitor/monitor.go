@@ -91,7 +91,7 @@ func (m *Monitor) collectServiceStatus(ctx context.Context, container types.Cont
 
 	status := &domain.ServiceStatus{
 		Name:        cont.Name,
-		Status:      cont.State.Status,
+		Status:      container.Status,
 		ContainerID: cont.ID,
 		Self:        strings.HasPrefix(cont.ID, m.currentContainerID),
 	}

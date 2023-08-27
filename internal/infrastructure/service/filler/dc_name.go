@@ -11,11 +11,9 @@ type DCNameFiller struct {
 }
 
 func (r *DCNameFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
-	for key, val := range container.Short.Labels {
-		if key == labelName {
-			service.Name = val
+	label, labelExists := container.Short.Labels[labelName]
 
-			return
-		}
+	if labelExists {
+		service.Name = label
 	}
 }

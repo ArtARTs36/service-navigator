@@ -47,22 +47,30 @@
                         </button>
                     </td>
                     <td>
-                        <a href="/containers/kill?containerId={{ service.ContainerID }}">
+                        {% if service.Self %}
+                        <a href="/containers/kill?containerId={{ service.ContainerID }}"
+                           data-bs-toggle="modal"
+                           data-bs-target="#turnOffContainerModal"
+                           onclick="showTurnOffContainerModal('{{ service.ContainerID }}', 'ServiceNavigator ({{ service.Name }})')"
+                        >
                             <i class="fa-solid fa-stop link-action-stop"></i>
                         </a>
+                        {% else %}
+                        <a href="/containers/kill?containerId={{ service.ContainerID }}"><i class="fa-solid fa-stop link-action-stop"></i></a>
+                        {% endif %}
                     </td>
                     <td>
                         {% if service.WebURL %}
-                            <a href="{{ service.WebURL }}"><i class="fa-solid fa-globe"></i></a>
+                        <a href="{{ service.WebURL }}"><i class="fa-solid fa-globe"></i></a>
                         {% endif %}
 
                         {% if service.VCS.URL %}
-                            <a href="{{ service.VCS.URL }}" class="link-{{ service.VCS.Type }}">
-                                {% if service.VCS.Type %}
-                                    <i class="fa-brands fa-{{ service.VCS.Type }}"></i>
-                                {% else %}
-                                    {{ service.VCS.Host }}
-                                {% endif %}
+                            <a href="{{ service.VCS.URL }}" class="link-{{ service.VCS.Type }}">{% if service.VCS.Type %}<i class="fa-brands fa-{{ service.VCS.Type }}"></i>{% else %}{{ service.VCS.Host }}{% endif %}</a>
+                        {% endif %}
+
+                        {% if service.Image.RegistryURL %}
+                            <a href="{{ service.Image.RegistryURL }}" class="link-docker">
+                                <i class="fa-brands fa-docker"></i>
                             </a>
                         {% endif %}
                     </td>
@@ -132,5 +140,7 @@
     </div>
 </div>
 {% endfor %}
+
+<div id="turnOffContainerModalContainer"></div>
 
 {% endblock %}
