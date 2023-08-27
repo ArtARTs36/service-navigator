@@ -6,3 +6,4 @@ docs
 Makefile
 .golangci.yml
 .idea
+.mr-linter.yaml
