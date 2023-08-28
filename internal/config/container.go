@@ -44,7 +44,10 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 	}
 
 	cont.Services.Monitor = monitor.NewMonitor(docker, filler.NewCompositeFiller([]monitor.Filler{
-		&filler.NginxProxyURLFiller{},
+		filler.NewOrFiller([]monitor.Filler{
+			filler.NewNginxProxyURLFiller(),
+			filler.NewPublicPortFiller(),
+		}),
 		&filler.VCSFiller{},
 		&filler.DCNameFiller{},
 		&filler.MemoryFiller{},

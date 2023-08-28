@@ -20,6 +20,13 @@ services:
     networks:
       - infra
 
+  whoami:
+    image: jwilder/whoami
+    ports:
+      - "8999:8000"
+    networks:
+      - infra
+
 networks:
   infra:
     external: true

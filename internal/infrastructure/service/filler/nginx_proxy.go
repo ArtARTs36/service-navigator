@@ -6,11 +6,16 @@ import (
 
 	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 )
 
 const nginxProxyVirtualHostEnv = "VIRTUAL_HOST"
 
 type NginxProxyURLFiller struct {
+}
+
+func NewNginxProxyURLFiller() monitor.Filler {
+	return &NginxProxyURLFiller{}
 }
 
 func (r *NginxProxyURLFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
