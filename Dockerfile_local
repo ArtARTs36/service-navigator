@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.19-alpine AS builder
+FROM golang:1.19-alpine
 
 ARG APP_VERSION="undefined"
 ARG BUILD_TIME="undefined"
@@ -12,17 +12,11 @@ RUN go mod download
 
 COPY . .
 
-RUN GOOS=linux go build -ldflags="-s -w" -o /go/bin/service-navigator /go/src/github.com/artarts36/service-navigator/cmd/main.go
-
-######################################################
-
-FROM alpine
-
 COPY ./service_navigator.yaml /app/
 COPY ./templates/ /app/templates/
 COPY ./public/ /app/public/
 
-COPY --from=builder /go/bin/service-navigator /go/bin/service-navigator
+RUN GOOS=linux go build -ldflags="-s -w" -o /go/bin/service-navigator /go/src/github.com/artarts36/service-navigator/cmd/main.go
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL org.opencontainers.image.title="service-navigator"

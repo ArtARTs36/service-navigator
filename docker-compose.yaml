@@ -4,7 +4,7 @@ services:
   infra:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_local
     ports:
       - "9101:8080"
     volumes:
