@@ -1,10 +1,37 @@
 # Service Navigator
 
+![Testing](https://github.com/ArtARTs36/service-navigator/workflows/Testing/badge.svg?branch=master)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker Pulls](https://img.shields.io/docker/pulls/artarts36/service-navigator)](https://hub.docker.com/r/artarts36/service-navigator)
+
 Service Navigator - navigator for your local docker projects in single network
 
 ![](./docs/preview.png)
 
-# Config
+# Setup
+
+1. Download config file: `curl https://raw.githubusercontent.com/ArtARTs36/service-navigator/master/service_navigator.yaml > service_navigator.yaml`
+2. Define docker network name in `service_navigator.yaml` in section `backend.network_name`
+3. Add next lines into your **docker-compose.yaml**:
+```yaml
+services:
+  infra:
+    image: artarts36/service-navigator:0.1.5
+    ports:
+      - "9101:8080"
+    volumes:
+      - type: bind
+        source: "/var/run/docker.sock"
+        target: "/var/run/docker.sock"
+        read_only: true
+      - ./:/app
+    environment:
+      USER: "${USER}"
+    networks:
+      - {YOUR_NETWORK_NAME}
+```
+
+## Config
 
 Config is described in YAML file with name [service_navigator.yaml](./service_navigator.yaml)
 
@@ -63,7 +90,9 @@ backend:
 
 ## Resolving service url
 
-Service Navigator considers the `NGINX_PROXY` environment variable to be the web url.
+Service Navigator checks:
+* `NGINX_PROXY` environment variable
+* Public port as `http://localhost:{PORT}`
 
 ## Resolving repository url
 
