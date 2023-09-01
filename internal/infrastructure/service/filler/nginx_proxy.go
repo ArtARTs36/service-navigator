@@ -19,16 +19,19 @@ func NewNginxProxyURLFiller() monitor.Filler {
 }
 
 func (r *NginxProxyURLFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
-	for _, envVar := range container.Full.Config.Env {
-		varBag := strings.Split(envVar, "=")
-
-		varName := varBag[0]
-		varValue := varBag[1]
-
-		if varName == nginxProxyVirtualHostEnv {
-			service.WebURL = fmt.Sprintf("http://%s", varValue)
-
-			return
-		}
+	envVal, envExists := container.Environment[nginxProxyVirtualHostEnv]
+	if !envExists {
+		return
 	}
+
+	if len(envVal) == 0 {
+		return
+	}
+
+	hosts := strings.Split(envVal, ",")
+	if len(hosts) == 0 {
+		return
+	}
+
+	service.WebURL = fmt.Sprintf("http://%s", hosts[0])
 }

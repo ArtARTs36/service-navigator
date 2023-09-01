@@ -96,10 +96,21 @@ func (m *Monitor) collectServiceStatus(ctx context.Context, container types.Cont
 		Self:        strings.HasPrefix(cont.ID, m.currentContainerID),
 	}
 
+	environment := map[string]string{}
+	for _, envVar := range cont.Config.Env {
+		varBag := strings.Split(envVar, "=")
+
+		varName := varBag[0]
+		varValue := varBag[1]
+
+		environment[varName] = varValue
+	}
+
 	m.filler.Fill(status, &datastruct.Container{
-		Short: container,
-		Full:  cont,
-		Stats: &stat,
+		Short:       container,
+		Full:        cont,
+		Stats:       &stat,
+		Environment: environment,
 	})
 
 	return status, nil

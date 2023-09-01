@@ -3,7 +3,8 @@ package datastruct
 import "github.com/docker/docker/api/types"
 
 type Container struct {
-	Short types.Container
-	Full  types.ContainerJSON
-	Stats *Stats `json:"stats"`
+	Short       types.Container
+	Full        types.ContainerJSON
+	Stats       *Stats `json:"stats"`
+	Environment map[string]string
 }
