@@ -49,7 +49,10 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 			filler.NewPublicPortFiller(),
 		}),
 		&filler.VCSFiller{},
-		&filler.DCNameFiller{},
+		filler.NewOrFiller([]monitor.Filler{
+			&filler.DCNameFiller{},
+			&filler.SwarmNameFiller{},
+		}),
 		&filler.MemoryFiller{},
 		&filler.CPUFiller{},
 		&filler.ImageFiller{},
