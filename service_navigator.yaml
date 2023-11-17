@@ -46,3 +46,10 @@ backend:
       #
       # Optional, default: false
       only_unique: true
+
+  images:
+    poll:
+      # Interval for services polling
+      #
+      # Default: "1m"
+      interval: "1m"

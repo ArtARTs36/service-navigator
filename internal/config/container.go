@@ -22,7 +22,7 @@ type Container struct {
 	HTTP struct {
 		Handlers struct {
 			HomePageHandler      *handlers.HomePageHandler
-			ContainerKIllHandler *handlers.ContainerKillHandler
+			ContainerKillHandler *handlers.ContainerKillHandler
 		}
 	}
 	Presentation struct {
@@ -68,7 +68,7 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, conf)
 	cont.HTTP.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
-	cont.HTTP.Handlers.ContainerKIllHandler = handlers.NewContainerKillHandler(
+	cont.HTTP.Handlers.ContainerKillHandler = handlers.NewContainerKillHandler(
 		cont.Services.Monitor,
 		cont.Presentation.Renderer,
 	)

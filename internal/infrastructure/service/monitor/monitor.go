@@ -28,7 +28,7 @@ func NewMonitor(docker *client.Client, urlResolver Filler, networkName string, c
 }
 
 func (m *Monitor) Show(ctx context.Context) ([]*domain.ServiceStatus, error) {
-	log.Printf("[Monitor] Fetching containers")
+	log.Printf("[Service][Monitor] Fetching containers")
 
 	containers, err := m.docker.ContainerList(ctx, types.ContainerListOptions{
 		Filters: filters.NewArgs(filters.KeyValuePair{
@@ -37,7 +37,7 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.ServiceStatus, error) {
 		}),
 	})
 
-	log.Printf("[Monitor] Fetched %d containers", len(containers))
+	log.Printf("[Service][Monitor] Fetched %d containers", len(containers))
 
 	if err != nil {
 		return []*domain.ServiceStatus{}, err

@@ -40,7 +40,7 @@ func main() {
 
 func bindRoutes(mux *http.ServeMux, cont *config.Container) {
 	mux.Handle("/", cont.HTTP.Handlers.HomePageHandler)
-	mux.Handle("/containers/kill", cont.HTTP.Handlers.ContainerKIllHandler)
+	mux.Handle("/containers/kill", cont.HTTP.Handlers.ContainerKillHandler)
 }
 
 func bindFileServer(mux *http.ServeMux) {
