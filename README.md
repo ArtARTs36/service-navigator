@@ -46,6 +46,10 @@ frontend:
   # Navbar in header
   navbar:
     links:
+      - url: /
+        title: Services
+      - url: /images
+        title: Images
       - url: http://github.com/artarts36/service-navigator
         title: Github
     profile:
@@ -67,23 +71,33 @@ backend:
   # Required
   network_name: infra
 
-  # Poll for finding information about services
-  poll:
-    # Interval for services polling
-    #
-    # Default: "2s"
-    interval: "2s"
+  # Services configuration
+  services:
+      # Poll for finding information about services
+      poll:
+        # Interval for services polling
+        #
+        # Default: "2s"
+        interval: "2s"
+    
+        metrics:
+          # Count of stored records per service
+          #
+          # Optional, default: 50
+          depth: 10
+    
+          # A flag that determines whether to store only unique metrics per service
+          #
+          # Optional, default: false
+          only_unique: true
 
-    metrics:
-      # Count of stored records per service
+  # Images configuration
+  images:
+    poll:
+      # Interval for services polling
       #
-      # Optional, default: 50
-      depth: 10
-
-      # A flag that determines whether to store only unique metrics per service
-      #
-      # Optional, default: false
-      only_unique: true
+      # Default: "1m"
+      interval: "1m"
 ```
 
 # How Service Navigator finding information about service

@@ -3,13 +3,15 @@ package config
 import (
 	"fmt"
 
+	"github.com/docker/docker/client"
+
 	"github.com/artarts36/service-navigator/internal/application"
+	imgmonitor "github.com/artarts36/service-navigator/internal/infrastructure/image/monitor"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 	"github.com/artarts36/service-navigator/internal/presentation/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
-	"github.com/docker/docker/client"
 )
 
 type Container struct {
@@ -17,12 +19,19 @@ type Container struct {
 	Services     struct {
 		Monitor    *monitor.Monitor
 		Repository *repository.ServiceRepository
-		Poller     *application.Poller
+		Poller     *application.ServicePoller
+	}
+	Images struct {
+		Monitor    *imgmonitor.Monitor
+		Repository *repository.ImageRepository
+		Poller     *application.ImagePoller
 	}
 	HTTP struct {
 		Handlers struct {
 			HomePageHandler      *handlers.HomePageHandler
-			ContainerKIllHandler *handlers.ContainerKillHandler
+			ContainerKillHandler *handlers.ContainerKillHandler
+			ImageListHandler     *handlers.ImageListHandler
+			ImageRemoveHandler   *handlers.ImageRemoveHandler
 		}
 	}
 	Presentation struct {
@@ -59,17 +68,29 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 	}), conf.Backend.NetworkName, env.CurrentContainerID)
 
 	cont.Services.Repository = &repository.ServiceRepository{}
-	cont.Services.Poller = application.NewPoller(
+	cont.Services.Poller = application.NewServicePoller(
 		cont.Services.Monitor,
 		cont.Services.Repository,
-		&conf.Backend.Poll,
+		&conf.Backend.Services.Poll,
 	)
+
+	cont.Images.Monitor = imgmonitor.NewMonitor(docker)
+	cont.Images.Repository = &repository.ImageRepository{}
+	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &conf.Backend.Images.Poll)
 
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, conf)
 	cont.HTTP.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
-	cont.HTTP.Handlers.ContainerKIllHandler = handlers.NewContainerKillHandler(
+	cont.HTTP.Handlers.ContainerKillHandler = handlers.NewContainerKillHandler(
 		cont.Services.Monitor,
+		cont.Presentation.Renderer,
+	)
+	cont.HTTP.Handlers.ImageListHandler = handlers.NewImageListHandler(
+		cont.Images.Repository,
+		cont.Presentation.Renderer,
+	)
+	cont.HTTP.Handlers.ImageRemoveHandler = handlers.NewImageRemoveHandler(
+		cont.Images.Monitor,
 		cont.Presentation.Renderer,
 	)
 

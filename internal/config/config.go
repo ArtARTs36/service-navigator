@@ -6,19 +6,25 @@ import (
 	"os"
 	"time"
 
-	poller "github.com/artarts36/service-navigator/internal/application"
+	app "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/presentation/config"
 	"gopkg.in/yaml.v3"
 )
 
 const serviceMetricDepth = 50
-const servicePollInterval = 1 * time.Second
+const servicePollInterval = 2 * time.Second
+const imagePollInterval = 1 * time.Minute
 
 type Config struct {
 	Frontend config.Frontend `yaml:"frontend"`
 	Backend  struct {
-		NetworkName string              `yaml:"network_name"`
-		Poll        poller.PollerConfig `yaml:"poll"`
+		NetworkName string `yaml:"network_name"`
+		Services    struct {
+			Poll app.ServicePollerConfig `yaml:"poll"`
+		} `yaml:"services"`
+		Images struct {
+			Poll app.ImagePollerConfig `yaml:"poll"`
+		} `yaml:"images"`
 	} `yaml:"backend"`
 }
 
@@ -41,10 +47,13 @@ func InitConfig() *Config {
 
 	conf.Frontend.Navbar.Search.Providers = config.ResolveProviders(conf.Frontend.Navbar.Search.Providers)
 
-	conf.Backend.Poll.Metrics.Depth = resolveConfigMetricDepth(conf.Backend.Poll)
+	conf.Backend.Services.Poll.Metrics.Depth = resolveConfigMetricDepth(conf.Backend.Services.Poll)
 
-	if conf.Backend.Poll.Interval == 0 || conf.Backend.Poll.Interval < 0 {
-		conf.Backend.Poll.Interval = servicePollInterval
+	if conf.Backend.Services.Poll.Interval == 0 || conf.Backend.Services.Poll.Interval < 0 {
+		conf.Backend.Services.Poll.Interval = servicePollInterval
+	}
+	if conf.Backend.Images.Poll.Interval == 0 || conf.Backend.Images.Poll.Interval < 0 {
+		conf.Backend.Images.Poll.Interval = imagePollInterval
 	}
 
 	if conf.Frontend.AppName == "" {
@@ -56,7 +65,7 @@ func InitConfig() *Config {
 	return &conf
 }
 
-func resolveConfigMetricDepth(conf poller.PollerConfig) int {
+func resolveConfigMetricDepth(conf app.ServicePollerConfig) int {
 	if conf.Metrics.Depth > 0 {
 		return conf.Metrics.Depth
 	}

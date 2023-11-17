@@ -1,0 +1,17 @@
+{% extends "layout/base.twig.html" %}
+
+{% block content %}
+<p class="h4">Image "{{ imageID }}" was deleted</p>
+
+{% for status in statuses %}
+<div class="alert alert-success" role="alert">
+    {% if status.Deleted != "" %}
+    Deleted: {{ status.Deleted }}
+    {% endif %}
+
+    {% if status.Untagged != "" %}
+    Untagged: {{ status.Untagged }}
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock %}
