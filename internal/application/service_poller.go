@@ -10,7 +10,7 @@ import (
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 )
 
-type PollerConfig struct {
+type ServicePollerConfig struct {
 	Interval time.Duration `yaml:"interval"`
 	Metrics  struct {
 		Depth      int  `yaml:"depth"`
@@ -18,25 +18,25 @@ type PollerConfig struct {
 	} `yaml:"metrics"`
 }
 
-type Poller struct {
+type ServicePoller struct {
 	monitor  *monitor.Monitor
 	services *repository.ServiceRepository
-	config   *PollerConfig
+	config   *ServicePollerConfig
 }
 
-func NewPoller(
+func NewServicePoller(
 	monitor *monitor.Monitor,
 	serviceRepo *repository.ServiceRepository,
-	config *PollerConfig,
-) *Poller {
-	return &Poller{
+	config *ServicePollerConfig,
+) *ServicePoller {
+	return &ServicePoller{
 		monitor:  monitor,
 		services: serviceRepo,
 		config:   config,
 	}
 }
 
-func (p *Poller) Poll() {
+func (p *ServicePoller) Poll() {
 	for {
 		statuses, err := p.monitor.Show(context.Background())
 

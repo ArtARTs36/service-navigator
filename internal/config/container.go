@@ -19,7 +19,7 @@ type Container struct {
 	Services     struct {
 		Monitor    *monitor.Monitor
 		Repository *repository.ServiceRepository
-		Poller     *application.Poller
+		Poller     *application.ServicePoller
 	}
 	Images struct {
 		Monitor    *imgmonitor.Monitor
@@ -68,10 +68,10 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 	}), conf.Backend.NetworkName, env.CurrentContainerID)
 
 	cont.Services.Repository = &repository.ServiceRepository{}
-	cont.Services.Poller = application.NewPoller(
+	cont.Services.Poller = application.NewServicePoller(
 		cont.Services.Monitor,
 		cont.Services.Repository,
-		&conf.Backend.Poll,
+		&conf.Backend.Services.Poll,
 	)
 
 	cont.Images.Monitor = imgmonitor.NewMonitor(docker)

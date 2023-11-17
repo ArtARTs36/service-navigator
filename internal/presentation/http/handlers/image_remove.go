@@ -1,11 +1,13 @@
 package handlers
 
 import (
-	"github.com/artarts36/service-navigator/internal/infrastructure/image/monitor"
-	"github.com/artarts36/service-navigator/internal/presentation/view"
-	"github.com/tyler-sommer/stick"
 	"log"
 	"net/http"
+
+	"github.com/tyler-sommer/stick"
+
+	"github.com/artarts36/service-navigator/internal/infrastructure/image/monitor"
+	"github.com/artarts36/service-navigator/internal/presentation/view"
 )
 
 type ImageRemoveHandler struct {

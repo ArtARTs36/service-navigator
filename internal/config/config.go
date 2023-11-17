@@ -12,14 +12,17 @@ import (
 )
 
 const serviceMetricDepth = 50
-const servicePollInterval = 1 * time.Second
+const servicePollInterval = 2 * time.Second
+const imagePollInterval = 1 * time.Minute
 
 type Config struct {
 	Frontend config.Frontend `yaml:"frontend"`
 	Backend  struct {
-		NetworkName string           `yaml:"network_name"`
-		Poll        app.PollerConfig `yaml:"poll"`
-		Images      struct {
+		NetworkName string `yaml:"network_name"`
+		Services    struct {
+			Poll app.ServicePollerConfig `yaml:"poll"`
+		}
+		Images struct {
 			Poll app.ImagePollerConfig
 		} `yaml:"images"`
 	} `yaml:"backend"`
@@ -44,10 +47,13 @@ func InitConfig() *Config {
 
 	conf.Frontend.Navbar.Search.Providers = config.ResolveProviders(conf.Frontend.Navbar.Search.Providers)
 
-	conf.Backend.Poll.Metrics.Depth = resolveConfigMetricDepth(conf.Backend.Poll)
+	conf.Backend.Services.Poll.Metrics.Depth = resolveConfigMetricDepth(conf.Backend.Services.Poll)
 
-	if conf.Backend.Poll.Interval == 0 || conf.Backend.Poll.Interval < 0 {
-		conf.Backend.Poll.Interval = servicePollInterval
+	if conf.Backend.Services.Poll.Interval == 0 || conf.Backend.Services.Poll.Interval < 0 {
+		conf.Backend.Services.Poll.Interval = servicePollInterval
+	}
+	if conf.Backend.Images.Poll.Interval == 0 || conf.Backend.Images.Poll.Interval < 0 {
+		conf.Backend.Images.Poll.Interval = imagePollInterval
 	}
 
 	if conf.Frontend.AppName == "" {
@@ -59,7 +65,7 @@ func InitConfig() *Config {
 	return &conf
 }
 
-func resolveConfigMetricDepth(conf app.PollerConfig) int {
+func resolveConfigMetricDepth(conf app.ServicePollerConfig) int {
 	if conf.Metrics.Depth > 0 {
 		return conf.Metrics.Depth
 	}
