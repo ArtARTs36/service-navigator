@@ -1,5 +1,9 @@
 rules:
-  "@mr-linter/has_any_labels": {}
+  "@mr-linter/has_any_labels":
+    labels:
+      - enhancement
+      - bug
+      - documentation
 
   "@mr-linter/title_conventional": {}
 
