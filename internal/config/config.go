@@ -23,7 +23,7 @@ type Config struct {
 			Poll app.ServicePollerConfig `yaml:"poll"`
 		} `yaml:"services"`
 		Images struct {
-			Poll app.ImagePollerConfig
+			Poll app.ImagePollerConfig `yaml:"poll"`
 		} `yaml:"images"`
 	} `yaml:"backend"`
 }

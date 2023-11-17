@@ -2,12 +2,14 @@ package monitor
 
 import (
 	"context"
-	"github.com/artarts36/service-navigator/internal/domain"
-	"github.com/artarts36/service-navigator/internal/shared"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
 	"log"
 	"strings"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
+
+	"github.com/artarts36/service-navigator/internal/domain"
+	"github.com/artarts36/service-navigator/internal/shared"
 )
 
 type Monitor struct {

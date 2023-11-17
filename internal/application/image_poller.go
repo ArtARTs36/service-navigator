@@ -2,10 +2,11 @@ package application
 
 import (
 	"context"
-	"github.com/artarts36/service-navigator/internal/infrastructure/image/monitor"
-	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"log"
 	"time"
+
+	"github.com/artarts36/service-navigator/internal/infrastructure/image/monitor"
+	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 )
 
 type ImagePollerConfig struct {
