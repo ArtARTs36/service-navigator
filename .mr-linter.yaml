@@ -1,11 +1,5 @@
 rules:
-  "@mr-linter/has_any_labels":
-    labels:
-      - Feature
-      - Bug
-      - Docs
-      - Tests
-      - CI
+  "@mr-linter/has_any_labels": {}
 
   "@mr-linter/title_conventional": {}
 
