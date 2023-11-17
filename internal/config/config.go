@@ -21,7 +21,7 @@ type Config struct {
 		NetworkName string `yaml:"network_name"`
 		Services    struct {
 			Poll app.ServicePollerConfig `yaml:"poll"`
-		}
+		} `yaml:"services"`
 		Images struct {
 			Poll app.ImagePollerConfig
 		} `yaml:"images"`
