@@ -7,13 +7,7 @@ rules:
       - Tests
       - CI
 
-  "@mr-linter/title_must_starts_with_any_prefix":
-    prefixes:
-      - '[Feature]'
-      - '[Bug]'
-      - '[Docs]'
-      - '[Tests]'
-      - '[CI]'
+  "@mr-linter/title_conventional": {}
 
   "@mr-linter/description_not_empty": {}
 
