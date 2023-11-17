@@ -1,0 +1,16 @@
+{% extends "layout/base.twig.html" %}
+
+{% block content %}
+<p class="h4">Image "{{ imageID }}" is not deleted</p>
+
+<div class="alert alert-danger" role="alert">
+    {{ error.Error.Error }}
+</div>
+
+{% if error.MustBeForced %}
+    <a href="/images/remove?imageId={{ imageID }}&force=1">
+        <button type="button" class="btn btn-warning">Force delete</button>
+    </a>
+{% endif %}
+
+{% endblock %}

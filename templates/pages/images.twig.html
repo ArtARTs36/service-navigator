@@ -15,6 +15,9 @@
                 <td scope="col">
                     <strong>Size</strong>
                 </td>
+                <td scope="col">
+                    <strong>Actions</strong>
+                </td>
             </tr>
             </thead>
             <tbody>
@@ -25,6 +28,9 @@
                 </td>
                 <td>
                     {{ image.SizeText }}
+                </td>
+                <td>
+                    <a href="/images/remove?imageId={{ image.ID }}"><i class="fa-solid fa-trash-can link-action-stop"></i></a>
                 </td>
             </tr>
             {% endfor %}

@@ -7,10 +7,21 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"log"
+	"strings"
 )
 
 type Monitor struct {
 	docker *client.Client
+}
+
+type RemovedImage struct {
+	Deleted  string
+	Untagged string
+}
+
+type RemoveError struct {
+	Error        error
+	MustBeForced bool
 }
 
 func NewMonitor(docker *client.Client) *Monitor {
@@ -49,4 +60,27 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 	}
 
 	return images, nil
+}
+
+func (m *Monitor) Remove(ctx context.Context, imageID string, force bool) ([]*RemovedImage, *RemoveError) {
+	items, err := m.docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{
+		Force: force,
+	})
+	if err != nil {
+		return nil, &RemoveError{
+			Error:        err,
+			MustBeForced: strings.Contains(err.Error(), "must be forced"),
+		}
+	}
+
+	removed := make([]*RemovedImage, 0, len(items))
+
+	for _, item := range items {
+		removed = append(removed, &RemovedImage{
+			Deleted:  item.Deleted,
+			Untagged: item.Untagged,
+		})
+	}
+
+	return removed, nil
 }

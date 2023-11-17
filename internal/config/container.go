@@ -31,6 +31,7 @@ type Container struct {
 			HomePageHandler      *handlers.HomePageHandler
 			ContainerKillHandler *handlers.ContainerKillHandler
 			ImageListHandler     *handlers.ImageListHandler
+			ImageRemoveHandler   *handlers.ImageRemoveHandler
 		}
 	}
 	Presentation struct {
@@ -86,6 +87,10 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 	)
 	cont.HTTP.Handlers.ImageListHandler = handlers.NewImageListHandler(
 		cont.Images.Repository,
+		cont.Presentation.Renderer,
+	)
+	cont.HTTP.Handlers.ImageRemoveHandler = handlers.NewImageRemoveHandler(
+		cont.Images.Monitor,
 		cont.Presentation.Renderer,
 	)
 
