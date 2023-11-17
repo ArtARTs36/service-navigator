@@ -1,0 +1,36 @@
+{% extends "layout/base.twig.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="bg-light p-5 rounded">
+        <p class="h4">Images ({{ images | length }}) </p>
+
+        <table class="table bordered">
+            <thead>
+            <tr>
+                <td scope="col">
+                    <strong>Name</strong>
+                </td>
+                <td scope="col">
+                    <strong>Size</strong>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for image in images %}
+            <tr class="table-row">
+                <td>
+                    {{ image.Name }}
+                </td>
+                <td>
+                    {{ image.SizeText }}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

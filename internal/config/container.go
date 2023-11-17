@@ -3,13 +3,15 @@ package config
 import (
 	"fmt"
 
+	"github.com/docker/docker/client"
+
 	"github.com/artarts36/service-navigator/internal/application"
+	imgmonitor "github.com/artarts36/service-navigator/internal/infrastructure/image/monitor"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 	"github.com/artarts36/service-navigator/internal/presentation/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
-	"github.com/docker/docker/client"
 )
 
 type Container struct {
@@ -19,10 +21,16 @@ type Container struct {
 		Repository *repository.ServiceRepository
 		Poller     *application.Poller
 	}
+	Images struct {
+		Monitor    *imgmonitor.Monitor
+		Repository *repository.ImageRepository
+		Poller     *application.ImagePoller
+	}
 	HTTP struct {
 		Handlers struct {
 			HomePageHandler      *handlers.HomePageHandler
 			ContainerKillHandler *handlers.ContainerKillHandler
+			ImageListHandler     *handlers.ImageListHandler
 		}
 	}
 	Presentation struct {
@@ -65,11 +73,19 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 		&conf.Backend.Poll,
 	)
 
+	cont.Images.Monitor = imgmonitor.NewMonitor(docker)
+	cont.Images.Repository = &repository.ImageRepository{}
+	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &conf.Backend.Images.Poll)
+
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, conf)
 	cont.HTTP.Handlers.HomePageHandler = handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer)
 	cont.HTTP.Handlers.ContainerKillHandler = handlers.NewContainerKillHandler(
 		cont.Services.Monitor,
+		cont.Presentation.Renderer,
+	)
+	cont.HTTP.Handlers.ImageListHandler = handlers.NewImageListHandler(
+		cont.Images.Repository,
 		cont.Presentation.Renderer,
 	)
 

@@ -11,7 +11,7 @@ type Service struct {
 	Self          bool
 	MemoryHistory *shared.MeasurementMetricBuffer
 	CPUHistory    *shared.MeasurementMetricBuffer
-	Image         Image
+	Image         ImageShort
 }
 
 type ServiceStatus struct {
@@ -23,7 +23,7 @@ type ServiceStatus struct {
 	Self        bool
 	Memory      *shared.MeasurementMetric
 	CPU         *shared.MeasurementMetric
-	Image       Image
+	Image       ImageShort
 }
 
 func NewService(metricDepth int, metricUnique bool) *Service {

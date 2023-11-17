@@ -13,11 +13,11 @@ import (
 func TestImageFiller_Fill(t *testing.T) {
 	cases := []struct {
 		containerShortImage string
-		expectedImage       domain.Image
+		expectedImage       domain.ImageShort
 	}{
 		{
 			containerShortImage: "vendor/image",
-			expectedImage: domain.Image{
+			expectedImage: domain.ImageShort{
 				Name:        "vendor/image",
 				Version:     "latest",
 				RegistryURL: "https://hub.docker.com/r/vendor/image",
@@ -25,7 +25,7 @@ func TestImageFiller_Fill(t *testing.T) {
 		},
 		{
 			containerShortImage: "vendor/image:v1",
-			expectedImage: domain.Image{
+			expectedImage: domain.ImageShort{
 				Name:        "vendor/image",
 				Version:     "v1",
 				RegistryURL: "https://hub.docker.com/r/vendor/image",
@@ -33,7 +33,7 @@ func TestImageFiller_Fill(t *testing.T) {
 		},
 		{
 			containerShortImage: "image:v1",
-			expectedImage: domain.Image{
+			expectedImage: domain.ImageShort{
 				Name:        "image",
 				Version:     "v1",
 				RegistryURL: "https://hub.docker.com/_/image",
@@ -41,7 +41,7 @@ func TestImageFiller_Fill(t *testing.T) {
 		},
 		{
 			containerShortImage: "registry.io/vendor/image",
-			expectedImage: domain.Image{
+			expectedImage: domain.ImageShort{
 				Name:        "registry.io/vendor/image",
 				Version:     "latest",
 				RegistryURL: "http://registry.io/vendor/image",
@@ -49,7 +49,7 @@ func TestImageFiller_Fill(t *testing.T) {
 		},
 		{
 			containerShortImage: "registry.io/vendor/image:v1",
-			expectedImage: domain.Image{
+			expectedImage: domain.ImageShort{
 				Name:        "registry.io/vendor/image",
 				Version:     "v1",
 				RegistryURL: "http://registry.io/vendor/image",

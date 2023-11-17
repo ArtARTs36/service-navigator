@@ -8,6 +8,10 @@ frontend:
   # Navbar in header
   navbar:
     links:
+      - url: /
+        title: Services
+      - url: /images
+        title: Images
       - url: http://github.com/artarts36/service-navigator
         title: Github
     profile:

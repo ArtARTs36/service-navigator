@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	poller "github.com/artarts36/service-navigator/internal/application"
+	app "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/presentation/config"
 	"gopkg.in/yaml.v3"
 )
@@ -17,8 +17,11 @@ const servicePollInterval = 1 * time.Second
 type Config struct {
 	Frontend config.Frontend `yaml:"frontend"`
 	Backend  struct {
-		NetworkName string              `yaml:"network_name"`
-		Poll        poller.PollerConfig `yaml:"poll"`
+		NetworkName string           `yaml:"network_name"`
+		Poll        app.PollerConfig `yaml:"poll"`
+		Images      struct {
+			Poll app.ImagePollerConfig
+		} `yaml:"images"`
 	} `yaml:"backend"`
 }
 
@@ -56,7 +59,7 @@ func InitConfig() *Config {
 	return &conf
 }
 
-func resolveConfigMetricDepth(conf poller.PollerConfig) int {
+func resolveConfigMetricDepth(conf app.PollerConfig) int {
 	if conf.Metrics.Depth > 0 {
 		return conf.Metrics.Depth
 	}

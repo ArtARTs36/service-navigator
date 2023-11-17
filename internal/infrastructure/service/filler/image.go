@@ -47,7 +47,7 @@ func (f *ImageFiller) Fill(service *domain.ServiceStatus, container *datastruct.
 			version = partsByVersion[1]
 		}
 
-		service.Image = domain.Image{
+		service.Image = domain.ImageShort{
 			Name:        imageName,
 			Version:     version,
 			RegistryURL: fmt.Sprintf("https://hub.docker.com/r/%s/%s", imageNameParts[0], partsByVersion[0]),
@@ -70,15 +70,15 @@ func (f *ImageFiller) Fill(service *domain.ServiceStatus, container *datastruct.
 		version = partsByVersion[1]
 	}
 
-	service.Image = domain.Image{
+	service.Image = domain.ImageShort{
 		Name:        imageName,
 		Version:     version,
 		RegistryURL: "http://" + imageName,
 	}
 }
 
-func (f *ImageFiller) createOfficialDockerImage(name string, version string) domain.Image {
-	return domain.Image{
+func (f *ImageFiller) createOfficialDockerImage(name string, version string) domain.ImageShort {
+	return domain.ImageShort{
 		Name:        name,
 		Version:     version,
 		RegistryURL: fmt.Sprintf("https://hub.docker.com/_/%s", name),

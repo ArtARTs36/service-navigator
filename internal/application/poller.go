@@ -41,7 +41,7 @@ func (p *Poller) Poll() {
 		statuses, err := p.monitor.Show(context.Background())
 
 		if err != nil {
-			log.Printf("[Poll] Failed to load statuses: %s", err)
+			log.Printf("[Service][Poll] Failed to load statuses: %s", err)
 
 			continue
 		}
