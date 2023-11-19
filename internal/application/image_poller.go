@@ -33,6 +33,7 @@ func NewImagePoller(
 
 func (p *ImagePoller) Poll(reqs chan bool) {
 	tick := time.Tick(p.config.Interval)
+	ticked := false
 
 	for {
 		select {
@@ -52,6 +53,17 @@ func (p *ImagePoller) Poll(reqs chan bool) {
 			}
 
 			log.Printf("[Image][Poll] sleep %.2f seconds", p.config.Interval.Seconds())
+		default:
+			if !ticked {
+				err := p.poll()
+				if err != nil {
+					log.Printf("[Image][Poll] Failed to load statuses: %s", err)
+					continue
+				}
+
+				log.Printf("[Image][Poll] sleep %.2f seconds", p.config.Interval.Seconds())
+				ticked = true
+			}
 		}
 	}
 }
