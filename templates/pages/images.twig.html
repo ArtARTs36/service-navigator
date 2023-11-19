@@ -3,10 +3,11 @@
 {% block content %}
 
 <div class="container">
-    <div class="bg-light p-5 rounded">
+    <div class="bg-light rounded">
         <p class="h4">Images ({{ images | length }}) </p>
 
-        <table class="table bordered">
+        <div class="table-responsive">
+            <table class="table bordered">
             <thead>
             <tr>
                 <td scope="col">
@@ -36,6 +37,7 @@
             {% endfor %}
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 
