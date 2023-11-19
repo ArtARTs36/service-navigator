@@ -4,7 +4,10 @@
 
 <div class="container">
     <div class="bg-light rounded">
-        <p class="h4">Images ({{ images | length }}) </p>
+        <p>
+            <span class="h4">Images ({{ images | length }})</span>
+            <span class="h5"><a href="/images/refresh"><i class="fa-solid fa-arrows-rotate link-action-refresh "></i></a></span>
+        </p>
 
         <div class="table-responsive">
             <table class="table bordered">

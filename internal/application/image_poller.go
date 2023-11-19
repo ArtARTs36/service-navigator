@@ -31,21 +31,43 @@ func NewImagePoller(
 	}
 }
 
-func (p *ImagePoller) Poll() {
+func (p *ImagePoller) Poll(reqs chan bool) {
+	tick := time.Tick(p.config.Interval)
+
 	for {
-		images, err := p.monitor.Show(context.Background())
+		select {
+		case <-reqs:
+			log.Print("[Image][Poll] Given user request")
 
-		if err != nil {
-			log.Printf("[Image][Poll] Failed to load statuses: %s", err)
+			err := p.poll()
+			if err != nil {
+				log.Printf("[Image][Poll] Failed to load statuses: %s", err)
+				continue
+			}
+		case <-tick:
+			err := p.poll()
+			if err != nil {
+				log.Printf("[Image][Poll] Failed to load statuses: %s", err)
+				continue
+			}
 
-			continue
+			log.Printf("[Image][Poll] sleep %.2f seconds", p.config.Interval.Seconds())
 		}
-
-		log.Printf("[Image][Poll] loaded %d images", len(images))
-		log.Printf("[Image][Poll] sleep %.2f seconds", p.config.Interval.Seconds())
-
-		p.images.Set(images)
-
-		time.Sleep(p.config.Interval)
 	}
+}
+
+func (p *ImagePoller) poll() error {
+	images, err := p.monitor.Show(context.Background())
+
+	if err != nil {
+		log.Printf("[Image][Poll] Failed to load images: %s", err)
+
+		return err
+	}
+
+	log.Printf("[Image][Poll] loaded %d images", len(images))
+
+	p.images.Set(images)
+
+	return nil
 }

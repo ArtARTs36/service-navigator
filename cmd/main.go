@@ -18,7 +18,7 @@ func main() {
 	}()
 
 	go func() {
-		cont.Images.Poller.Poll()
+		cont.Images.Poller.Poll(cont.Images.PollRequestsChannel)
 	}()
 
 	mux := http.NewServeMux()
@@ -47,6 +47,7 @@ func bindRoutes(mux *http.ServeMux, cont *config.Container) {
 	mux.Handle("/containers/kill", cont.HTTP.Handlers.ContainerKillHandler)
 	mux.Handle("/images", cont.HTTP.Handlers.ImageListHandler)
 	mux.Handle("/images/remove", cont.HTTP.Handlers.ImageRemoveHandler)
+	mux.Handle("/images/refresh", cont.HTTP.Handlers.ImageRefreshHandler)
 }
 
 func bindFileServer(mux *http.ServeMux) {

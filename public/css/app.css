@@ -55,3 +55,11 @@
 .link-docker:hover {
     color: #384d54;
 }
+
+.link-action-refresh {
+    color: #27ae60;
+}
+
+.link-action-refresh:hover {
+    color: #2ecc71;
+}

@@ -22,9 +22,10 @@ type Container struct {
 		Poller     *application.ServicePoller
 	}
 	Images struct {
-		Monitor    *imgmonitor.Monitor
-		Repository *repository.ImageRepository
-		Poller     *application.ImagePoller
+		Monitor             *imgmonitor.Monitor
+		Repository          *repository.ImageRepository
+		Poller              *application.ImagePoller
+		PollRequestsChannel chan bool
 	}
 	HTTP struct {
 		Handlers struct {
@@ -32,6 +33,7 @@ type Container struct {
 			ContainerKillHandler *handlers.ContainerKillHandler
 			ImageListHandler     *handlers.ImageListHandler
 			ImageRemoveHandler   *handlers.ImageRemoveHandler
+			ImageRefreshHandler  *handlers.ImageRefreshHandler
 		}
 	}
 	Presentation struct {
@@ -77,6 +79,7 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 	cont.Images.Monitor = imgmonitor.NewMonitor(docker)
 	cont.Images.Repository = &repository.ImageRepository{}
 	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &conf.Backend.Images.Poll)
+	cont.Images.PollRequestsChannel = make(chan bool)
 
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, conf)
@@ -93,6 +96,7 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 		cont.Images.Monitor,
 		cont.Presentation.Renderer,
 	)
+	cont.HTTP.Handlers.ImageRefreshHandler = handlers.NewImageRefreshHandler(cont.Images.PollRequestsChannel)
 
 	return cont
 }
