@@ -1,8 +1,13 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 	"time"
 
 	"github.com/artarts36/service-navigator/internal/config"
@@ -13,14 +18,57 @@ const httpReadTimeout = 3 * time.Second
 func main() {
 	cont := config.InitContainer()
 
-	go func() {
-		cont.Services.Poller.Poll()
-	}()
+	ctx, cancel := context.WithCancel(context.Background())
 
-	go func() {
-		cont.Images.Poller.Poll(cont.Images.PollRequestsChannel)
-	}()
+	hServer := createHttpServer(cont)
 
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := startWorkers([]func(group *sync.WaitGroup){
+		func(wg *sync.WaitGroup) {
+			cont.Services.Poller.Poll(ctx, wg)
+		},
+		func(wg *sync.WaitGroup) {
+			cont.Images.Poller.Poll(ctx, wg, cont.Images.PollRequestsChannel)
+		},
+		func(wg *sync.WaitGroup) {
+			defer wg.Done()
+
+			log.Printf("[Http][Server] Listening on %s", hServer.Addr)
+
+			if err := hServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("[Http][Server] Listen: %s\n", err)
+			}
+
+			log.Print("[Http][Server] Started")
+		},
+	})
+
+	<-done
+	if err := hServer.Shutdown(ctx); err != nil {
+		log.Fatalf("[Http][Server] Server shutdown failed:%+v", err)
+	}
+
+	log.Print("Cancelling root context")
+	cancel()
+
+	wg.Wait()
+}
+
+func startWorkers(workers []func(wg *sync.WaitGroup)) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+
+	for _, worker := range workers {
+		wg.Add(1)
+
+		go worker(wg)
+	}
+
+	return wg
+}
+
+func createHttpServer(cont *config.Container) *http.Server {
 	mux := http.NewServeMux()
 
 	bindRoutes(mux, cont)
@@ -32,14 +80,7 @@ func main() {
 		ReadTimeout: httpReadTimeout,
 	}
 
-	log.Print("Listening...")
-
-	err := hServer.ListenAndServe()
-	if err != nil {
-		log.Printf("Failed listeing: %s", err)
-
-		return
-	}
+	return hServer
 }
 
 func bindRoutes(mux *http.ServeMux, cont *config.Container) {
