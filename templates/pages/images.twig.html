@@ -22,6 +22,9 @@
                 <td scope="col">
                     <strong>Actions</strong>
                 </td>
+                <td scope="col">
+                    <strong>Links</strong>
+                </td>
             </tr>
             </thead>
             <tbody>
@@ -35,6 +38,13 @@
                 </td>
                 <td>
                     <a href="/images/remove?imageId={{ image.ID }}"><i class="fa-solid fa-trash-can link-action-stop"></i></a>
+                </td>
+                <td>
+                    {% if image.Short.RegistryURL %}
+                    <a href="{{ image.Short.RegistryURL }}" class="link-docker">
+                        <i class="fa-brands fa-docker"></i>
+                    </a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

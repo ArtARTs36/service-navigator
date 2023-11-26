@@ -2,6 +2,7 @@ package monitor
 
 import (
 	"context"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
 	"log"
 	"strings"
 
@@ -14,6 +15,7 @@ import (
 
 type Monitor struct {
 	docker *client.Client
+	filler Filler
 }
 
 type RemovedImage struct {
@@ -26,9 +28,10 @@ type RemoveError struct {
 	MustBeForced bool
 }
 
-func NewMonitor(docker *client.Client) *Monitor {
+func NewMonitor(docker *client.Client, filler Filler) *Monitor {
 	return &Monitor{
 		docker: docker,
+		filler: filler,
 	}
 }
 
@@ -53,11 +56,17 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 			continue
 		}
 
-		images = append(images, &domain.Image{
+		img := &domain.Image{
 			ID:       image.ID,
 			Name:     name,
 			Size:     image.Size,
 			SizeText: shared.BytesToReadableText(image.Size),
+		}
+
+		images = append(images, img)
+
+		m.filler.Fill(img, &datastruct.ImageMeta{
+			URI: name,
 		})
 	}
 

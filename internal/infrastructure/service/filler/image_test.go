@@ -3,11 +3,13 @@ package filler_test
 import (
 	"testing"
 
-	"github.com/artarts36/service-navigator/internal/domain"
-	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
-	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 	"github.com/docker/docker/api/types"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/artarts36/service-navigator/internal/domain"
+	"github.com/artarts36/service-navigator/internal/infrastructure/image/parser"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 )
 
 func TestImageFiller_Fill(t *testing.T) {
@@ -57,7 +59,7 @@ func TestImageFiller_Fill(t *testing.T) {
 		},
 	}
 
-	imgFiller := filler.ImageFiller{}
+	imgFiller := filler.NewImageFiller(&parser.ImageParser{})
 
 	for _, tCase := range cases {
 		service := &domain.ServiceStatus{}

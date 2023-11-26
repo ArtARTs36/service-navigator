@@ -6,7 +6,9 @@ import (
 	"github.com/docker/docker/client"
 
 	"github.com/artarts36/service-navigator/internal/application"
+	imgfiller "github.com/artarts36/service-navigator/internal/infrastructure/image/filler"
 	imgmonitor "github.com/artarts36/service-navigator/internal/infrastructure/image/monitor"
+	"github.com/artarts36/service-navigator/internal/infrastructure/image/parser"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
@@ -54,6 +56,8 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 		panic(fmt.Sprintf("Failed to create docker client: %s", err))
 	}
 
+	imgparser := &parser.ImageParser{}
+
 	cont.Services.Monitor = monitor.NewMonitor(docker, filler.NewCompositeFiller([]monitor.Filler{
 		filler.NewOrFiller([]monitor.Filler{
 			filler.NewNginxProxyURLFiller(),
@@ -66,7 +70,7 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 		}),
 		&filler.MemoryFiller{},
 		&filler.CPUFiller{},
-		&filler.ImageFiller{},
+		filler.NewImageFiller(imgparser),
 	}), conf.Backend.NetworkName, env.CurrentContainerID)
 
 	cont.Services.Repository = &repository.ServiceRepository{}
@@ -76,7 +80,9 @@ func initContainerWithConfig(env *Environment, conf *Config) *Container {
 		&conf.Backend.Services.Poll,
 	)
 
-	cont.Images.Monitor = imgmonitor.NewMonitor(docker)
+	cont.Images.Monitor = imgmonitor.NewMonitor(docker, imgfiller.NewCompositeFiller([]imgmonitor.Filler{
+		imgfiller.NewShortFiller(imgparser),
+	}))
 	cont.Images.Repository = &repository.ImageRepository{}
 	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &conf.Backend.Images.Poll)
 	cont.Images.PollRequestsChannel = make(chan bool)
