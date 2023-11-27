@@ -2,10 +2,8 @@ package config
 
 import (
 	"fmt"
-	"os/exec"
-	"strings"
-
 	log "github.com/sirupsen/logrus"
+	"os"
 
 	"github.com/kelseyhightower/envconfig"
 )
@@ -26,27 +24,17 @@ func InitEnvironment() *Environment {
 		panic(fmt.Sprintf("Failed to load environment: %s", err))
 	}
 
-	selfContID := getSelfContainerID()
+	selfContID, err := os.Hostname()
 
 	if selfContID != "" {
 		log.Debugf("Self config id: %s", selfContID)
 
 		env.CurrentContainerID = selfContID
+	} else if err != nil {
+		log.Warnf("failed to fetch hostname: %s", err)
 	}
 
 	log.Debugf("Environment loaded: %v", env)
 
 	return &env
-}
-
-func getSelfContainerID() string {
-	hostNameCmd := exec.Command("cat", "/etc/hostname")
-
-	selfContID, err := hostNameCmd.Output()
-
-	if err != nil {
-		log.Warnf("Failed to cat /etc/hostname: %s", err)
-	}
-
-	return strings.TrimSpace(string(selfContID))
 }
