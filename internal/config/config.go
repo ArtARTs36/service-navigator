@@ -2,13 +2,14 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
+
 	app "github.com/artarts36/service-navigator/internal/application"
 	"github.com/artarts36/service-navigator/internal/presentation/config"
-	"gopkg.in/yaml.v3"
 )
 
 const serviceMetricDepth = 50
@@ -26,6 +27,9 @@ type Config struct {
 			Poll app.ImagePollerConfig `yaml:"poll"`
 		} `yaml:"images"`
 	} `yaml:"backend"`
+	Parameters struct {
+		LogLevel string `yaml:"log_level"`
+	} `yaml:"parameters"`
 }
 
 func InitConfig() *Config {

@@ -60,3 +60,10 @@ backend:
       #
       # Default: "1m"
       interval: "1m"
+
+# Application parameters
+parameters:
+  # Log Level
+  #
+  # Available values: trace, debug, info, warn, error, fatal, panic
+  log_level: debug

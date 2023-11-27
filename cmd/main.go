@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,12 +9,16 @@ import (
 	"syscall"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/artarts36/service-navigator/internal/config"
 )
 
 const httpReadTimeout = 3 * time.Second
 
 func main() {
+	log.SetLevel(log.DebugLevel)
+
 	cont := config.InitContainer()
 
 	ctx, cancel := context.WithCancel(context.Background())

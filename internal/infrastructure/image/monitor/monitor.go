@@ -2,14 +2,14 @@ package monitor
 
 import (
 	"context"
-	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
-	"log"
 	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/artarts36/service-navigator/internal/domain"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
 	"github.com/artarts36/service-navigator/internal/shared"
 )
 

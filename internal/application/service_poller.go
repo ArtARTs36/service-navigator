@@ -2,11 +2,12 @@ package application
 
 import (
 	"context"
-	"github.com/artarts36/service-navigator/internal/domain"
-	"log"
 	"sync"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
+	"github.com/artarts36/service-navigator/internal/domain"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 )

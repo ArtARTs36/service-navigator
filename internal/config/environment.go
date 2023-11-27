@@ -2,9 +2,10 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os/exec"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/kelseyhightower/envconfig"
 )
@@ -17,7 +18,7 @@ type Environment struct {
 func InitEnvironment() *Environment {
 	var env Environment
 
-	log.Print("Loading environment")
+	log.Debug("Loading environment")
 
 	err := envconfig.Process("", &env)
 
@@ -28,12 +29,12 @@ func InitEnvironment() *Environment {
 	selfContID := getSelfContainerID()
 
 	if selfContID != "" {
-		log.Printf("Self config id: %s", selfContID)
+		log.Debugf("Self config id: %s", selfContID)
 
 		env.CurrentContainerID = selfContID
 	}
 
-	log.Printf("Environment loaded: %v", env)
+	log.Debugf("Environment loaded: %v", env)
 
 	return &env
 }
@@ -44,7 +45,7 @@ func getSelfContainerID() string {
 	selfContID, err := hostNameCmd.Output()
 
 	if err != nil {
-		log.Printf("Failed to cat /etc/hostname: %s", err)
+		log.Warnf("Failed to cat /etc/hostname: %s", err)
 	}
 
 	return strings.TrimSpace(string(selfContID))

@@ -2,9 +2,10 @@ package application
 
 import (
 	"context"
-	"log"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/artarts36/service-navigator/internal/infrastructure/image/monitor"
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
