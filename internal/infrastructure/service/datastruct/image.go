@@ -1,5 +1,6 @@
 package datastruct
 
 type ImageMeta struct {
-	URI string
+	URI    string
+	Labels map[string]string
 }

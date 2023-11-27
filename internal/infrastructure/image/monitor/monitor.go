@@ -66,7 +66,8 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 		images = append(images, img)
 
 		m.filler.Fill(img, &datastruct.ImageMeta{
-			URI: name,
+			URI:    name,
+			Labels: image.Labels,
 		})
 	}
 

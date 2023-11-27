@@ -2,7 +2,6 @@ package filler
 
 import (
 	"errors"
-
 	log "github.com/sirupsen/logrus"
 
 	"github.com/artarts36/service-navigator/internal/domain"
@@ -13,15 +12,15 @@ import (
 type VCSFiller struct {
 }
 
-func (r *VCSFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
-	vcs, err := vcs2.ParseFromLabels(container.Short.Labels)
+func (f *VCSFiller) Fill(image *domain.Image, meta *datastruct.ImageMeta) {
+	vcs, err := vcs2.ParseFromLabels(meta.Labels)
 	if err != nil {
 		if !errors.Is(err, vcs2.NotFoundError) {
-			log.Warnf("[Service][VCSFiller] vcs resolving failed: %s", err)
+			log.Warnf("[Image][VCSFiller] vcs resolving failed: %s", err)
 		}
 
 		return
 	}
 
-	service.VCS = vcs
+	image.VCS = vcs
 }

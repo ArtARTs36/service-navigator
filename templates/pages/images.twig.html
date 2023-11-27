@@ -40,6 +40,10 @@
                     <a href="/images/remove?imageId={{ image.ID }}"><i class="fa-solid fa-trash-can link-action-stop"></i></a>
                 </td>
                 <td>
+                    {% if image.VCS.URL %}
+                    <a href="{{ image.VCS.URL }}" class="link-{{ image.VCS.Type }}">{% if image.VCS.Type %}<i class="fa-brands fa-{{ image.VCS.Type }}"></i>{% else %}{{ image.VCS.Host }}{% endif %}</a>
+                    {% endif %}
+
                     {% if image.Short.RegistryURL %}
                     <a href="{{ image.Short.RegistryURL }}" class="link-docker">
                         <i class="fa-brands fa-docker"></i>

@@ -6,6 +6,7 @@ type Image struct {
 	Size     int64
 	SizeText string
 	Short    ImageShort
+	VCS      *VCS
 }
 
 type ImageShort struct {
