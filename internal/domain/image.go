@@ -7,6 +7,7 @@ type Image struct {
 	SizeText string
 	Short    ImageShort
 	VCS      *VCS
+	Unknown  bool
 }
 
 type ImageShort struct {

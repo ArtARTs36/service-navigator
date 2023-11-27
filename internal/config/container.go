@@ -86,8 +86,10 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 	)
 
 	cont.Images.Monitor = imgmonitor.NewMonitor(docker, imgfiller.NewCompositeFiller([]imgmonitor.Filler{
-		imgfiller.NewShortFiller(imgparser),
-		&imgfiller.VCSFiller{},
+		&imgfiller.UnknownFiller{},
+		&imgfiller.NameFiller{},
+		imgfiller.WhenKnownImage(imgfiller.NewShortFiller(imgparser)),
+		imgfiller.WhenKnownImage(&imgfiller.VCSFiller{}),
 	}))
 	cont.Images.Repository = &repository.ImageRepository{}
 	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &cfg.Backend.Images.Poll)

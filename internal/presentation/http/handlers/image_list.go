@@ -24,6 +24,10 @@ func (h *ImageListHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 	images := h.images.All()
 
 	sort.SliceStable(images, func(i, j int) bool {
+		if images[i].Unknown {
+			return false
+		}
+
 		return images[i].Name < images[j].Name ||
 			(images[i].Name == images[j].Name && images[i].ID < images[j].ID)
 	})

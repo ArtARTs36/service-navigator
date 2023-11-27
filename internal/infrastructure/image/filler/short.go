@@ -14,8 +14,8 @@ func NewShortFiller(parser *parser.ImageParser) *ShortFiller {
 	return &ShortFiller{parser: parser}
 }
 
-func (f *ShortFiller) Fill(image *domain.Image, meta *datastruct.ImageMeta) {
-	short := f.parser.ParseFromURL(meta.URI)
+func (f *ShortFiller) Fill(image *domain.Image, _ *datastruct.ImageMeta) {
+	short := f.parser.ParseFromURL(image.Name)
 
 	if short == nil {
 		return

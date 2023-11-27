@@ -38,7 +38,7 @@ func NewMonitor(docker *client.Client, filler Filler) *Monitor {
 func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 	summary, err := m.docker.ImageList(ctx, types.ImageListOptions{})
 
-	log.Printf("[Image][Monitor] Fetched %d images", len(summary))
+	log.Debugf("[Image][Monitor] Fetched %d images", len(summary))
 
 	if err != nil {
 		return nil, err
@@ -51,14 +51,8 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 			continue
 		}
 
-		name := image.RepoTags[0]
-		if name == "<none>:<none>" {
-			continue
-		}
-
 		img := &domain.Image{
 			ID:       image.ID,
-			Name:     name,
 			Size:     image.Size,
 			SizeText: shared.BytesToReadableText(image.Size),
 		}
@@ -66,9 +60,11 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 		images = append(images, img)
 
 		m.filler.Fill(img, &datastruct.ImageMeta{
-			URI:    name,
-			Labels: image.Labels,
+			Labels:   image.Labels,
+			RepoTags: image.RepoTags,
 		})
+
+		log.Print(img.Name)
 	}
 
 	return images, nil
