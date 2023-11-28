@@ -13,15 +13,17 @@ import (
 type VCSFiller struct {
 }
 
-func (r *VCSFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
-	vcs, err := vcs2.ParseFromLabels(container.Short.Labels)
+func (f *VCSFiller) Fill(image *domain.Image, meta *datastruct.ImageMeta) {
+	vcs, err := vcs2.ParseFromLabels(meta.Labels)
 	if err != nil {
 		if !errors.Is(err, vcs2.ErrNotFound) {
-			log.Warnf("[Service][VCSFiller] vcs resolving failed: %s", err)
+			log.
+				WithField("image", image.Name).
+				Warnf("[Image][VCSFiller] vcs resolving failed: %s", err)
 		}
 
 		return
 	}
 
-	service.VCS = vcs
+	image.VCS = vcs
 }

@@ -5,6 +5,9 @@ type Image struct {
 	Name     string
 	Size     int64
 	SizeText string
+	Short    ImageShort
+	VCS      *VCS
+	Unknown  bool
 }
 
 type ImageShort struct {

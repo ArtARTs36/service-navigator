@@ -6,6 +6,7 @@ require (
 	github.com/docker/docker v24.0.5+incompatible
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/mitchellh/hashstructure v1.1.0
+	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tyler-sommer/stick v1.0.6
 	gopkg.in/yaml.v3 v3.0.1

@@ -2,18 +2,20 @@ package monitor
 
 import (
 	"context"
-	"log"
 	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/artarts36/service-navigator/internal/domain"
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/datastruct"
 	"github.com/artarts36/service-navigator/internal/shared"
 )
 
 type Monitor struct {
 	docker *client.Client
+	filler Filler
 }
 
 type RemovedImage struct {
@@ -26,16 +28,17 @@ type RemoveError struct {
 	MustBeForced bool
 }
 
-func NewMonitor(docker *client.Client) *Monitor {
+func NewMonitor(docker *client.Client, filler Filler) *Monitor {
 	return &Monitor{
 		docker: docker,
+		filler: filler,
 	}
 }
 
 func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 	summary, err := m.docker.ImageList(ctx, types.ImageListOptions{})
 
-	log.Printf("[Image][Monitor] Fetched %d images", len(summary))
+	log.Debugf("[Image][Monitor] Fetched %d images", len(summary))
 
 	if err != nil {
 		return nil, err
@@ -48,16 +51,17 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 			continue
 		}
 
-		name := image.RepoTags[0]
-		if name == "<none>:<none>" {
-			continue
-		}
-
-		images = append(images, &domain.Image{
+		img := &domain.Image{
 			ID:       image.ID,
-			Name:     name,
 			Size:     image.Size,
 			SizeText: shared.BytesToReadableText(image.Size),
+		}
+
+		images = append(images, img)
+
+		m.filler.Fill(img, &datastruct.ImageMeta{
+			Labels:   image.Labels,
+			RepoTags: image.RepoTags,
 		})
 	}
 
