@@ -63,8 +63,6 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 			Labels:   image.Labels,
 			RepoTags: image.RepoTags,
 		})
-
-		log.Print(img.Name)
 	}
 
 	return images, nil
