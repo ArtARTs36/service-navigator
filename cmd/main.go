@@ -23,7 +23,7 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	hServer := createHttpServer(cont)
+	hServer := createHTTPServer(cont)
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
@@ -71,7 +71,7 @@ func startWorkers(workers []func(wg *sync.WaitGroup)) *sync.WaitGroup {
 	return wg
 }
 
-func createHttpServer(cont *config.Container) *http.Server {
+func createHTTPServer(cont *config.Container) *http.Server {
 	mux := http.NewServeMux()
 
 	bindRoutes(mux, cont)

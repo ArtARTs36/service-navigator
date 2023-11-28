@@ -16,7 +16,7 @@ type VCSFiller struct {
 func (f *VCSFiller) Fill(image *domain.Image, meta *datastruct.ImageMeta) {
 	vcs, err := vcs2.ParseFromLabels(meta.Labels)
 	if err != nil {
-		if !errors.Is(err, vcs2.NotFoundError) {
+		if !errors.Is(err, vcs2.ErrNotFound) {
 			log.
 				WithField("image", image.Name).
 				Warnf("[Image][VCSFiller] vcs resolving failed: %s", err)

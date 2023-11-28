@@ -16,7 +16,7 @@ type VCSFiller struct {
 func (r *VCSFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
 	vcs, err := vcs2.ParseFromLabels(container.Short.Labels)
 	if err != nil {
-		if !errors.Is(err, vcs2.NotFoundError) {
+		if !errors.Is(err, vcs2.ErrNotFound) {
 			log.Warnf("[Service][VCSFiller] vcs resolving failed: %s", err)
 		}
 

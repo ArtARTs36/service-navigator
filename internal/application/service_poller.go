@@ -41,7 +41,7 @@ func NewServicePoller(
 func (p *ServicePoller) Poll(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	tick := time.Tick(p.config.Interval)
+	tick := time.NewTicker(p.config.Interval).C
 
 	for {
 		select {

@@ -2,10 +2,10 @@ package config
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"os"
 
 	"github.com/kelseyhightower/envconfig"
+	log "github.com/sirupsen/logrus"
 )
 
 type Environment struct {

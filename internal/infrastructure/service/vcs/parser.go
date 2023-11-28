@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/url"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/artarts36/service-navigator/internal/domain"
 )
 
@@ -14,11 +16,9 @@ const labelBitbucketRepository = "org.service_navigator.bitbucket_repository"
 
 const labelOpenContainerImageSource = "org.opencontainers.image.source"
 
-var NotFoundError = errors.New("vcs not found")
+var ErrNotFound = errors.New("vcs not found")
 
 func ParseFromLabels(labels map[string]string) (*domain.VCS, error) {
-	var err error
-
 	for key, val := range labels {
 		if key == labelGitlabRepository {
 			return &domain.VCS{
@@ -45,7 +45,7 @@ func ParseFromLabels(labels map[string]string) (*domain.VCS, error) {
 			vcsType, vcsHost, tErr := parseTypeByRawURL(val)
 
 			if tErr != nil {
-				err = fmt.Errorf("unable to parse url \"%s\": %v", val, tErr)
+				log.Warnf("unable to parse url \"%s\": %v", val, tErr)
 			}
 
 			return &domain.VCS{
@@ -56,11 +56,7 @@ func ParseFromLabels(labels map[string]string) (*domain.VCS, error) {
 		}
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
-	return nil, NotFoundError
+	return nil, ErrNotFound
 }
 
 func parseTypeByRawURL(rawURL string) (string, string, error) {

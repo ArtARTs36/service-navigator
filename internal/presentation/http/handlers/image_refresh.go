@@ -16,5 +16,5 @@ func (h *ImageRefreshHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) 
 	h.pollRequestChannel <- true
 
 	w.Header().Add("Location", "/images")
-	w.WriteHeader(302)
+	w.WriteHeader(http.StatusFound)
 }

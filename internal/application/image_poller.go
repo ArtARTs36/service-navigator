@@ -36,7 +36,7 @@ func NewImagePoller(
 func (p *ImagePoller) Poll(ctx context.Context, wg *sync.WaitGroup, reqs chan bool) {
 	defer wg.Done()
 
-	tick := time.Tick(p.config.Interval)
+	tick := time.NewTicker(p.config.Interval).C
 	ticked := false
 
 	for {

@@ -14,8 +14,8 @@ const imageVersionPartsCount = 2
 type ImageParser struct {
 }
 
-func (p *ImageParser) ParseFromURL(imageUri string) *domain.ImageShort {
-	imageNameParts := strings.Split(imageUri, "/")
+func (p *ImageParser) ParseFromURL(imageURI string) *domain.ImageShort {
+	imageNameParts := strings.Split(imageURI, "/")
 
 	if len(imageNameParts) == 1 {
 		partsByVersion := strings.Split(imageNameParts[0], ":")
@@ -51,7 +51,7 @@ func (p *ImageParser) ParseFromURL(imageUri string) *domain.ImageShort {
 		}
 	}
 
-	rURL, err := url.Parse(imageUri)
+	rURL, err := url.Parse(imageURI)
 
 	if err != nil {
 		return nil
