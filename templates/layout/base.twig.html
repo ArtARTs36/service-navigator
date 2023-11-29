@@ -17,65 +17,7 @@
 </head>
 <body class="bg-light">
 
-<header class="p-3 mb-3 border-bottom" style="background: #fff">
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none logo">
-                {{ _appName }}
-            </a>
-
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                {% for link in _navBar.Links %}
-                    <li><a href="{{ link.URL }}" class="nav-link px-2 navbar-link">{{ link.Title }}</a></li>
-                {% endfor %}
-            </ul>
-
-            {% if _navBar.Search.Providers | length > 0 %}
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{{ _navBar.Search.Providers[0].URL }}" id="search-form">
-                    <input
-                            type="search"
-                            class="form-control"
-                            name="{{ _navBar.Search.Providers[0].QueryParamName }}"
-                            placeholder="Search..."
-                            aria-label="Search"
-                            id="search-form-query"
-                    />
-                </form>
-
-                {% if _navBar.Search.Providers | length == 1 %}
-                    <a href="#" class="d-block link-dark text-decoration-none" onclick="runSearch()">
-                        <i class="fa-solid fa-search"></i>
-                    </a>
-                {% else %}
-                    <div class="dropdown">
-                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-search"></i>
-                        </a>
-                        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
-                            {% for provider in _navBar.Search.Providers %}
-                                <li><a class="dropdown-item search-dropdown-item" onclick="setSearchProvider('{{ provider.URL }}', '{{ provider.QueryParamName }}'); runSearch()">{{ provider.Name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-            {% endif %}
-
-            <div>&nbsp;</div>
-            <div>&nbsp;</div>
-
-            <div class="dropdown text-end">
-                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{ _username }}
-                </a>
-                <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                    {% for link in _navBar.Profile.Links %}
-                        <li><a class="dropdown-item" href="{{ link.URL }}">{{ link.Title }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-</header>
+{% include "layout/header.twig.html" %}
 
 <div class="container">
     {% block content %}{% endblock %}
