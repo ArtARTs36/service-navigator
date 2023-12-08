@@ -35,6 +35,6 @@ func (h *HomePageHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 	if err != nil {
 		log.Printf("Failed to render: %s", err)
 
-		w.WriteHeader(serverError)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
