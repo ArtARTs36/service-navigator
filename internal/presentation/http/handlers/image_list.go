@@ -32,8 +32,8 @@ func (h *ImageListHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 			(images[i].Name == images[j].Name && images[i].ID < images[j].ID)
 	})
 
-	err := h.renderer.Render("pages/images.twig.html", w, map[string]stick.Value{
-		"images": images,
+	err := h.renderer.Render("pages/volumes.twig.html", w, map[string]stick.Value{
+		"volumes": images,
 	})
 
 	if err != nil {

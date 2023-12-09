@@ -1,0 +1,53 @@
+{% extends "layout/base.twig.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="bg-light rounded">
+        <p>
+            <span class="h4">Volumes ({{ volumes | length }})</span>
+            <span class="h5"><a href="/volumes/refresh"><i class="fa-solid fa-arrows-rotate link-action-refresh "></i></a></span>
+        </p>
+
+        <div class="table-responsive">
+            <table class="table bordered">
+            <thead>
+            <tr>
+                <td scope="col">
+                    <strong>Name</strong>
+                </td>
+                <td scope="col">
+                    <strong>Driver</strong>
+                </td>
+                <td scope="col">
+                    <strong>Size</strong>
+                </td>
+                <td scope="col">
+                    <strong>Created</strong>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for volume in volumes %}
+            <tr class="table-row">
+                <td>
+                    {{ volume.Name }}
+                </td>
+                <td>
+                    {{ volume.Driver }}
+                </td>
+                <td>
+                    {{ volume.Size }}
+                </td>
+                <td>
+                    {{ volume.CreatedAt }}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

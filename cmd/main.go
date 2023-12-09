@@ -36,6 +36,9 @@ func main() {
 			cont.Images.Poller.Poll(ctx, wg, cont.Images.PollRequestsChannel)
 		},
 		func(wg *sync.WaitGroup) {
+			cont.Volumes.Poller.Poll(ctx, wg, cont.Volumes.PollRequestsChannel)
+		},
+		func(wg *sync.WaitGroup) {
 			defer wg.Done()
 
 			log.Printf("[Http][Server] Listening on %s", hServer.Addr)
@@ -92,6 +95,8 @@ func bindRoutes(mux *http.ServeMux, cont *config.Container) {
 	mux.Handle("/images", cont.HTTP.Handlers.ImageListHandler)
 	mux.Handle("/images/remove", cont.HTTP.Handlers.ImageRemoveHandler)
 	mux.Handle("/images/refresh", cont.HTTP.Handlers.ImageRefreshHandler)
+	mux.Handle("/volumes", cont.HTTP.Handlers.VolumeListHandler)
+	mux.Handle("/volumes/refresh", cont.HTTP.Handlers.VolumeRefreshHandler)
 }
 
 func bindFileServer(mux *http.ServeMux) {

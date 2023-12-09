@@ -12,6 +12,8 @@ frontend:
         title: Services
       - url: /images
         title: Images
+      - url: /volumes
+        title: Volumes
       - url: http://github.com/artarts36/service-navigator
         title: Github
     profile:
@@ -56,7 +58,15 @@ backend:
   # Images configuration
   images:
     poll:
-      # Interval for services polling
+      # Interval for images polling
+      #
+      # Default: "1m"
+      interval: "1m"
+
+  # Volumes configuration
+  volumes:
+    poll:
+      # Interval for volumes polling
       #
       # Default: "1m"
       interval: "1m"

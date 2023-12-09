@@ -15,6 +15,7 @@ import (
 const serviceMetricDepth = 50
 const servicePollInterval = 2 * time.Second
 const imagePollInterval = 1 * time.Minute
+const volumePollInterval = 1 * time.Minute
 
 type Config struct {
 	Frontend config.Frontend `yaml:"frontend"`
@@ -26,6 +27,9 @@ type Config struct {
 		Images struct {
 			Poll app.ImagePollerConfig `yaml:"poll"`
 		} `yaml:"images"`
+		Volumes struct {
+			Poll app.VolumePollerConfig `yaml:"poll"`
+		} `yaml:"volumes"`
 	} `yaml:"backend"`
 	Parameters struct {
 		LogLevel string `yaml:"log_level"`
@@ -58,6 +62,9 @@ func InitConfig() *Config {
 	}
 	if conf.Backend.Images.Poll.Interval == 0 || conf.Backend.Images.Poll.Interval < 0 {
 		conf.Backend.Images.Poll.Interval = imagePollInterval
+	}
+	if conf.Backend.Volumes.Poll.Interval == 0 || conf.Backend.Volumes.Poll.Interval < 0 {
+		conf.Backend.Volumes.Poll.Interval = volumePollInterval
 	}
 
 	if conf.Frontend.AppName == "" {

@@ -79,12 +79,12 @@ func (p *ImagePoller) poll() error {
 	images, err := p.monitor.Show(context.Background())
 
 	if err != nil {
-		log.Printf("[Image][Poller] Failed to load images: %s", err)
+		log.Printf("[Image][Poller] Failed to load volumes: %s", err)
 
 		return err
 	}
 
-	log.Printf("[Image][Poller] loaded %d images", len(images))
+	log.Printf("[Image][Poller] loaded %d volumes", len(images))
 
 	p.images.Set(images)
 

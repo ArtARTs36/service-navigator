@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	vlmmonitor "github.com/artarts36/service-navigator/internal/infrastructure/volume/monitor"
 	"net/http"
 
 	"github.com/docker/docker/client"
@@ -32,6 +33,12 @@ type Container struct {
 		Poller              *application.ImagePoller
 		PollRequestsChannel chan bool
 	}
+	Volumes struct {
+		Monitor             *vlmmonitor.Monitor
+		Repository          *repository.VolumeRepository
+		Poller              *application.VolumePoller
+		PollRequestsChannel chan bool
+	}
 	HTTP struct {
 		Handlers struct {
 			HomePageHandler      http.Handler
@@ -39,6 +46,8 @@ type Container struct {
 			ImageListHandler     http.Handler
 			ImageRemoveHandler   http.Handler
 			ImageRefreshHandler  http.Handler
+			VolumeListHandler    http.Handler
+			VolumeRefreshHandler http.Handler
 		}
 	}
 	Presentation struct {
@@ -95,6 +104,11 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &cfg.Backend.Images.Poll)
 	cont.Images.PollRequestsChannel = make(chan bool)
 
+	cont.Volumes.Monitor = vlmmonitor.NewMonitor(docker)
+	cont.Volumes.Repository = &repository.VolumeRepository{}
+	cont.Volumes.Poller = application.NewVolumePoller(cont.Volumes.Monitor, cont.Volumes.Repository, &cfg.Backend.Volumes.Poll)
+	cont.Volumes.PollRequestsChannel = make(chan bool)
+
 	cont.DockerClient = docker
 	cont.Presentation.Renderer = initRenderer(env, cfg)
 
@@ -121,6 +135,12 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 	)
 	cont.HTTP.Handlers.ImageRefreshHandler = middlewares.NewLogMiddleware(
 		handlers.NewImageRefreshHandler(cont.Images.PollRequestsChannel),
+	)
+	cont.HTTP.Handlers.VolumeListHandler = middlewares.NewLogMiddleware(
+		handlers.NewVolumeListHandler(cont.Volumes.Repository, cont.Presentation.Renderer),
+	)
+	cont.HTTP.Handlers.VolumeRefreshHandler = middlewares.NewLogMiddleware(
+		handlers.NewVolumeRefreshHandler(cont.Volumes.PollRequestsChannel),
 	)
 
 	return cont
