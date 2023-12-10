@@ -39,19 +39,21 @@ type Container struct {
 		Poller              *application.VolumePoller
 		PollRequestsChannel chan bool
 	}
-	HTTP struct {
-		Handlers struct {
-			HomePageHandler      http.Handler
-			ContainerKillHandler http.Handler
-			ImageListHandler     http.Handler
-			ImageRemoveHandler   http.Handler
-			ImageRefreshHandler  http.Handler
-			VolumeListHandler    http.Handler
-			VolumeRefreshHandler http.Handler
-		}
-	}
 	Presentation struct {
-		Renderer *view.Renderer
+		View struct {
+			Renderer *view.Renderer
+		}
+		HTTP struct {
+			Handlers struct {
+				HomePageHandler      http.Handler
+				ContainerKillHandler http.Handler
+				ImageListHandler     http.Handler
+				ImageRemoveHandler   http.Handler
+				ImageRefreshHandler  http.Handler
+				VolumeListHandler    http.Handler
+				VolumeRefreshHandler http.Handler
+			}
+		}
 	}
 }
 
@@ -110,36 +112,36 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 	cont.Volumes.PollRequestsChannel = make(chan bool)
 
 	cont.DockerClient = docker
-	cont.Presentation.Renderer = initRenderer(env, cfg)
+	cont.Presentation.View.Renderer = initRenderer(env, cfg)
 
-	cont.HTTP.Handlers.HomePageHandler = middlewares.NewLogMiddleware(
-		handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer),
+	cont.Presentation.HTTP.Handlers.HomePageHandler = middlewares.NewLogMiddleware(
+		handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.View.Renderer),
 	)
-	cont.HTTP.Handlers.ContainerKillHandler = middlewares.NewLogMiddleware(
+	cont.Presentation.HTTP.Handlers.ContainerKillHandler = middlewares.NewLogMiddleware(
 		handlers.NewContainerKillHandler(
 			cont.Services.Monitor,
-			cont.Presentation.Renderer,
+			cont.Presentation.View.Renderer,
 		),
 	)
-	cont.HTTP.Handlers.ImageListHandler = middlewares.NewLogMiddleware(
+	cont.Presentation.HTTP.Handlers.ImageListHandler = middlewares.NewLogMiddleware(
 		handlers.NewImageListHandler(
 			cont.Images.Repository,
-			cont.Presentation.Renderer,
+			cont.Presentation.View.Renderer,
 		),
 	)
-	cont.HTTP.Handlers.ImageRemoveHandler = middlewares.NewLogMiddleware(
+	cont.Presentation.HTTP.Handlers.ImageRemoveHandler = middlewares.NewLogMiddleware(
 		handlers.NewImageRemoveHandler(
 			cont.Images.Monitor,
-			cont.Presentation.Renderer,
+			cont.Presentation.View.Renderer,
 		),
 	)
-	cont.HTTP.Handlers.ImageRefreshHandler = middlewares.NewLogMiddleware(
+	cont.Presentation.HTTP.Handlers.ImageRefreshHandler = middlewares.NewLogMiddleware(
 		handlers.NewImageRefreshHandler(cont.Images.PollRequestsChannel),
 	)
-	cont.HTTP.Handlers.VolumeListHandler = middlewares.NewLogMiddleware(
-		handlers.NewVolumeListHandler(cont.Volumes.Repository, cont.Presentation.Renderer),
+	cont.Presentation.HTTP.Handlers.VolumeListHandler = middlewares.NewLogMiddleware(
+		handlers.NewVolumeListHandler(cont.Volumes.Repository, cont.Presentation.View.Renderer),
 	)
-	cont.HTTP.Handlers.VolumeRefreshHandler = middlewares.NewLogMiddleware(
+	cont.Presentation.HTTP.Handlers.VolumeRefreshHandler = middlewares.NewLogMiddleware(
 		handlers.NewVolumeRefreshHandler(cont.Volumes.PollRequestsChannel),
 	)
 

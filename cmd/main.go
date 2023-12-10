@@ -90,13 +90,13 @@ func createHTTPServer(cont *config.Container) *http.Server {
 }
 
 func bindRoutes(mux *http.ServeMux, cont *config.Container) {
-	mux.Handle("/", cont.HTTP.Handlers.HomePageHandler)
-	mux.Handle("/containers/kill", cont.HTTP.Handlers.ContainerKillHandler)
-	mux.Handle("/images", cont.HTTP.Handlers.ImageListHandler)
-	mux.Handle("/images/remove", cont.HTTP.Handlers.ImageRemoveHandler)
-	mux.Handle("/images/refresh", cont.HTTP.Handlers.ImageRefreshHandler)
-	mux.Handle("/volumes", cont.HTTP.Handlers.VolumeListHandler)
-	mux.Handle("/volumes/refresh", cont.HTTP.Handlers.VolumeRefreshHandler)
+	mux.Handle("/", cont.Presentation.HTTP.Handlers.HomePageHandler)
+	mux.Handle("/containers/kill", cont.Presentation.HTTP.Handlers.ContainerKillHandler)
+	mux.Handle("/images", cont.Presentation.HTTP.Handlers.ImageListHandler)
+	mux.Handle("/images/remove", cont.Presentation.HTTP.Handlers.ImageRemoveHandler)
+	mux.Handle("/images/refresh", cont.Presentation.HTTP.Handlers.ImageRefreshHandler)
+	mux.Handle("/volumes", cont.Presentation.HTTP.Handlers.VolumeListHandler)
+	mux.Handle("/volumes/refresh", cont.Presentation.HTTP.Handlers.VolumeRefreshHandler)
 }
 
 func bindFileServer(mux *http.ServeMux) {
