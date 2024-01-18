@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	vlmmonitor "github.com/artarts36/service-navigator/internal/infrastructure/volume/monitor"
 	"net/http"
 
 	"github.com/docker/docker/client"
@@ -15,6 +14,7 @@ import (
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
+	vlmmonitor "github.com/artarts36/service-navigator/internal/infrastructure/volume/monitor"
 	"github.com/artarts36/service-navigator/internal/presentation/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation/http/middlewares"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
@@ -108,7 +108,11 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 
 	cont.Volumes.Monitor = vlmmonitor.NewMonitor(docker)
 	cont.Volumes.Repository = &repository.VolumeRepository{}
-	cont.Volumes.Poller = application.NewVolumePoller(cont.Volumes.Monitor, cont.Volumes.Repository, &cfg.Backend.Volumes.Poll)
+	cont.Volumes.Poller = application.NewVolumePoller(
+		cont.Volumes.Monitor,
+		cont.Volumes.Repository,
+		&cfg.Backend.Volumes.Poll,
+	)
 	cont.Volumes.PollRequestsChannel = make(chan bool)
 
 	cont.DockerClient = docker
