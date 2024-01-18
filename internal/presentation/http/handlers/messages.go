@@ -18,7 +18,7 @@ func writeSuccessMessage(renderer *view.Renderer, w http.ResponseWriter, message
 		log.Printf("Failed to write success response: %s", err)
 	}
 
-	w.WriteHeader(ok)
+	w.WriteHeader(http.StatusOK)
 }
 
 func writeWarningMessage(renderer *view.Renderer, w http.ResponseWriter, message string) {
@@ -30,7 +30,7 @@ func writeWarningMessage(renderer *view.Renderer, w http.ResponseWriter, message
 		log.Printf("Failed to write warning response: %s", err)
 	}
 
-	w.WriteHeader(userError)
+	w.WriteHeader(http.StatusUnprocessableEntity)
 }
 
 func writeErrorMessage(renderer *view.Renderer, w http.ResponseWriter, message string) {
@@ -42,5 +42,5 @@ func writeErrorMessage(renderer *view.Renderer, w http.ResponseWriter, message s
 		log.Printf("Failed to write error response: %s", err)
 	}
 
-	w.WriteHeader(serverError)
+	w.WriteHeader(http.StatusInternalServerError)
 }

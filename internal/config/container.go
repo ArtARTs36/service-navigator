@@ -14,6 +14,7 @@ import (
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/filler"
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
+	vlmmonitor "github.com/artarts36/service-navigator/internal/infrastructure/volume/monitor"
 	"github.com/artarts36/service-navigator/internal/presentation/http/handlers"
 	"github.com/artarts36/service-navigator/internal/presentation/http/middlewares"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
@@ -32,17 +33,27 @@ type Container struct {
 		Poller              *application.ImagePoller
 		PollRequestsChannel chan bool
 	}
-	HTTP struct {
-		Handlers struct {
-			HomePageHandler      http.Handler
-			ContainerKillHandler http.Handler
-			ImageListHandler     http.Handler
-			ImageRemoveHandler   http.Handler
-			ImageRefreshHandler  http.Handler
-		}
+	Volumes struct {
+		Monitor             *vlmmonitor.Monitor
+		Repository          *repository.VolumeRepository
+		Poller              *application.VolumePoller
+		PollRequestsChannel chan bool
 	}
 	Presentation struct {
-		Renderer *view.Renderer
+		View struct {
+			Renderer *view.Renderer
+		}
+		HTTP struct {
+			Handlers struct {
+				HomePageHandler      http.Handler
+				ContainerKillHandler http.Handler
+				ImageListHandler     http.Handler
+				ImageRemoveHandler   http.Handler
+				ImageRefreshHandler  http.Handler
+				VolumeListHandler    http.Handler
+				VolumeRefreshHandler http.Handler
+			}
+		}
 	}
 }
 
@@ -95,32 +106,47 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &cfg.Backend.Images.Poll)
 	cont.Images.PollRequestsChannel = make(chan bool)
 
-	cont.DockerClient = docker
-	cont.Presentation.Renderer = initRenderer(env, cfg)
-
-	cont.HTTP.Handlers.HomePageHandler = middlewares.NewLogMiddleware(
-		handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.Renderer),
+	cont.Volumes.Monitor = vlmmonitor.NewMonitor(docker)
+	cont.Volumes.Repository = &repository.VolumeRepository{}
+	cont.Volumes.Poller = application.NewVolumePoller(
+		cont.Volumes.Monitor,
+		cont.Volumes.Repository,
+		&cfg.Backend.Volumes.Poll,
 	)
-	cont.HTTP.Handlers.ContainerKillHandler = middlewares.NewLogMiddleware(
+	cont.Volumes.PollRequestsChannel = make(chan bool)
+
+	cont.DockerClient = docker
+	cont.Presentation.View.Renderer = initRenderer(env, cfg)
+
+	cont.Presentation.HTTP.Handlers.HomePageHandler = middlewares.NewLogMiddleware(
+		handlers.NewHomePageHandler(cont.Services.Repository, cont.Presentation.View.Renderer),
+	)
+	cont.Presentation.HTTP.Handlers.ContainerKillHandler = middlewares.NewLogMiddleware(
 		handlers.NewContainerKillHandler(
 			cont.Services.Monitor,
-			cont.Presentation.Renderer,
+			cont.Presentation.View.Renderer,
 		),
 	)
-	cont.HTTP.Handlers.ImageListHandler = middlewares.NewLogMiddleware(
+	cont.Presentation.HTTP.Handlers.ImageListHandler = middlewares.NewLogMiddleware(
 		handlers.NewImageListHandler(
 			cont.Images.Repository,
-			cont.Presentation.Renderer,
+			cont.Presentation.View.Renderer,
 		),
 	)
-	cont.HTTP.Handlers.ImageRemoveHandler = middlewares.NewLogMiddleware(
+	cont.Presentation.HTTP.Handlers.ImageRemoveHandler = middlewares.NewLogMiddleware(
 		handlers.NewImageRemoveHandler(
 			cont.Images.Monitor,
-			cont.Presentation.Renderer,
+			cont.Presentation.View.Renderer,
 		),
 	)
-	cont.HTTP.Handlers.ImageRefreshHandler = middlewares.NewLogMiddleware(
+	cont.Presentation.HTTP.Handlers.ImageRefreshHandler = middlewares.NewLogMiddleware(
 		handlers.NewImageRefreshHandler(cont.Images.PollRequestsChannel),
+	)
+	cont.Presentation.HTTP.Handlers.VolumeListHandler = middlewares.NewLogMiddleware(
+		handlers.NewVolumeListHandler(cont.Volumes.Repository, cont.Presentation.View.Renderer),
+	)
+	cont.Presentation.HTTP.Handlers.VolumeRefreshHandler = middlewares.NewLogMiddleware(
+		handlers.NewVolumeRefreshHandler(cont.Volumes.PollRequestsChannel),
 	)
 
 	return cont

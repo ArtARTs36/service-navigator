@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/tyler-sommer/stick"
 
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
@@ -33,8 +33,8 @@ func (h *HomePageHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 	})
 
 	if err != nil {
-		log.Printf("Failed to render: %s", err)
+		log.Errorf("Failed to render: %s", err)
 
-		w.WriteHeader(serverError)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }

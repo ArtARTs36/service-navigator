@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/tyler-sommer/stick"
 
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
@@ -32,13 +32,13 @@ func (h *ImageListHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 			(images[i].Name == images[j].Name && images[i].ID < images[j].ID)
 	})
 
-	err := h.renderer.Render("pages/images.twig.html", w, map[string]stick.Value{
-		"images": images,
+	err := h.renderer.Render("pages/volumes.twig.html", w, map[string]stick.Value{
+		"volumes": images,
 	})
 
 	if err != nil {
-		log.Printf("Failed to render: %s", err)
+		log.Errorf("Failed to render: %s", err)
 
-		w.WriteHeader(serverError)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
