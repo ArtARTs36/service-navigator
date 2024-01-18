@@ -2,10 +2,13 @@ package monitor
 
 import (
 	"context"
-	"github.com/artarts36/service-navigator/internal/domain"
+
 	"github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/client"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/artarts36/service-navigator/internal/domain"
+	"github.com/artarts36/service-navigator/internal/shared"
 )
 
 type Monitor struct {
@@ -30,18 +33,17 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Volume, error) {
 	volumes := make([]*domain.Volume, 0, len(list.Volumes))
 
 	for _, vol := range list.Volumes {
-		var size *int64
-
-		if vol.UsageData != nil {
-			size = &vol.UsageData.Size
-		}
-
-		volumes = append(volumes, &domain.Volume{
+		vlm := &domain.Volume{
 			Name:      vol.Name,
 			Driver:    vol.Driver,
-			Size:      size,
 			CreatedAt: vol.CreatedAt,
-		})
+		}
+
+		if vol.UsageData != nil {
+			vlm.Size = shared.Int64ToPtr(vol.UsageData.Size)
+		}
+
+		volumes = append(volumes, vlm)
 	}
 
 	return volumes, nil
