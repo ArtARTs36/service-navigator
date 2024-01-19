@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"github.com/artarts36/service-navigator/internal/presentation/config"
 	"net/http"
 	"sort"
 
@@ -9,6 +8,7 @@ import (
 	"github.com/tyler-sommer/stick"
 
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
+	"github.com/artarts36/service-navigator/internal/presentation/config"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
 )
 
