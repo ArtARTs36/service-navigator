@@ -11,8 +11,9 @@ type Image struct {
 }
 
 type NameDetails struct {
-	Name        string
-	Version     string
-	RegistryURL string
-	Vendor      string
+	Name                string
+	Version             string
+	RegistryURL         string
+	RegistryIsDockerHub bool
+	Vendor              string
 }

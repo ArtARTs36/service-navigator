@@ -22,6 +22,11 @@
                 <td scope="col">
                     <strong>Actions</strong>
                 </td>
+                {% if pageConfig.HasCounters %}
+                <td scope="col">
+                    <strong>Counters</strong>
+                </td>
+                {% endif %}
                 <td scope="col">
                     <strong>Links</strong>
                 </td>
@@ -39,6 +44,18 @@
                 <td>
                     <a href="/images/remove?imageId={{ image.ID }}"><i class="fa-solid fa-trash-can link-action-stop"></i></a>
                 </td>
+                {% if pageConfig.HasCounters %}
+                <td>
+                    {% if image.NameDetails.RegistryIsDockerHub %}
+                        {% if pageConfig.Counters.Pulls %}
+                        <img src="https://img.shields.io/docker/pulls/{{ image.NameDetails.Vendor }}/{{ image.NameDetails.Name }}?label=pulls" />
+                        {% endif %}
+                        {% if pageConfig.Counters.Stars %}
+                        <img src="https://img.shields.io/docker/stars/{{ image.NameDetails.Vendor }}/{{ image.NameDetails.Name }}?label=stars" />
+                        {% endif %}
+                    {% endif %}
+                </td>
+                {% endif %}
                 <td>
                     {% if image.VCS.URL %}
                     <a href="{{ image.VCS.URL }}" class="link-{{ image.VCS.Type }}">{% if image.VCS.Type %}<i class="fa-brands fa-{{ image.VCS.Type }}"></i>{% else %}{{ image.VCS.Host }}{% endif %}</a>

@@ -131,6 +131,7 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 		handlers.NewImageListHandler(
 			cont.Images.Repository,
 			cont.Presentation.View.Renderer,
+			cfg.Frontend.Pages.Images,
 		),
 	)
 	cont.Presentation.HTTP.Handlers.ImageRemoveHandler = middlewares.NewLogMiddleware(

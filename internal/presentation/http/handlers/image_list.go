@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/artarts36/service-navigator/internal/presentation/config"
 	"net/http"
 	"sort"
 
@@ -12,12 +13,17 @@ import (
 )
 
 type ImageListHandler struct {
-	images   *repository.ImageRepository
-	renderer *view.Renderer
+	images     *repository.ImageRepository
+	renderer   *view.Renderer
+	pageConfig *config.ImagePage
 }
 
-func NewImageListHandler(images *repository.ImageRepository, renderer *view.Renderer) *ImageListHandler {
-	return &ImageListHandler{images: images, renderer: renderer}
+func NewImageListHandler(
+	images *repository.ImageRepository,
+	renderer *view.Renderer,
+	pageConfig *config.ImagePage,
+) *ImageListHandler {
+	return &ImageListHandler{images: images, renderer: renderer, pageConfig: pageConfig}
 }
 
 func (h *ImageListHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
@@ -33,7 +39,8 @@ func (h *ImageListHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 	})
 
 	err := h.renderer.Render("pages/images.twig.html", w, map[string]stick.Value{
-		"images": images,
+		"images":     images,
+		"pageConfig": h.pageConfig,
 	})
 
 	if err != nil {

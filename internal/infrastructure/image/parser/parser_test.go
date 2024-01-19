@@ -18,6 +18,7 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 				Name:        "php",
 				Version:     "8.0",
 				RegistryURL: "https://hub.docker.com/_/php",
+				Vendor:      "_",
 			},
 		},
 		{

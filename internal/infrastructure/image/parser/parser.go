@@ -32,25 +32,29 @@ func (p *ImageParser) ParseFromURL(imageURI string) *domain.NameDetails {
 	}
 
 	registryURL := "http://" + partsByVersion[0]
+	registryIsDockerHub := false
 	imageName := ""
-	vendor := ""
+	vendor := "_"
 
 	if len(imageNameParts) == 1 {
 		imageName = imageNameParts[0]
 		registryURL = fmt.Sprintf("%s/_/%s", dockerHubHost, imageName)
+		registryIsDockerHub = true
 	} else if len(imageNameParts) >= 2 {
 		imageName = imageNameParts[len(imageNameParts)-1]
 		vendor = imageNameParts[len(imageNameParts)-2]
 
 		if len(imageNameParts) == vendorImagePartsCount {
 			registryURL = fmt.Sprintf("%s/r/%s/%s", dockerHubHost, vendor, imageName)
+			registryIsDockerHub = true
 		}
 	}
 
 	return &domain.NameDetails{
-		Name:        imageName,
-		Version:     version,
-		RegistryURL: registryURL,
-		Vendor:      vendor,
+		Name:                imageName,
+		Version:             version,
+		RegistryURL:         registryURL,
+		RegistryIsDockerHub: registryIsDockerHub,
+		Vendor:              vendor,
 	}
 }
