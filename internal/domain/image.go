@@ -14,4 +14,5 @@ type ImageShort struct {
 	Name        string
 	Version     string
 	RegistryURL string
+	Vendor      string
 }

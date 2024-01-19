@@ -26,6 +26,7 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 				Name:        "bitnami/kafka",
 				Version:     "latest",
 				RegistryURL: "https://hub.docker.com/r/bitnami/kafka",
+				Vendor:      "bitnami",
 			},
 		},
 		{
@@ -34,6 +35,7 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 				Name:        "bitnami/kafka",
 				Version:     "1.2.3",
 				RegistryURL: "https://hub.docker.com/r/bitnami/kafka",
+				Vendor:      "bitnami",
 			},
 		},
 		{

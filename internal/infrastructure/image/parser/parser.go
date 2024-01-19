@@ -48,6 +48,7 @@ func (p *ImageParser) ParseFromURL(imageURI string) *domain.ImageShort {
 			Name:        imageName,
 			Version:     version,
 			RegistryURL: fmt.Sprintf("https://hub.docker.com/r/%s/%s", imageNameParts[0], partsByVersion[0]),
+			Vendor:      imageNameParts[0],
 		}
 	}
 
