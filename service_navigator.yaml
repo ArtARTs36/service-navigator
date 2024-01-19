@@ -29,13 +29,25 @@ frontend:
           queryParamName: searchString # search <form> input name
 
   # Pages config
+  #
+  # Optional
   pages:
     # Images page config
+    #
+    # Optional
     images:
       # Settings for selecting the display of counters for an image
+      #
+      # Optional, default: no show counters
       counters:
-        pulls: true
-        stars: true
+        # Show image pulls count
+        #
+        # Optional, default: false
+        pulls: false
+        # Show image stars
+        #
+        # Optional, default: false
+        stars: false
 
 # This section contains settings for backend
 backend:

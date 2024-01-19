@@ -63,6 +63,27 @@ frontend:
         - name: Jira
           url: https://jira.host.name/secure/QuickSearch.jspa
           queryParamName: searchString # search <form> input name
+          
+  # Pages config
+  # 
+  # Optional
+  pages:
+    # Images page config
+    #
+    # Optional
+    images:
+      # Settings for selecting the display of counters for an image
+      #
+      # Optional, default: no show counters
+      counters:
+        # Show image pulls count
+        #
+        # Optional, default: false
+        pulls: true
+        # Show image stars
+        #
+        # Optional, default: false
+        stars: true
 
 # This section contains settings for backend
 backend:
