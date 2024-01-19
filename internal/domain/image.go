@@ -5,12 +5,12 @@ type Image struct {
 	Name     string
 	Size     int64
 	SizeText string
-	Short    ImageShort
+	Short    NameDetails
 	VCS      *VCS
 	Unknown  bool
 }
 
-type ImageShort struct {
+type NameDetails struct {
 	Name        string
 	Version     string
 	RegistryURL string

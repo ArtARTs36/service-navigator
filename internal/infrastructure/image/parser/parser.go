@@ -14,7 +14,7 @@ const imageVersionPartsCount = 2
 type ImageParser struct {
 }
 
-func (p *ImageParser) ParseFromURL(imageURI string) *domain.ImageShort {
+func (p *ImageParser) ParseFromURL(imageURI string) *domain.NameDetails {
 	imageNameParts := strings.Split(imageURI, "/")
 
 	if len(imageNameParts) == 1 {
@@ -44,7 +44,7 @@ func (p *ImageParser) ParseFromURL(imageURI string) *domain.ImageShort {
 			version = partsByVersion[1]
 		}
 
-		return &domain.ImageShort{
+		return &domain.NameDetails{
 			Name:        imageName,
 			Version:     version,
 			RegistryURL: fmt.Sprintf("https://hub.docker.com/r/%s/%s", imageNameParts[0], partsByVersion[0]),
@@ -66,15 +66,15 @@ func (p *ImageParser) ParseFromURL(imageURI string) *domain.ImageShort {
 		version = partsByVersion[1]
 	}
 
-	return &domain.ImageShort{
-		Name:        imageName,
+	return &domain.NameDetails{
+		Name:        imageURI,
 		Version:     version,
 		RegistryURL: "http://" + imageName,
 	}
 }
 
-func (p *ImageParser) createOfficialDockerImage(name string, version string) *domain.ImageShort {
-	return &domain.ImageShort{
+func (p *ImageParser) createOfficialDockerImage(name string, version string) *domain.NameDetails {
+	return &domain.NameDetails{
 		Name:        name,
 		Version:     version,
 		RegistryURL: fmt.Sprintf("https://hub.docker.com/_/%s", name),

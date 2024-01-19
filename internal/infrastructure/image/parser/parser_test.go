@@ -10,11 +10,11 @@ import (
 func TestImageParser_ParseFromURI(t *testing.T) {
 	cases := []struct {
 		URI      string
-		Expected *domain.ImageShort
+		Expected *domain.NameDetails
 	}{
 		{
 			URI: "php:8.0",
-			Expected: &domain.ImageShort{
+			Expected: &domain.NameDetails{
 				Name:        "php",
 				Version:     "8.0",
 				RegistryURL: "https://hub.docker.com/_/php",
@@ -22,7 +22,7 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 		},
 		{
 			URI: "bitnami/kafka",
-			Expected: &domain.ImageShort{
+			Expected: &domain.NameDetails{
 				Name:        "bitnami/kafka",
 				Version:     "latest",
 				RegistryURL: "https://hub.docker.com/r/bitnami/kafka",
@@ -31,7 +31,7 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 		},
 		{
 			URI: "bitnami/kafka:1.2.3",
-			Expected: &domain.ImageShort{
+			Expected: &domain.NameDetails{
 				Name:        "bitnami/kafka",
 				Version:     "1.2.3",
 				RegistryURL: "https://hub.docker.com/r/bitnami/kafka",
@@ -40,8 +40,8 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 		},
 		{
 			URI: "ghcr.io/home-assistant/home-assistant:stable",
-			Expected: &domain.ImageShort{
-				Name:        "ghcr.io/home-assistant/home-assistant",
+			Expected: &domain.NameDetails{
+				Name:        "ghcr.io/home-assistant/home-assistant:stable",
 				Version:     "stable",
 				RegistryURL: "http://ghcr.io/home-assistant/home-assistant",
 			},
