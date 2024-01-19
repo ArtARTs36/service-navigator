@@ -39,11 +39,12 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 			},
 		},
 		{
-			URI: "ghcr.io/home-assistant/home-assistant:stable",
+			URI: "ghcr.io/home-assistant/project:stable",
 			Expected: &domain.NameDetails{
-				Name:        "ghcr.io/home-assistant/home-assistant:stable",
+				Name:        "project",
 				Version:     "stable",
-				RegistryURL: "http://ghcr.io/home-assistant/home-assistant",
+				RegistryURL: "http://ghcr.io/home-assistant/project",
+				Vendor:      "home-assistant",
 			},
 		},
 	}

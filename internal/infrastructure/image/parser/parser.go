@@ -59,17 +59,29 @@ func (p *ImageParser) ParseFromURL(imageURI string) *domain.NameDetails {
 	}
 
 	partsByVersion := strings.Split(rURL.Path, ":")
+
 	version := "latest"
-	imageName := partsByVersion[0]
 
 	if len(partsByVersion) == imageVersionPartsCount {
 		version = partsByVersion[1]
 	}
 
+	imageNameParts = strings.Split(partsByVersion[0], "/")
+	imageName := ""
+	vendor := ""
+
+	if len(imageNameParts) == 1 {
+		imageName = imageNameParts[0]
+	} else if len(imageNameParts) >= 2 {
+		imageName = imageNameParts[len(imageNameParts)-1]
+		vendor = imageNameParts[len(imageNameParts)-2]
+	}
+
 	return &domain.NameDetails{
-		Name:        imageURI,
+		Name:        imageName,
 		Version:     version,
-		RegistryURL: "http://" + imageName,
+		RegistryURL: "http://" + partsByVersion[0],
+		Vendor:      vendor,
 	}
 }
 
