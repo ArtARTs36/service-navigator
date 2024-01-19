@@ -40,7 +40,7 @@ func (p *ImageParser) ParseFromURL(imageURI string) *domain.NameDetails {
 		imageName = imageNameParts[0]
 		registryURL = fmt.Sprintf("%s/_/%s", dockerHubHost, imageName)
 		registryIsDockerHub = true
-	} else if len(imageNameParts) >= 2 {
+	} else if len(imageNameParts) >= vendorImagePartsCount {
 		imageName = imageNameParts[len(imageNameParts)-1]
 		vendor = imageNameParts[len(imageNameParts)-2]
 
