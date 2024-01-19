@@ -8,16 +8,22 @@ import (
 	"github.com/tyler-sommer/stick"
 
 	"github.com/artarts36/service-navigator/internal/infrastructure/repository"
+	"github.com/artarts36/service-navigator/internal/presentation/config"
 	"github.com/artarts36/service-navigator/internal/presentation/view"
 )
 
 type ImageListHandler struct {
-	images   *repository.ImageRepository
-	renderer *view.Renderer
+	images     *repository.ImageRepository
+	renderer   *view.Renderer
+	pageConfig *config.ImagePage
 }
 
-func NewImageListHandler(images *repository.ImageRepository, renderer *view.Renderer) *ImageListHandler {
-	return &ImageListHandler{images: images, renderer: renderer}
+func NewImageListHandler(
+	images *repository.ImageRepository,
+	renderer *view.Renderer,
+	pageConfig *config.ImagePage,
+) *ImageListHandler {
+	return &ImageListHandler{images: images, renderer: renderer, pageConfig: pageConfig}
 }
 
 func (h *ImageListHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
@@ -32,8 +38,9 @@ func (h *ImageListHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 			(images[i].Name == images[j].Name && images[i].ID < images[j].ID)
 	})
 
-	err := h.renderer.Render("pages/volumes.twig.html", w, map[string]stick.Value{
-		"volumes": images,
+	err := h.renderer.Render("pages/images.twig.html", w, map[string]stick.Value{
+		"images":     images,
+		"pageConfig": h.pageConfig,
 	})
 
 	if err != nil {

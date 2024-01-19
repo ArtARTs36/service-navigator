@@ -1,17 +1,19 @@
 package domain
 
 type Image struct {
-	ID       string
-	Name     string
-	Size     int64
-	SizeText string
-	Short    ImageShort
-	VCS      *VCS
-	Unknown  bool
+	ID          string
+	Name        string
+	Size        int64
+	SizeText    string
+	NameDetails NameDetails
+	VCS         *VCS
+	Unknown     bool
 }
 
-type ImageShort struct {
-	Name        string
-	Version     string
-	RegistryURL string
+type NameDetails struct {
+	Name                string
+	Version             string
+	RegistryURL         string
+	RegistryIsDockerHub bool
+	Vendor              string
 }

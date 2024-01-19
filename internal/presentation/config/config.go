@@ -19,4 +19,18 @@ type Frontend struct {
 			Providers []SearchProvider `yaml:"providers"`
 		} `yaml:"search"`
 	} `yaml:"navbar"`
+	Pages struct {
+		Images *ImagePage `yaml:"images"`
+	} `yaml:"pages"`
+}
+
+type ImagePage struct {
+	Counters struct {
+		Pulls bool `yaml:"pulls"`
+		Stars bool `yaml:"stars"`
+	} `yaml:"counters"`
+}
+
+func (p *ImagePage) HasCounters() bool {
+	return p.Counters.Pulls
 }

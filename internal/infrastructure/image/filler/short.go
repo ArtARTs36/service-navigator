@@ -21,5 +21,5 @@ func (f *ShortFiller) Fill(image *domain.Image, _ *datastruct.ImageMeta) {
 		return
 	}
 
-	image.Short = *short
+	image.NameDetails = *short
 }
