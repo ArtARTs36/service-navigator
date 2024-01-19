@@ -44,8 +44,8 @@
                     <a href="{{ image.VCS.URL }}" class="link-{{ image.VCS.Type }}">{% if image.VCS.Type %}<i class="fa-brands fa-{{ image.VCS.Type }}"></i>{% else %}{{ image.VCS.Host }}{% endif %}</a>
                     {% endif %}
 
-                    {% if image.Short.RegistryURL %}
-                    <a href="{{ image.Short.RegistryURL }}" class="link-docker">
+                    {% if image.NameDetails.RegistryURL %}
+                    <a href="{{ image.NameDetails.RegistryURL }}" class="link-docker">
                         <i class="fa-brands fa-docker"></i>
                     </a>
                     {% endif %}
