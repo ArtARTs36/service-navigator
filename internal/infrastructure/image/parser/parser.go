@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"net/url"
 	"strings"
 
 	"github.com/artarts36/service-navigator/internal/domain"
@@ -28,37 +27,7 @@ func (p *ImageParser) ParseFromURL(imageURI string) *domain.NameDetails {
 		return p.createOfficialDockerImage(partsByVersion[0], partsByVersion[1])
 	}
 
-	// vendor/image:version or vendor/image
-	if len(imageNameParts) == vendorImagePartsCount {
-		// [image, version] or [image]
-		partsByVersion := strings.Split(imageNameParts[1], ":")
-
-		imageName := strings.Join([]string{
-			imageNameParts[0],
-			partsByVersion[0],
-		}, "/")
-
-		version := "latest"
-
-		if len(partsByVersion) == imageVersionPartsCount {
-			version = partsByVersion[1]
-		}
-
-		return &domain.NameDetails{
-			Name:        imageName,
-			Version:     version,
-			RegistryURL: fmt.Sprintf("https://hub.docker.com/r/%s/%s", imageNameParts[0], partsByVersion[0]),
-			Vendor:      imageNameParts[0],
-		}
-	}
-
-	rURL, err := url.Parse(imageURI)
-
-	if err != nil {
-		return nil
-	}
-
-	partsByVersion := strings.Split(rURL.Path, ":")
+	partsByVersion := strings.Split(imageURI, ":")
 
 	version := "latest"
 
@@ -77,10 +46,15 @@ func (p *ImageParser) ParseFromURL(imageURI string) *domain.NameDetails {
 		vendor = imageNameParts[len(imageNameParts)-2]
 	}
 
+	registryURL := "http://" + partsByVersion[0]
+	if len(imageNameParts) == vendorImagePartsCount {
+		registryURL = fmt.Sprintf("https://hub.docker.com/r/%s/%s", vendor, imageName)
+	}
+
 	return &domain.NameDetails{
 		Name:        imageName,
 		Version:     version,
-		RegistryURL: "http://" + partsByVersion[0],
+		RegistryURL: registryURL,
 		Vendor:      vendor,
 	}
 }

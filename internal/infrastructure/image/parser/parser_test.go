@@ -23,7 +23,7 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 		{
 			URI: "bitnami/kafka",
 			Expected: &domain.NameDetails{
-				Name:        "bitnami/kafka",
+				Name:        "kafka",
 				Version:     "latest",
 				RegistryURL: "https://hub.docker.com/r/bitnami/kafka",
 				Vendor:      "bitnami",
@@ -32,7 +32,7 @@ func TestImageParser_ParseFromURI(t *testing.T) {
 		{
 			URI: "bitnami/kafka:1.2.3",
 			Expected: &domain.NameDetails{
-				Name:        "bitnami/kafka",
+				Name:        "kafka",
 				Version:     "1.2.3",
 				RegistryURL: "https://hub.docker.com/r/bitnami/kafka",
 				Vendor:      "bitnami",
