@@ -9,7 +9,10 @@ import (
 	"github.com/artarts36/service-navigator/internal/infrastructure/service/monitor"
 )
 
-const nginxProxyVirtualHostEnv = "VIRTUAL_HOST"
+const (
+	nginxProxyVirtualHostEnv = "VIRTUAL_HOST"
+	nginxProxyVirtualPathEnv = "VIRTUAL_PATH"
+)
 
 type NginxProxyURLFiller struct {
 }
@@ -20,11 +23,7 @@ func NewNginxProxyURLFiller() monitor.Filler {
 
 func (r *NginxProxyURLFiller) Fill(service *domain.ServiceStatus, container *datastruct.Container) {
 	envVal, envExists := container.Environment[nginxProxyVirtualHostEnv]
-	if !envExists {
-		return
-	}
-
-	if len(envVal) == 0 {
+	if !envExists || len(envVal) == 0 {
 		return
 	}
 
@@ -33,5 +32,20 @@ func (r *NginxProxyURLFiller) Fill(service *domain.ServiceStatus, container *dat
 		return
 	}
 
-	service.WebURL = fmt.Sprintf("http://%s", hosts[0])
+	path := r.getPath(container)
+
+	service.WebURL = fmt.Sprintf("http://%s%s", hosts[0], path)
+}
+
+func (r *NginxProxyURLFiller) getPath(container *datastruct.Container) string {
+	envVal, envExists := container.Environment[nginxProxyVirtualPathEnv]
+	if !envExists || len(envVal) == 0 || envVal == "/" {
+		return ""
+	}
+
+	if strings.HasPrefix(envVal, "/") {
+		return envVal
+	}
+
+	return "/" + envVal
 }

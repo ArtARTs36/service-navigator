@@ -1,6 +1,7 @@
 package filler_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/artarts36/service-navigator/internal/domain"
@@ -11,36 +12,54 @@ import (
 
 func TestNginxProxyFiller_Fill(t *testing.T) {
 	cases := []struct {
-		envVarValue    string
+		env            map[string]string
 		expectedWebURL string
 	}{
 		{
-			envVarValue:    "",
+			env:            map[string]string{},
 			expectedWebURL: "",
 		},
 		{
-			envVarValue:    "domain.com",
+			env: map[string]string{
+				"VIRTUAL_HOST": "domain.com",
+			},
 			expectedWebURL: "http://domain.com",
 		},
 		{
-			envVarValue:    "domain.com,site.com",
+			env: map[string]string{
+				"VIRTUAL_HOST": "domain.com,site.com",
+			},
 			expectedWebURL: "http://domain.com",
+		},
+		{
+			env: map[string]string{
+				"VIRTUAL_HOST": "domain.com,site.com",
+				"VIRTUAL_PATH": "/api",
+			},
+			expectedWebURL: "http://domain.com/api",
+		},
+		{
+			env: map[string]string{
+				"VIRTUAL_HOST": "domain.com,site.com",
+				"VIRTUAL_PATH": "api",
+			},
+			expectedWebURL: "http://domain.com/api",
 		},
 	}
 
 	imgFiller := filler.NginxProxyURLFiller{}
 
-	for _, tCase := range cases {
-		service := &domain.ServiceStatus{}
+	for i, tCase := range cases {
+		t.Run(fmt.Sprintf("#%d", i), func(t *testing.T) {
+			service := &domain.ServiceStatus{}
 
-		cont := &datastruct.Container{
-			Environment: map[string]string{
-				"VIRTUAL_HOST": tCase.envVarValue,
-			},
-		}
+			cont := &datastruct.Container{
+				Environment: tCase.env,
+			}
 
-		imgFiller.Fill(service, cont)
+			imgFiller.Fill(service, cont)
 
-		assert.Equal(t, tCase.expectedWebURL, service.WebURL)
+			assert.Equal(t, tCase.expectedWebURL, service.WebURL)
+		})
 	}
 }
