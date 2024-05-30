@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/artarts36/service-navigator/internal/shared"
 	"io"
 	"strings"
 	"sync"
+
+	"github.com/artarts36/service-navigator/internal/shared"
 
 	log "github.com/sirupsen/logrus"
 
