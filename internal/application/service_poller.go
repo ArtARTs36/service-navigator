@@ -12,8 +12,9 @@ import (
 )
 
 type ServicePollerConfig struct {
-	Interval time.Duration `yaml:"interval"`
-	Metrics  struct {
+	Interval   time.Duration `yaml:"interval"`
+	Concurrent int           `yaml:"concurrent"`
+	Metrics    struct {
 		Depth      int  `yaml:"depth"`
 		OnlyUnique bool `yaml:"only_unique"`
 	} `yaml:"metrics"`
@@ -46,7 +47,7 @@ func (p *ServicePoller) Poll(ctx context.Context) {
 			log.Print("[Service][Poller] Stopped")
 			return
 		case <-tick:
-			statuses, err := p.monitor.Show(context.Background())
+			statuses, err := p.monitor.Show(context.Background(), monitor.Opts{Concurrent: p.config.Concurrent})
 
 			if err != nil {
 				log.Printf("[Service][Poller] Failed to load statuses: %s", err)

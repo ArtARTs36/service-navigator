@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/artarts36/service-navigator/internal/shared"
 	"io"
 	"strings"
 	"sync"
@@ -28,7 +29,11 @@ func NewMonitor(docker *client.Client, urlResolver Filler, networkName string, c
 	return &Monitor{docker: docker, filler: urlResolver, networkName: networkName, currentContainerID: currentContainerID}
 }
 
-func (m *Monitor) Show(ctx context.Context) ([]*domain.ServiceStatus, error) {
+type Opts struct {
+	Concurrent int
+}
+
+func (m *Monitor) Show(ctx context.Context, opts Opts) ([]*domain.ServiceStatus, error) {
 	log.Printf("[Service][Monitor] Fetching containers")
 
 	containers, err := m.docker.ContainerList(ctx, types.ContainerListOptions{
@@ -44,7 +49,7 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.ServiceStatus, error) {
 		return []*domain.ServiceStatus{}, err
 	}
 
-	return m.collectServices(ctx, containers)
+	return m.collectServices(ctx, containers, opts)
 }
 
 func (m *Monitor) KillContainer(ctx context.Context, containerID string) error {
@@ -54,29 +59,39 @@ func (m *Monitor) KillContainer(ctx context.Context, containerID string) error {
 func (m *Monitor) collectServices(
 	ctx context.Context,
 	containers []types.Container,
+	opts Opts,
 ) ([]*domain.ServiceStatus, error) {
 	services := make([]*domain.ServiceStatus, 0, len(containers))
 
-	wg := sync.WaitGroup{}
-
-	for _, container := range containers {
-		wg.Add(1)
-
-		container := container
-		go func() {
-			defer wg.Done()
-
-			service, err := m.collectServiceStatus(ctx, container)
-
-			if err == nil {
-				services = append(services, service)
-			} else {
-				log.Printf("Failed to collect service: %s", err)
-			}
-		}()
+	chunks := make([][]types.Container, 0)
+	if opts.Concurrent <= 0 {
+		chunks = append(chunks, containers)
+	} else {
+		chunks = shared.ChunkSlice(containers, opts.Concurrent)
 	}
 
-	wg.Wait()
+	for _, chunk := range chunks {
+		wg := sync.WaitGroup{}
+
+		for _, container := range chunk {
+			wg.Add(1)
+
+			container := container
+			go func() {
+				defer wg.Done()
+
+				service, err := m.collectServiceStatus(ctx, container)
+
+				if err == nil {
+					services = append(services, service)
+				} else {
+					log.Printf("Failed to collect service: %s", err)
+				}
+			}()
+		}
+
+		wg.Wait()
+	}
 
 	return services, nil
 }

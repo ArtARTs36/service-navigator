@@ -100,6 +100,11 @@ backend:
         #
         # Default: "2s"
         interval: "2s"
+        
+        # Count of goroutines for polling
+        #
+        # Default: 0 = count of services
+        concurrent: 2
     
         metrics:
           # Count of stored records per service
