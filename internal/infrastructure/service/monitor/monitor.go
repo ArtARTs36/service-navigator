@@ -64,6 +64,8 @@ func (m *Monitor) collectServices(
 
 		container := container
 		go func() {
+			defer wg.Done()
+
 			service, err := m.collectServiceStatus(ctx, container)
 
 			if err == nil {
@@ -71,8 +73,6 @@ func (m *Monitor) collectServices(
 			} else {
 				log.Printf("Failed to collect service: %s", err)
 			}
-
-			wg.Done()
 		}()
 	}
 

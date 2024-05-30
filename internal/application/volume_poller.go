@@ -2,7 +2,6 @@ package application
 
 import (
 	"context"
-	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -33,9 +32,7 @@ func NewVolumePoller(
 	}
 }
 
-func (p *VolumePoller) Poll(ctx context.Context, wg *sync.WaitGroup, reqs chan bool) {
-	defer wg.Done()
-
+func (p *VolumePoller) Poll(ctx context.Context, reqs chan bool) {
 	tick := time.NewTicker(p.config.Interval).C
 	ticked := false
 

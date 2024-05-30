@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"os"
 	"os/signal"
@@ -30,20 +31,23 @@ func main() {
 
 	wg := startWorkers([]func(group *sync.WaitGroup){
 		func(wg *sync.WaitGroup) {
-			cont.Services.Poller.Poll(ctx, wg)
+			defer wg.Done()
+			cont.Services.Poller.Poll(ctx)
 		},
 		func(wg *sync.WaitGroup) {
-			cont.Images.Poller.Poll(ctx, wg, cont.Images.PollRequestsChannel)
+			defer wg.Done()
+			cont.Images.Poller.Poll(ctx, cont.Images.PollRequestsChannel)
 		},
 		func(wg *sync.WaitGroup) {
-			cont.Volumes.Poller.Poll(ctx, wg, cont.Volumes.PollRequestsChannel)
+			defer wg.Done()
+			cont.Volumes.Poller.Poll(ctx, cont.Volumes.PollRequestsChannel)
 		},
 		func(wg *sync.WaitGroup) {
 			defer wg.Done()
 
 			log.Printf("[Http][Server] Listening on %s", hServer.Addr)
 
-			if err := hServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			if err := hServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				log.Fatalf("[Http][Server] Listen: %s\n", err)
 			}
 

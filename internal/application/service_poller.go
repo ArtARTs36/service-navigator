@@ -2,7 +2,6 @@ package application
 
 import (
 	"context"
-	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -38,9 +37,7 @@ func NewServicePoller(
 	}
 }
 
-func (p *ServicePoller) Poll(ctx context.Context, wg *sync.WaitGroup) {
-	defer wg.Done()
-
+func (p *ServicePoller) Poll(ctx context.Context) {
 	tick := time.NewTicker(p.config.Interval).C
 
 	for {
