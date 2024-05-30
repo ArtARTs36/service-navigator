@@ -21,7 +21,7 @@ services:
       - infra
 
   whoami:
-    image: jwilder/whoami
+    image: mirror.gcr.io/jwilder/whoami
     ports:
       - "8999:8000"
     networks:

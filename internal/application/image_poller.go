@@ -34,7 +34,8 @@ func NewImagePoller(
 
 func (p *ImagePoller) Poll(ctx context.Context, reqs chan bool) {
 	tick := time.NewTicker(p.config.Interval).C
-	ticked := false
+
+	p.poll()
 
 	for {
 		select {
@@ -44,46 +45,23 @@ func (p *ImagePoller) Poll(ctx context.Context, reqs chan bool) {
 		case <-reqs:
 			log.Print("[Image][Poller] Given user request")
 
-			err := p.poll()
-			if err != nil {
-				log.Printf("[Image][Poller] Failed to load statuses: %s", err)
-				continue
-			}
+			p.poll()
 		case <-tick:
-			err := p.poll()
-			if err != nil {
-				log.Printf("[Image][Poller] Failed to load statuses: %s", err)
-				continue
-			}
+			p.poll()
 
 			log.Printf("[Image][Poller] sleep %.2f seconds", p.config.Interval.Seconds())
-		default:
-			if !ticked {
-				err := p.poll()
-				if err != nil {
-					log.Printf("[Image][Poller] Failed to load statuses: %s", err)
-					continue
-				}
-
-				log.Printf("[Image][Poller] sleep %.2f seconds", p.config.Interval.Seconds())
-				ticked = true
-			}
 		}
 	}
 }
 
-func (p *ImagePoller) poll() error {
+func (p *ImagePoller) poll() {
 	images, err := p.monitor.Show(context.Background())
-
 	if err != nil {
-		log.Printf("[Image][Poller] Failed to load volumes: %s", err)
-
-		return err
+		log.Printf("[Image][Poller] Failed to load images: %s", err)
+		return
 	}
 
 	log.Printf("[Image][Poller] loaded %d volumes", len(images))
 
 	p.images.Set(images)
-
-	return nil
 }

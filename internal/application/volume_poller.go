@@ -34,7 +34,8 @@ func NewVolumePoller(
 
 func (p *VolumePoller) Poll(ctx context.Context, reqs chan bool) {
 	tick := time.NewTicker(p.config.Interval).C
-	ticked := false
+
+	p.poll()
 
 	for {
 		select {
@@ -44,46 +45,23 @@ func (p *VolumePoller) Poll(ctx context.Context, reqs chan bool) {
 		case <-reqs:
 			log.Debug("[Volume][Poller] Given user request")
 
-			err := p.poll()
-			if err != nil {
-				log.Warnf("[Volume][Poller] Failed to load statuses: %s", err)
-				continue
-			}
+			p.poll()
 		case <-tick:
-			err := p.poll()
-			if err != nil {
-				log.Warnf("[Volume][Poller] Failed to load statuses: %s", err)
-				continue
-			}
+			p.poll()
 
 			log.Infof("[Volume][Poller] sleep %.2f seconds", p.config.Interval.Seconds())
-		default:
-			if !ticked {
-				err := p.poll()
-				if err != nil {
-					log.Debugf("[Volume][Poller] Failed to load statuses: %s", err)
-					continue
-				}
-
-				log.Debugf("[Volume][Poller] sleep %.2f seconds", p.config.Interval.Seconds())
-				ticked = true
-			}
 		}
 	}
 }
 
-func (p *VolumePoller) poll() error {
+func (p *VolumePoller) poll() {
 	images, err := p.monitor.Show(context.Background())
-
 	if err != nil {
 		log.Warnf("[Volume][Poller] Failed to load volumes: %s", err)
-
-		return err
+		return
 	}
 
 	log.Debugf("[Volume][Poller] loaded %d volumes", len(images))
 
 	p.volumes.Set(images)
-
-	return nil
 }

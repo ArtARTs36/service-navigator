@@ -1,6 +1,6 @@
-# syntax=docker/dockerfile:1
+# syntax=mirror.gcr.io/docker/dockerfile:1
 
-FROM golang:1.19-alpine
+FROM mirror.gcr.io/golang:1.19-alpine
 
 ARG APP_VERSION="undefined"
 ARG BUILD_TIME="undefined"
