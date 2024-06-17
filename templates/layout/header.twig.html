@@ -50,7 +50,18 @@
                 </a>
                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                     {% for link in _navBar.Profile.Links %}
+                    {% if link.HasForm() %}
+                    <form id="profile-link-{{ id }}" action="{{ link.URL }}" method="{{ link.Form.Method }}">
+                        {% for input in link.Form.Inputs %}
+                        <input type="hidden" name="{{ input.Name }}" value="{{ input.Value }}">
+                        {% endfor %}
+                    </form>
+
+                    <li><a class="dropdown-item" href="#" onclick="submitForm('#profile-link-{{ id }}')">{{ link.Title }}</a></li>
+                    {% else %}
                     <li><a class="dropdown-item" href="{{ link.URL }}">{{ link.Title }}</a></li>
+                    {% endif %}
+
                     {% endfor %}
                 </ul>
             </div>

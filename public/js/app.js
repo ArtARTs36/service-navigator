@@ -4,7 +4,11 @@ function setSearchProvider(url, queryParamName) {
 }
 
 function runSearch() {
-    document.querySelector("#search-form").submit();
+    submitForm("#search-form")
+}
+
+function submitForm(id) {
+    document.querySelector(id).submit();
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {

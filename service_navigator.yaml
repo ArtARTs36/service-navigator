@@ -20,6 +20,15 @@ frontend:
       links:
         - url: http://github.com/artarts36/service-navigator
           title: Github
+        - url: http://my-iam.service/login
+          title: Generate IAM Token
+          form:
+            method: "POST"
+            inputs:
+              - name: "login"
+                value: "developer"
+              - name: "password"
+                value: "developer"
     search:
       providers:
         - name: google
