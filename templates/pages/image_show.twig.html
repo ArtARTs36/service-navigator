@@ -1,0 +1,62 @@
+{% extends "layout/base.twig.html" %}
+
+{% block content %}
+<main role="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 rounded box-shadow" style="background: #2f3640">
+        <div class="lh-100 image-card">
+            <div>
+                <h6 class="mb-0">
+                    <span class="text-white lh-100">{{ image.Name }}</span> <span>at {{ image.CreatedAt.Format("2006-01-02 15:04:05") }}</span>
+                </h6>
+            </div>
+            {% if image.Languages | length > 0 %}
+            <div>
+                Languages: {% for lang in image.Languages %}{{ lang.Name }} {% if lang.Version %}{{ lang.Version }}{% endif %}{% endfor %}
+            </div>
+            {% endif %}
+
+            {% if image.Frameworks | length > 0 %}
+            <div>
+                Frameworks: {% for framework in image.Frameworks %}{{ framework.String }}{% endfor %}
+            </div>
+            {% endif %}
+
+            {% if image.VCS.URL or image.NameDetails.RegistryURL %}
+            <div>
+                {% if image.VCS.URL %}
+                <a href="{{ image.VCS.URL }}" class="image-card-link-{{ image.VCS.Type }}">{% if image.VCS.Type %}<i class="fa-brands fa-{{ image.VCS.Type }}"></i>{% else %}{{ image.VCS.Host }}{% endif %}</a>
+                {% endif %}
+
+                {% if image.NameDetails.RegistryURL %}
+                <a href="{{ image.NameDetails.RegistryURL }}" class="link-docker">
+                    <i class="fa-brands fa-docker"></i>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% for depFile in image.DepFiles %}
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom pb-2 mb-0">Libraries</h6>
+        <div class="media text-muted pt-3">
+            <table class="table">
+                <tbody>
+                {% for dep in depFile.Dependencies %}
+                <tr>
+                    <td>
+                        {{ dep.Name }}
+                    </td>
+                    <td>
+                        {{ dep.Version.Full }}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</main>
+{% endblock %}

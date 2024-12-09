@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/artarts36/service-navigator/internal/infrastructure/image/dep"
+	githubClient "github.com/google/go-github/v67/github"
+
 	"github.com/docker/docker/client"
 	log "github.com/sirupsen/logrus"
 
@@ -48,6 +51,7 @@ type Container struct {
 				HomePageHandler      http.Handler
 				ContainerKillHandler http.Handler
 				ImageListHandler     http.Handler
+				ImageShowHandler     http.Handler
 				ImageRemoveHandler   http.Handler
 				ImageRefreshHandler  http.Handler
 				VolumeListHandler    http.Handler
@@ -61,18 +65,22 @@ func InitContainer() *Container {
 	return initContainerWithConfig(InitEnvironment(), InitConfig())
 }
 
-func initContainerWithConfig(env *Environment, cfg *Config) *Container {
+func initContainerWithConfig(env *Environment, cfg *Config) *Container { //nolint:funlen // not need
 	setupLogger(cfg)
 
 	cont := &Container{}
 
 	docker, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-
 	if err != nil {
 		panic(fmt.Sprintf("Failed to create docker client: %s", err))
 	}
 
 	imgparser := &parser.ImageParser{}
+
+	ghClient := githubClient.NewClient(nil)
+	if cfg.Credentials.GithubToken != "" {
+		ghClient = ghClient.WithAuthToken(cfg.Credentials.GithubToken)
+	}
 
 	cont.Services.Monitor = monitor.NewMonitor(docker, filler.NewCompositeFiller([]monitor.Filler{
 		filler.NewOrFiller([]monitor.Filler{
@@ -96,12 +104,24 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 		&cfg.Backend.Services.Poll,
 	)
 
-	cont.Images.Monitor = imgmonitor.NewMonitor(docker, imgfiller.NewCompositeFiller([]imgmonitor.Filler{
+	depFileFetcher := dep.NewStoreableFetcher(dep.NewClientFetcher(ghClient), dep.NewMemoryFileStore())
+
+	imgFillers := []imgmonitor.Filler{
 		&imgfiller.UnknownFiller{},
 		&imgfiller.NameFiller{},
 		imgfiller.WhenKnownImage(imgfiller.NewShortFiller(imgparser)),
 		imgfiller.WhenKnownImage(&imgfiller.VCSFiller{}),
-	}))
+		&imgfiller.CreatedFiller{},
+	}
+	if cfg.Backend.Images.Poll.ScanRepo.Enabled() {
+		imgFillers = append(imgFillers, imgfiller.NewDepFileFiller(depFileFetcher))
+
+		if cfg.Backend.Images.Poll.ScanRepo.Lang {
+			imgFillers = append(imgFillers, imgfiller.NewLanguageFiller())
+		}
+	}
+
+	cont.Images.Monitor = imgmonitor.NewMonitor(docker, imgfiller.NewCompositeFiller(imgFillers))
 	cont.Images.Repository = &repository.ImageRepository{}
 	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &cfg.Backend.Images.Poll)
 	cont.Images.PollRequestsChannel = make(chan bool)
@@ -148,6 +168,9 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container {
 	)
 	cont.Presentation.HTTP.Handlers.VolumeRefreshHandler = middlewares.NewLogMiddleware(
 		handlers.NewVolumeRefreshHandler(cont.Volumes.PollRequestsChannel),
+	)
+	cont.Presentation.HTTP.Handlers.ImageShowHandler = middlewares.NewLogMiddleware(
+		handlers.NewImageShowHandler(cont.Presentation.View.Renderer, cont.Images.Repository),
 	)
 
 	return cont

@@ -27,6 +27,9 @@
                     <strong>Counters</strong>
                 </td>
                 {% endif %}
+                <td>
+                    Language
+                </td>
                 <td scope="col">
                     <strong>Links</strong>
                 </td>
@@ -34,7 +37,7 @@
             </thead>
             <tbody>
             {% for image in images %}
-            <tr class="table-row">
+            <tr class="table-row" onclick="javascript=window.location.href='/images/{{ image.ID}}/show'">
                 <td>
                     {{ image.Name }}
                 </td>
@@ -43,6 +46,9 @@
                 </td>
                 <td>
                     <a href="/images/remove?imageId={{ image.ID }}"><i class="fa-solid fa-trash-can link-action-stop"></i></a>
+                </td>
+                <td>
+                    {% for lang in image.Languages %}{{ lang.Name }} {% if lang.Version %}{{ lang.Version }}{% endif %}{% endfor %}
                 </td>
                 {% if pageConfig.HasCounters %}
                 <td>
