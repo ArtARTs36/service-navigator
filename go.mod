@@ -3,8 +3,8 @@ module github.com/artarts36/service-navigator
 go 1.23.3
 
 require (
-	github.com/artarts36/depexplorer v0.0.0-20241212202705-b3caeea3ae58
-	github.com/artarts36/depexplorer/pkg/github v0.0.0-20241212202705-b3caeea3ae58
+	github.com/artarts36/depexplorer v0.0.0-20241213234134-13c9e098a606
+	github.com/artarts36/depexplorer/pkg/github v0.0.0-20241213234134-13c9e098a606
 	github.com/docker/docker v24.0.5+incompatible
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -17,6 +17,7 @@ require (
 
 require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect
+	github.com/artarts36/depexplorer/pkg/repository v0.0.0-20241213234134-13c9e098a606 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

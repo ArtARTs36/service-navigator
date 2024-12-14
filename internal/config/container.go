@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/artarts36/depexplorer/pkg/github"
+	depRepo "github.com/artarts36/depexplorer/pkg/repository"
+
 	"github.com/artarts36/service-navigator/internal/infrastructure/image/dep"
 	githubClient "github.com/google/go-github/v67/github"
 
@@ -24,8 +27,7 @@ import (
 )
 
 type Container struct {
-	DockerClient *client.Client
-	Services     struct {
+	Services struct {
 		Monitor    *monitor.Monitor
 		Repository *repository.ServiceRepository
 		Poller     *application.ServicePoller
@@ -59,30 +61,29 @@ type Container struct {
 			}
 		}
 	}
+
+	Clients struct {
+		Github *githubClient.Client
+		Docker *client.Client
+	}
 }
 
-func InitContainer() *Container {
+func InitContainer() (*Container, error) {
 	return initContainerWithConfig(InitEnvironment(), InitConfig())
 }
 
-func initContainerWithConfig(env *Environment, cfg *Config) *Container { //nolint:funlen // not need
+func initContainerWithConfig(env *Environment, cfg *Config) (*Container, error) { //nolint:funlen // not need
 	setupLogger(cfg)
 
 	cont := &Container{}
 
-	docker, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-	if err != nil {
-		panic(fmt.Sprintf("Failed to create docker client: %s", err))
+	if err := cont.initClients(cfg); err != nil {
+		return nil, fmt.Errorf("failed to init clients: %w", err)
 	}
 
 	imgparser := &parser.ImageParser{}
 
-	ghClient := githubClient.NewClient(nil)
-	if cfg.Credentials.GithubToken != "" {
-		ghClient = ghClient.WithAuthToken(cfg.Credentials.GithubToken)
-	}
-
-	cont.Services.Monitor = monitor.NewMonitor(docker, filler.NewCompositeFiller([]monitor.Filler{
+	cont.Services.Monitor = monitor.NewMonitor(cont.Clients.Docker, filler.NewCompositeFiller([]monitor.Filler{
 		filler.NewOrFiller([]monitor.Filler{
 			filler.NewNginxProxyURLFiller(),
 			filler.NewPublicPortFiller(),
@@ -104,7 +105,7 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container { //nolin
 		&cfg.Backend.Services.Poll,
 	)
 
-	depFileFetcher := dep.NewStoreableFetcher(dep.NewClientFetcher(ghClient), dep.NewMemoryFileStore())
+	depFileFetcher := cont.resolveDepFetcher()
 
 	imgFillers := []imgmonitor.Filler{
 		&imgfiller.UnknownFiller{},
@@ -121,12 +122,12 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container { //nolin
 		}
 	}
 
-	cont.Images.Monitor = imgmonitor.NewMonitor(docker, imgfiller.NewCompositeFiller(imgFillers))
+	cont.Images.Monitor = imgmonitor.NewMonitor(cont.Clients.Docker, imgfiller.NewCompositeFiller(imgFillers))
 	cont.Images.Repository = &repository.ImageRepository{}
 	cont.Images.Poller = application.NewImagePoller(cont.Images.Monitor, cont.Images.Repository, &cfg.Backend.Images.Poll)
 	cont.Images.PollRequestsChannel = make(chan bool)
 
-	cont.Volumes.Monitor = vlmmonitor.NewMonitor(docker)
+	cont.Volumes.Monitor = vlmmonitor.NewMonitor(cont.Clients.Docker)
 	cont.Volumes.Repository = &repository.VolumeRepository{}
 	cont.Volumes.Poller = application.NewVolumePoller(
 		cont.Volumes.Monitor,
@@ -135,7 +136,6 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container { //nolin
 	)
 	cont.Volumes.PollRequestsChannel = make(chan bool)
 
-	cont.DockerClient = docker
 	cont.Presentation.View.Renderer = initRenderer(env, cfg)
 
 	cont.Presentation.HTTP.Handlers.HomePageHandler = middlewares.NewLogMiddleware(
@@ -173,7 +173,17 @@ func initContainerWithConfig(env *Environment, cfg *Config) *Container { //nolin
 		handlers.NewImageShowHandler(cont.Presentation.View.Renderer, cont.Images.Repository),
 	)
 
-	return cont
+	return cont, nil
+}
+
+func (c *Container) resolveDepFetcher() dep.Fetcher {
+	logger := func(s string, m map[string]interface{}) {
+		log.Info(s, m)
+	}
+
+	return dep.NewStoreableFetcher(dep.NewClientFetcher(map[string]depRepo.Explorer{
+		"github": github.NewExplorer(c.Clients.Github, logger),
+	}), dep.NewMemoryFileStore())
 }
 
 func setupLogger(cfg *Config) {

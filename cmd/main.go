@@ -20,7 +20,10 @@ const httpReadTimeout = 3 * time.Second
 func main() {
 	log.SetLevel(log.DebugLevel)
 
-	cont := config.InitContainer()
+	cont, contErr := config.InitContainer()
+	if contErr != nil {
+		log.Fatalf("failed to initialize container: %v", contErr)
+	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 

@@ -28,6 +28,10 @@ github.com/artarts36/depexplorer v0.0.0-20241212202527-9a7e434c1d12 h1:R+L/bTBnW
 github.com/artarts36/depexplorer v0.0.0-20241212202527-9a7e434c1d12/go.mod h1:XvF6agn6Z5vMssFHS0+NEdPqC1/8MGwOOMl2I/u4Zfg=
 github.com/artarts36/depexplorer v0.0.0-20241212202705-b3caeea3ae58 h1:GWuHpTPGCHmEccfcBRsUb1CvaLQwQoa+inm6GtoHsFk=
 github.com/artarts36/depexplorer v0.0.0-20241212202705-b3caeea3ae58/go.mod h1:XvF6agn6Z5vMssFHS0+NEdPqC1/8MGwOOMl2I/u4Zfg=
+github.com/artarts36/depexplorer v0.0.0-20241213230942-b5a3eb53d645 h1:f7hPleOGh8zGXycU0YDwNDtALx1YMZbSxs1waZFOTys=
+github.com/artarts36/depexplorer v0.0.0-20241213230942-b5a3eb53d645/go.mod h1:XvF6agn6Z5vMssFHS0+NEdPqC1/8MGwOOMl2I/u4Zfg=
+github.com/artarts36/depexplorer v0.0.0-20241213234134-13c9e098a606 h1:z0SrAwRgsIvAtS0VfTUt89HFndzgyRhT3oPp/h9XBRc=
+github.com/artarts36/depexplorer v0.0.0-20241213234134-13c9e098a606/go.mod h1:XvF6agn6Z5vMssFHS0+NEdPqC1/8MGwOOMl2I/u4Zfg=
 github.com/artarts36/depexplorer/pkg/github v0.0.0-20241208215242-149bd925da85 h1:jnZSs9h8nukUEd1uQNreu5L2aglQ/Q8bdc/d6+f0bP8=
 github.com/artarts36/depexplorer/pkg/github v0.0.0-20241208215242-149bd925da85/go.mod h1:w5Kwk6eglaG6k32Z57jB1mwEISFbHHBBUOMApUkBaoo=
 github.com/artarts36/depexplorer/pkg/github v0.0.0-20241208222847-f52eef783cf3 h1:VBVouaX/mjA/smUvCJMU0+VzhFQRFLDMJ5/5jcjQ+54=
@@ -54,6 +58,12 @@ github.com/artarts36/depexplorer/pkg/github v0.0.0-20241212202527-9a7e434c1d12 h
 github.com/artarts36/depexplorer/pkg/github v0.0.0-20241212202527-9a7e434c1d12/go.mod h1:0E3YDdjYtlqq2+IFfiSQlS8/9h8Bnu4UxuOYe/Ti/00=
 github.com/artarts36/depexplorer/pkg/github v0.0.0-20241212202705-b3caeea3ae58 h1:HRjgFgBGU7Kn161BBOggJ9MhxyV4vk0wVLxwd46IcpA=
 github.com/artarts36/depexplorer/pkg/github v0.0.0-20241212202705-b3caeea3ae58/go.mod h1:0E3YDdjYtlqq2+IFfiSQlS8/9h8Bnu4UxuOYe/Ti/00=
+github.com/artarts36/depexplorer/pkg/github v0.0.0-20241213230942-b5a3eb53d645 h1:DgLXs0TliAhq3EOTaHUuZ3Iz8DG24hLnnYc0463chUU=
+github.com/artarts36/depexplorer/pkg/github v0.0.0-20241213230942-b5a3eb53d645/go.mod h1:0E3YDdjYtlqq2+IFfiSQlS8/9h8Bnu4UxuOYe/Ti/00=
+github.com/artarts36/depexplorer/pkg/github v0.0.0-20241213234134-13c9e098a606 h1:ZY/92F3IC2DjYkLxrr8ST9UmDqEiOD8E/j1tvqvwtdE=
+github.com/artarts36/depexplorer/pkg/github v0.0.0-20241213234134-13c9e098a606/go.mod h1:/G4Rkit0g2LZNorTvFtvJIZbYXz9k5q6Uye7ha5TjRk=
+github.com/artarts36/depexplorer/pkg/repository v0.0.0-20241213234134-13c9e098a606 h1:aWFrNYB0hHZfrcnfJkHIlQ9co+di03S0sHdi1zVoLLI=
+github.com/artarts36/depexplorer/pkg/repository v0.0.0-20241213234134-13c9e098a606/go.mod h1:S4hlDNTxisPtPKExygui3qMCY5fp7OhxpfhNSikIZ20=
 github.com/bahlo/generic-list-go v0.2.0 h1:5sz/EEAK+ls5wF+NeqDpk5+iNdMDXrh3z3nPnH1Wvgk=
 github.com/bahlo/generic-list-go v0.2.0/go.mod h1:2KvAjgMlE5NNynlg/5iLrrCCZ2+5xWbdbCW3pNTGyYg=
 github.com/buger/jsonparser v1.1.1 h1:2PnMjfWD7wBILjqQbt530v576A/cAbQvEW9gGIpYMUs=
