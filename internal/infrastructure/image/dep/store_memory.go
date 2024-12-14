@@ -23,7 +23,7 @@ func (s *MemoryFileStore) Get(
 		return nil, ErrFilesNotFound
 	}
 
-	return dfile, ErrFilesNotFound
+	return dfile, nil
 }
 
 func (s *MemoryFileStore) Set(
