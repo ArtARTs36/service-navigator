@@ -43,7 +43,6 @@ func ParseFromLabels(labels map[string]string) (*domain.VCS, error) {
 
 		if key == labelOpenContainerImageSource {
 			vcsType, vcsHost, tErr := parseTypeByRawURL(val)
-
 			if tErr != nil {
 				log.Warnf("unable to parse url \"%s\": %v", val, tErr)
 			}
