@@ -50,6 +50,8 @@ frontend:
         title: Services
       - url: /images
         title: Images
+      - url: /volumes
+        title: Volumes
       - url: http://github.com/artarts36/service-navigator
         title: Github
     profile:
@@ -72,9 +74,9 @@ frontend:
         - name: Jira
           url: https://jira.host.name/secure/QuickSearch.jspa
           queryParamName: searchString # search <form> input name
-          
+
   # Pages config
-  # 
+  #
   # Optional
   pages:
     # Images page config
@@ -88,51 +90,82 @@ frontend:
         # Show image pulls count
         #
         # Optional, default: false
-        pulls: true
+        pulls: false
         # Show image stars
         #
         # Optional, default: false
-        stars: true
+        stars: false
 
 # This section contains settings for backend
 backend:
   # Docker network name
   #
   # Required
-  network_name: infra
+  network_name: ${NETWORK_NAME}
 
   # Services configuration
   services:
-      # Poll for finding information about services
-      poll:
-        # Interval for services polling
+    # Poll for finding information about services
+    poll:
+      # Interval for services polling
+      #
+      # Default: "2s"
+      interval: "2s"
+
+      # Count of goroutines for polling
+      #
+      # Default: 0 = count of services
+      concurrent: 2
+
+      metrics:
+        # Count of stored records per service
         #
-        # Default: "2s"
-        interval: "2s"
-        
-        # Count of goroutines for polling
+        # Optional, default: 50
+        depth: 10
+
+        # A flag that determines whether to store only unique metrics per service
         #
-        # Default: 0 = count of services
-        concurrent: 2
-    
-        metrics:
-          # Count of stored records per service
-          #
-          # Optional, default: 50
-          depth: 10
-    
-          # A flag that determines whether to store only unique metrics per service
-          #
-          # Optional, default: false
-          only_unique: true
+        # Optional, default: false
+        only_unique: true
 
   # Images configuration
   images:
     poll:
-      # Interval for services polling
+      # Interval for images polling
+      #
+      # Default: "1m"
+      interval: "10m"
+
+      # Scan image repository configuration
+      scan_repo:
+        # Determine main repository languages
+        #
+        # Default: false
+        lang: true
+
+        # Fetch repository dependencies
+        #
+        # Default: false
+        deps: true
+
+  # Volumes configuration
+  volumes:
+    poll:
+      # Interval for volumes polling
       #
       # Default: "1m"
       interval: "1m"
+
+# Application parameters
+parameters:
+  # Log Level
+  #
+  # Available values: trace, debug, info, warn, error, fatal, panic
+  log_level: debug
+
+# Credentials for services
+credentials:
+  github_token: ${GITHUB_TOKEN}
 ```
 
 # How Service Navigator finding information about service
