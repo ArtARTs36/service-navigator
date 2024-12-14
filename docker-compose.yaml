@@ -17,6 +17,8 @@ services:
     command: "go run ./cmd/main.go"
     environment:
       USER: "${USER}"
+      GITHUB_TOKEN: ""
+      NETWORK_NAME: infra
     networks:
       - infra
 
@@ -30,3 +32,4 @@ services:
 networks:
   infra:
     external: true
+    name: infra

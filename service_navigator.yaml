@@ -63,7 +63,7 @@ backend:
   # Docker network name
   #
   # Required
-  network_name: infra
+  network_name: ${NETWORK_NAME}
 
   # Services configuration
   services:
@@ -96,7 +96,19 @@ backend:
       # Interval for images polling
       #
       # Default: "1m"
-      interval: "1m"
+      interval: "10m"
+
+      # Scan image repository configuration
+      scan_repo:
+        # Determine main repository languages
+        #
+        # Default: false
+        lang: true
+
+        # Fetch repository dependencies
+        #
+        # Default: false
+        deps: true
 
   # Volumes configuration
   volumes:
@@ -112,3 +124,7 @@ parameters:
   #
   # Available values: trace, debug, info, warn, error, fatal, panic
   log_level: debug
+
+# Credentials for services
+credentials:
+  github_token: ${GITHUB_TOKEN}

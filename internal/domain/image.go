@@ -1,5 +1,14 @@
 package domain
 
+import (
+	"fmt"
+	"time"
+
+	"github.com/artarts36/depexplorer"
+)
+
+var ErrImageNotFound = fmt.Errorf("image not found")
+
 type Image struct {
 	ID          string
 	Name        string
@@ -8,6 +17,15 @@ type Image struct {
 	NameDetails NameDetails
 	VCS         *VCS
 	Unknown     bool
+	Languages   []*Language
+	Frameworks  []*depexplorer.Framework
+	DepFiles    map[depexplorer.DependencyManager]*depexplorer.File
+	CreatedAt   time.Time
+}
+
+type Language struct {
+	Name    string
+	Version string
 }
 
 type NameDetails struct {
@@ -16,4 +34,8 @@ type NameDetails struct {
 	RegistryURL         string
 	RegistryIsDockerHub bool
 	Vendor              string
+}
+
+func (d *NameDetails) IsLatest() bool {
+	return d.Version == "latest"
 }

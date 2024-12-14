@@ -62,6 +62,7 @@ func (m *Monitor) Show(ctx context.Context) ([]*domain.Image, error) {
 		m.filler.Fill(img, &datastruct.ImageMeta{
 			Labels:   image.Labels,
 			RepoTags: image.RepoTags,
+			Created:  image.Created,
 		})
 	}
 

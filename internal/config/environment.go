@@ -27,7 +27,7 @@ func InitEnvironment() *Environment {
 	selfContID, err := os.Hostname()
 
 	if selfContID != "" {
-		log.Debugf("Self config id: %s", selfContID)
+		log.Debugf("Self container id: %s", selfContID)
 
 		env.CurrentContainerID = selfContID
 	} else if err != nil {

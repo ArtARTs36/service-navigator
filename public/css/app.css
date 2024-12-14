@@ -22,6 +22,26 @@
     color: #000;
 }
 
+.image-card div {
+    padding: 2px;
+}
+
+.image-card-link-gitlab {
+    color: #e24329;
+}
+
+.image-card-link-gitlab:hover {
+    color: #fc6d26;
+}
+
+.image-card-link-github {
+    color: #fff;
+}
+
+.image-card-link-github:hover {
+    color: #000;
+}
+
 .navbar-link {
     color: #666;
 }

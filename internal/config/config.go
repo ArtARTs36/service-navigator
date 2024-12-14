@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -34,6 +35,9 @@ type Config struct {
 	Parameters struct {
 		LogLevel string `yaml:"log_level"`
 	} `yaml:"parameters"`
+	Credentials struct {
+		GithubToken string `yaml:"github_token"`
+	} `yaml:"credentials"`
 }
 
 func InitConfig() *Config {
@@ -42,7 +46,6 @@ func InitConfig() *Config {
 	log.Printf("Loading Config from /app/service_navigator.yaml")
 
 	yamlContent, err := os.ReadFile("/app/service_navigator.yaml")
-
 	if err != nil {
 		panic(fmt.Sprintf("Failed to read \"/app/service_navigator.yaml\": %s", err))
 	}
@@ -71,6 +74,18 @@ func InitConfig() *Config {
 		conf.Frontend.AppName = "ServiceNavigator"
 	}
 
+	if conf.Credentials.GithubToken != "" {
+		conf.Credentials.GithubToken, err = resolveEnvString(conf.Credentials.GithubToken)
+		if err != nil {
+			panic(fmt.Sprintf("failed to resolve github token: %s", err))
+		}
+	}
+
+	conf.Backend.NetworkName, err = resolveEnvString(conf.Backend.NetworkName)
+	if err != nil {
+		panic(fmt.Sprintf("failed to resolve network name: %s", err))
+	}
+
 	log.Printf("Config loaded: %v", conf)
 
 	return &conf
@@ -86,4 +101,20 @@ func resolveConfigMetricDepth(conf app.ServicePollerConfig) int {
 	}
 
 	return 1
+}
+
+func resolveEnvString(v string) (string, error) {
+	if !strings.HasPrefix(v, "$") {
+		return v, nil
+	}
+
+	v = strings.TrimLeft(v, "${")
+	v = strings.TrimRight(v, "}")
+
+	env, ok := os.LookupEnv(v)
+	if !ok {
+		return "", fmt.Errorf("environment variable %s not set", v)
+	}
+
+	return env, nil
 }

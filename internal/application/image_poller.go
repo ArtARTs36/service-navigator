@@ -12,6 +12,13 @@ import (
 
 type ImagePollerConfig struct {
 	Interval time.Duration `yaml:"interval"`
+
+	ScanRepo ScanRepoConfig `yaml:"scan_repo"`
+}
+
+type ScanRepoConfig struct {
+	Lang bool `yaml:"lang"`
+	Deps bool `yaml:"deps"`
 }
 
 type ImagePoller struct {
@@ -64,4 +71,8 @@ func (p *ImagePoller) poll() {
 	log.Printf("[Image][Poller] loaded %d volumes", len(images))
 
 	p.images.Set(images)
+}
+
+func (s *ScanRepoConfig) Enabled() bool {
+	return s.Lang || s.Deps
 }

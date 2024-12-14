@@ -45,5 +45,5 @@ type ProfileLink struct {
 }
 
 func (l *ProfileLink) HasForm() bool {
-	return l.Form.Inputs != nil && len(l.Form.Inputs) > 0
+	return len(l.Form.Inputs) > 0
 }
