@@ -1,7 +1,9 @@
-package vcs
+package vcs_test
 
 import (
 	"testing"
+
+	"github.com/artarts36/service-navigator/internal/infrastructure/service/vcs"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -18,7 +20,7 @@ func TestParseFromLabels(t *testing.T) {
 		{
 			Title: "parse opencontainers label",
 			Labels: map[string]string{
-				labelOpenContainerImageSource: "https://github.com/prometheus/prometheus",
+				"org.opencontainers.image.source": "https://github.com/prometheus/prometheus",
 			},
 			Expected: &domain.VCS{
 				Type: "github",
@@ -30,7 +32,7 @@ func TestParseFromLabels(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.Title, func(t *testing.T) {
-			got, err := ParseFromLabels(tc.Labels)
+			got, err := vcs.ParseFromLabels(tc.Labels)
 			require.NoError(t, err)
 			assert.Equal(t, tc.Expected, got)
 		})
