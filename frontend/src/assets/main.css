@@ -1,0 +1,91 @@
+@import './bootstrap.css';
+
+body {
+  background: #eee;
+}
+
+.table-row {
+  cursor: pointer;
+}
+
+.table-row:hover {
+  background: #eee;
+}
+
+.link-gitlab {
+  color: #e24329;
+}
+
+.link-gitlab:hover {
+  color: #fc6d26;
+}
+
+.link-github {
+  color: #444;
+}
+
+.link-github:hover {
+  color: #000;
+}
+
+.image-card div {
+  padding: 2px;
+}
+
+.image-card-link-gitlab {
+  color: #e24329;
+}
+
+.image-card-link-gitlab:hover {
+  color: #fc6d26;
+}
+
+.image-card-link-github {
+  color: #fff;
+}
+
+.image-card-link-github:hover {
+  color: #000;
+}
+
+.navbar-link {
+  color: #666;
+}
+
+.navbar-link:hover {
+  color: #000;
+}
+
+.search-dropdown-item {
+  cursor: pointer;
+}
+
+.logo {
+  font-size: 1.25rem;
+  margin-right: 15px;
+}
+
+
+.link-action-stop {
+  color: #e74c3c;
+}
+
+.link-action-stop:hover {
+  color: #c0392b;
+}
+
+.link-docker {
+  color: #0db7ed;
+}
+
+.link-docker:hover {
+  color: #384d54;
+}
+
+.link-action-refresh {
+  color: #27ae60;
+}
+
+.link-action-refresh:hover {
+  color: #2ecc71;
+}
